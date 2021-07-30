@@ -1,0 +1,19 @@
+﻿  character.cpp
+C:\Users\horik\source\repos\20210727_3(팀포폴테스트)\character.cpp(35,35): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\horik\source\repos\20210727_3(팀포폴테스트)\character.cpp(35,31): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\horik\source\repos\20210727_3(팀포폴테스트)\character.cpp(36,41): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\horik\source\repos\20210727_3(팀포폴테스트)\character.cpp(36,37): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\horik\source\repos\20210727_3(팀포폴테스트)\character.cpp(65,35): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\horik\source\repos\20210727_3(팀포폴테스트)\character.cpp(65,31): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\horik\source\repos\20210727_3(팀포폴테스트)\character.cpp(66,41): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\horik\source\repos\20210727_3(팀포폴테스트)\character.cpp(66,37): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\horik\source\repos\20210727_3(팀포폴테스트)\character.cpp(188,51): warning C4244: '=': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\horik\source\repos\20210727_3(팀포폴테스트)\character.cpp(189,36): warning C4305: '-=': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\horik\source\repos\20210727_3(팀포폴테스트)\character.cpp(198,51): warning C4244: '=': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\horik\source\repos\20210727_3(팀포폴테스트)\character.cpp(199,36): warning C4305: '+=': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\horik\source\repos\20210727_3(팀포폴테스트)\character.cpp(340,25): warning C4244: '초기화 중': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\horik\source\repos\20210727_3(팀포폴테스트)\character.cpp(341,26): warning C4244: '초기화 중': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\horik\source\repos\20210727_3(팀포폴테스트)\character.cpp(451,25): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\horik\source\repos\20210727_3(팀포폴테스트)\character.cpp(456,33): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\horik\source\repos\20210727_3(팀포폴테스트)\character.cpp(505,49): warning C4267: '인수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  WindowsAPI.vcxproj -> C:\Users\horik\source\repos\20210727_3(팀포폴테스트)\x64\Debug\WindowsAPI.exe
