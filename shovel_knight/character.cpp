@@ -33,17 +33,18 @@ HRESULT character::init() // 인잇
     _hangCount = _rcNum = 0;
 
     _imgRect = RectMakeCenter(_x, _y, _characterImg->getFrameWidth(), _characterImg->getFrameHeight());
-    _collisionRect = RectMakeCenter(_x, _y, 57, 96);
+    _collisionRect = RectMakeCenter(_x, _y, 55, 96);
 
     // 테스트용 렉트
     _rc[0] = RectMakeCenter(WINSIZEX / 2, WINSIZEY / 2 + 310, WINSIZEX, 100);
     _rc[1] = RectMakeCenter(WINSIZEX / 2 + 200, WINSIZEY / 2, 200, 50);
     _rc[2] = RectMakeCenter(WINSIZEX / 2, WINSIZEY / 2 + 100, 200, 50);
+    _rc[3] = RectMakeCenter(165, 200, 200, 50);
 
     _attackRc = RectMakeCenter(WINSIZEX / 2 - 400, WINSIZEY / 2 + 200, 50, 50);
 
     _hangRc[0] = RectMakeCenter(WINSIZEX / 2 - 600, WINSIZEY / 2 + 200, 50, 800);
-    _hangRc[1] = RectMakeCenter(WINSIZEX / 2 - 500, WINSIZEY / 2, 50, 200);
+    _hangRc[1] = RectMakeCenter(WINSIZEX / 2 - 500, WINSIZEY / 2, 55, 200);
 
     return S_OK;
 }
@@ -63,7 +64,7 @@ void character::update() // 업데이트
     
     // 렉트 갱신
     _imgRect = RectMakeCenter(_x, _y, _characterImg->getFrameWidth(), _characterImg->getFrameHeight());
-    _collisionRect = RectMakeCenter(_x, _y, 57, 96);
+    _collisionRect = RectMakeCenter(_x, _y, 55, 96);
 }
 
 void character::controll() // 캐릭터 컨트롤키 처리
@@ -199,6 +200,24 @@ void character::controll() // 캐릭터 컨트롤키 처리
                     _y += SPEED/1.5;
                 }
             }
+
+            // 캐릭터 하단에 사다리가 있을 경우 밑으로 내려갈 수 있도록 처리
+            POINT check;
+            check.x = _x;
+            check.y = _collisionRect.bottom + 10;
+            if (PtInRect(&_hangRc[i], check))
+            {
+                if (KEYMANAGER->isStayKeyDown('S') && !IntersectRect(&temp, &_collisionRect, &_hangRc[i]))
+                {
+                    _state = HANG;
+                    imgSetting();
+                    _hangCount++;
+                    _gravity = _jumpPower = 0;
+
+                    _x = (_hangRc[i].left + _hangRc[i].right) / 2;
+                    _y += SPEED / 1.5;
+                }
+            }
         }
     }
 }
@@ -290,7 +309,8 @@ void character::gravity() // 캐릭터 중력 처리
         _jumpPower -= _gravity;
     }
 
-    if (_state == HURT) // 피격 상태일 때 바라본 방향의 뒤로 밀림
+    // 피격 상태일 때 바라본 방향의 뒤로 밀림
+    if (_state == HURT) 
     {
         if (_direction == 0) _x -= SPEED;
         else _x += SPEED;
@@ -308,6 +328,7 @@ void character::hang() // 캐릭터 사다리 타기 처리
         if (_hangCount >= 19) _hangCount = 1;
     }
 
+    // 어떤 사다리 충돌했는지
     for (int i = 0; i < HANGRCMAX; i++)
     {
         RECT temp;
@@ -317,16 +338,28 @@ void character::hang() // 캐릭터 사다리 타기 처리
         }
     }
 
+    // 사다리 벗어나면
     for (int i = 0; i < HANGRCMAX; i++)
     {
         RECT temp;
         if (!IntersectRect(&temp, &_collisionRect, &_hangRc[_hangRcNum]))
         {
-            _hangRcNum = 0;
-            if (_state == HANG) _state = JUMP;
-            _gravity = GRAVITY;
+            if (_hangRc[_hangRcNum].top >= _collisionRect.bottom)
+            {
+                _hangRcNum = 0;
+                if (_state == HANG) _state = IDLE;
+                imgSetting();
+            }
+
+            if (_hangRc[_hangRcNum].bottom <= _collisionRect.top)
+            {
+                _hangRcNum = 0;
+                if (_state == HANG) _state = JUMP;
+                imgSetting();
+                _gravity = GRAVITY;
+            }
         }
-    }
+    }    
 }
 
 void character::collision() // 캐릭터 충돌 처리
@@ -339,8 +372,6 @@ void character::collision() // 캐릭터 충돌 처리
         {
             float width = temp.right - temp.left;
             float height = temp.bottom - temp.top;
-
-            _rcNum = i; // 현재 어떤 장애물에 충돌했는지 기록
 
             if (width <= height) // 옆면 충돌
             {
@@ -356,6 +387,8 @@ void character::collision() // 캐릭터 충돌 처리
 
             if (width > height) // 상하 충돌
             {
+                _rcNum = i; // 현재 어떤 장애물에 충돌했는지 기록
+
                 if (_collisionRect.bottom <= _rc[i].bottom) // 밑에서 충돌
                 {
                     _y -= height;
@@ -372,21 +405,34 @@ void character::collision() // 캐릭터 충돌 처리
         }
     }
 
-    // 현재 충돌된 장애물에서 벗어나면 중력받아 떨어지게 처리
-    if (_collisionRect.right < _rc[_rcNum].left)
+    // 밑에 장애물이 없다면 중력받아 떨어지는 처리
+    POINT check;
+    if (_direction == 0) check.x = _collisionRect.left;
+    else check.x = _collisionRect.right;
+    check.y = _collisionRect.bottom + 10;
+
+    if (!PtInRect(&_rc[_rcNum], check) && _state == RUN)
     {
         _gravity = GRAVITY;
-        _rcNum = 0;
-
-        if (_state != JUMPBOTTOMATTACK) _state = JUMP;
+        _state = JUMP;
+        imgSetting();
     }
-    else if (_collisionRect.left > _rc[_rcNum].right)
-    {
-        _gravity = GRAVITY;
-        _rcNum = 0;
 
-        if (_state != JUMPBOTTOMATTACK) _state = JUMP;
-    }
+    //// 현재 충돌된 장애물에서 벗어나면 중력받아 떨어지게 처리
+    //if (_collisionRect.right < _rc[_rcNum].left)
+    //{
+    //    _gravity = GRAVITY;
+    //    _rcNum = 0;
+
+    //    if (_state != JUMPBOTTOMATTACK) _state = JUMP;
+    //}
+    //else if (_collisionRect.left > _rc[_rcNum].right)
+    //{
+    //    _gravity = GRAVITY;
+    //    _rcNum = 0;
+
+    //    if (_state != JUMPBOTTOMATTACK) _state = JUMP;
+    //}
 
     // 피격 테스트용 렉트
     RECT temp2;

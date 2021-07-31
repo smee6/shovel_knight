@@ -4,7 +4,7 @@
 #define SPEED 5.0f									// 이동 속도
 #define GRAVITY 0.8f								// 중력 값
 #define JUMPPOWER 18.0f								// 점프 파워 값
-#define RCMAX 3										// 테스트용 렉트
+#define RCMAX 4										// 테스트용 렉트
 #define HANGRCMAX 2									// 테스트용 사다리 렉트
 
 enum state
