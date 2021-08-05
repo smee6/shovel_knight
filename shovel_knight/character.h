@@ -34,6 +34,7 @@ private:
 	float _gravity;									// 중력 값
 
 	bool _direction;								// 캐릭터가 바라보고 있는 방향 0 == 오른쪽 방향, 1 == 왼쪽 방향 바라봄
+	bool _isPixelCollision;							// 캐릭터가 픽셀 충돌 중인가?
 
 	int _damage;									// 캐릭터 데미지
 	int _currentHP, _maxHP;							// 캐릭터 현재, 맥스 체력
@@ -47,15 +48,16 @@ private:
 	RECT _hangRc[HANGRCMAX];						// 사다리 테스트용 렉트
 	int _rcNum;										// 현재 어떤 장애물에 충돌했는지 기록
 	int _hangRcNum;
+	image* _backGroundCollision;
 
 public:
 	character();
 	~character();
 
-	HRESULT init();
-	void release();
-	void update();
-	void render();
+	virtual HRESULT init();
+	virtual void release();
+	virtual void update();
+	virtual void render();
 
 	void controll();															// 캐릭터 컨트롤키 처리
 	void imgSetting();															// 상태에 따라 이미지 처리
@@ -73,12 +75,14 @@ public:
 	int getCurrentFrame() { return _currentFrame; }								// 캐릭터 현재 프레임 반환
 	state getState() { return _state; }											// 캐릭터 상태 반환
 	RECT getCharacterRect() { return _collisionRect; }							// 캐릭터 충돌 렉트 반환
+	int getCurrentHp() { return _currentHP; }									// 캐릭터 현재 체력 반환
+	int getMaxHp() { return _maxHP; }											// 캐릭터 맥스 체력 반환
 
 	void setCharacterX(float x) { _x = x; }										// 캐릭터 X값 설정
 	void setCharacterY(float y) { _y = y; }										// 캐릭터 Y값 설정
 	void setCharacterDirection(bool direction) { _direction = direction; }		// 캐릭터 방향 설정
 	void setState(state state) { _state = state; }								// 캐릭터의 상태 설정
-		
+
 	//void setMapMemoryAddressLink(mapManager* mapM) { _mapM = mapM; }			// 맵매니저 클라스 링크 
 	//void setEnemyMemoryAddressLink(enemyManager* eM) { _eM = eM; }			// 이너미매니저 클래스 링크
 

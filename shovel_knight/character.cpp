@@ -21,11 +21,16 @@ HRESULT character::init() // 인잇
     IMAGEMANAGER->addFrameImage("캐릭터_피격", "image/shovel_character_hurt.bmp", 105, 234, 1, 2, true, RGB(255, 0, 255));
     IMAGEMANAGER->addFrameImage("캐릭터_죽음", "image/shovel_character_death.bmp", 333, 204, 3, 2, true, RGB(255, 0, 255));
     IMAGEMANAGER->addFrameImage("캐릭터_사다리", "image/shovel_character_hang.bmp", 150, 96, 2, 1, true, RGB(255, 0, 255));
+
+    IMAGEMANAGER->addImage("배경충돌", "image/shovel_knight_map_collision.bmp", 1280, 720, false, RGB(255, 0, 255));
+    _backGroundCollision = IMAGEMANAGER->findImage("배경충돌");
+
     _characterImg = IMAGEMANAGER->findImage("캐릭터_아이들");
     _x = WINSIZEX / 2;
-    _y = WINSIZEY / 2 + 220;
+    _y = WINSIZEY / 2 + 210;
     _state = IDLE;
     _direction = 0;
+    _isPixelCollision = true;
     _speed = _gravity = _jumpPower = 0;
     _currentHP = _maxHP = 8;
     _currentFrame = _count = 0;
@@ -36,7 +41,7 @@ HRESULT character::init() // 인잇
     _collisionRect = RectMakeCenter(_x, _y, 55, 96);
 
     // 테스트용 렉트
-    _rc[0] = RectMakeCenter(WINSIZEX / 2, WINSIZEY / 2 + 310, WINSIZEX, 100);
+    //_rc[0] = RectMakeCenter(WINSIZEX / 2, WINSIZEY / 2 + 310, WINSIZEX, 100);
     _rc[1] = RectMakeCenter(WINSIZEX / 2 + 200, WINSIZEY / 2, 200, 50);
     _rc[2] = RectMakeCenter(WINSIZEX / 2, WINSIZEY / 2 + 100, 200, 50);
     _rc[3] = RectMakeCenter(165, 200, 200, 50);
@@ -55,10 +60,11 @@ void character::release()
 
 void character::update() // 업데이트
 {
-    collision();
+
     gravity();
-    hang();
+    collision();
     controll();
+    hang();
     attack();
     imgFrameSetting();
     
@@ -148,6 +154,7 @@ void character::controll() // 캐릭터 컨트롤키 처리
                 _gravity = GRAVITY;
                 _state = JUMP;
                 imgSetting();
+                _isPixelCollision = false;
             }
         }
 
@@ -364,7 +371,51 @@ void character::hang() // 캐릭터 사다리 타기 처리
 
 void character::collision() // 캐릭터 충돌 처리
 {
-    // 벽과 충돌 처리
+    // 바닥 픽셀 충돌 처리
+    if (_state == JUMP || _state == JUMPATTACK || _state == JUMPBOTTOMATTACK || _state == HURT)
+    {
+        int proveY = _y + (_collisionRect.bottom - _collisionRect.top) / 2;
+        for (int i = proveY - 10; i < proveY + 10; i++)
+        {
+            if (GetPixel(_backGroundCollision->getMemDC(), _x, i) == RGB(255, 0, 255))
+            {
+                _y = i - (_collisionRect.bottom - _collisionRect.top) / 2 - 5;
+                _gravity = _jumpPower = 0;
+                _state = IDLE;
+                imgSetting();
+                _isPixelCollision = true;
+                break;
+            }
+        }
+    }
+
+    // 벽면 픽셀 충돌 처리
+    if (_direction == 0) // 오른쪽 보고 있을 때
+    {
+        int proveX = _x + (_collisionRect.right - _collisionRect.left) / 2;
+        for (int i = proveX - 10; i < proveX + 10; i++)
+        {
+            if (GetPixel(_backGroundCollision->getMemDC(), i, _y) == RGB(255, 0, 255))
+            {
+                _x = i - (_collisionRect.right - _collisionRect.left) / 2 - SPEED;
+                break;
+            }
+        }
+    }
+    else // 왼쪽 보고 있을 때
+    {
+        int proveX = _x - (_collisionRect.right - _collisionRect.left) / 2;
+        for (int i = proveX + 10; i >= proveX - 10; i--)
+        {
+            if (GetPixel(_backGroundCollision->getMemDC(), i, _y) == RGB(255, 0, 255))
+            {
+                _x = i + (_collisionRect.right - _collisionRect.left) / 2 + SPEED;
+                break;
+            }
+        }
+    }
+
+    // 장애물과 렉트 충돌 처리
     for (int i = 0; i < RCMAX; i++)
     {
         RECT temp;
@@ -406,16 +457,20 @@ void character::collision() // 캐릭터 충돌 처리
     }
 
     // 밑에 장애물이 없다면 중력받아 떨어지는 처리
-    POINT check;
-    if (_direction == 0) check.x = _collisionRect.left;
-    else check.x = _collisionRect.right;
-    check.y = _collisionRect.bottom + 10;
-
-    if (!PtInRect(&_rc[_rcNum], check) && _state == RUN)
+    if (_isPixelCollision == false)
     {
-        _gravity = GRAVITY;
-        _state = JUMP;
-        imgSetting();
+        POINT check;
+        if (_direction == 0) check.x = _collisionRect.left;
+        else check.x = _collisionRect.right;
+        //check.x = _x;
+        check.y = _collisionRect.bottom;
+
+        if (!PtInRect(&_rc[_rcNum], check) && _state == RUN)
+        {
+            _gravity = GRAVITY;
+            _state = JUMP;
+            imgSetting();
+        }
     }
 
     //// 현재 충돌된 장애물에서 벗어나면 중력받아 떨어지게 처리
@@ -516,6 +571,11 @@ void character::death() // 캐릭터 죽음 처리
 
 void character::render() // 캐릭터 렌더
 {
+    if (KEYMANAGER->isToggleKey(VK_TAB))
+    {
+        _backGroundCollision->render(getMemDC(), 0, 0);
+    }
+
     HBRUSH brush2 = CreateSolidBrush(RGB(0, 255, 0));
     HBRUSH oldbrush2 = (HBRUSH)SelectObject(getMemDC(), brush2);
     Rectangle(getMemDC(), _hangRc[0]);                 // 사다리 테스트용 렉트
@@ -531,7 +591,7 @@ void character::render() // 캐릭터 렌더
     {
         Rectangle(getMemDC(), _imgRect);
         Rectangle(getMemDC(), _collisionRect);
-        Rectangle(getMemDC(), _rc[0]); //테스트 렉트
+        //Rectangle(getMemDC(), _rc[0]); //테스트 렉트
     }
 
     for (int i = 1; i < RCMAX; i++) // 테스트 렉트
