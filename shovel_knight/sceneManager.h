@@ -15,7 +15,7 @@ private:
 	static gameNode* _currentScene;
 
 	mapSceneList _mSceneList;
-
+	bool isUIcall;
 
 public:
 	sceneManager();
@@ -29,5 +29,9 @@ public:
 	gameNode* addScene(string sceneName, gameNode* scene);
 
 	HRESULT changeScene(string sceneName);
+
+
+	int hp = 0;
+	void nowHP(int x);
 };
 

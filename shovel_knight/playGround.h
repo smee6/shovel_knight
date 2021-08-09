@@ -3,6 +3,8 @@
 #include "inGameScene.h"
 #include "loadingScene.h"
 #include "character.h"
+#include "openingScene.h"
+
 
 class playGround : public gameNode
 {
