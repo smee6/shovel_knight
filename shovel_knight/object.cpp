@@ -17,7 +17,7 @@ HRESULT object::init()
 	//2순위 물방울(용이 쏘는것, 바닥에서 올라오는 것), 파이어볼(유저, 몹),
 	//물방울은 - 최초에 밑에서 상승했다가 일정범위에 도달하면 좌우로 조금씩 움직이는?
 
-	
+
 
 
 
@@ -74,7 +74,7 @@ void object::objectMove()
 			{
 				_platform[i].isDirection = true;
 			}
-			else if(_platform[i].max < _platform[i].x)
+			else if (_platform[i].max < _platform[i].x)
 			{
 				_platform[i].isDirection = false;
 			}
@@ -95,7 +95,7 @@ void object::objectMove()
 
 	}
 
-	
+
 	for (int i = 0; i < PLATFORMMAX; i++)
 	{
 		//좌우발판의 움직임을 처리해주는 if문
@@ -125,8 +125,8 @@ void object::objectMove()
 		}
 	}
 
-	
-	
+
+
 }
 
 void object::platformSetting()
