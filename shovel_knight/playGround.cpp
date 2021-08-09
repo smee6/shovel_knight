@@ -27,6 +27,20 @@ HRESULT playGround::init()
 	_character = new character;
 	_character->init();
 
+	_object = new object;
+	_object->init();
+
+	_mapCamera = new mapCamera;
+	_mapCamera->init();
+
+	_character->setMapCameraMemoryAddressLink(_mapCamera);
+	_character->setObjectMemoryAddressLink(_object);
+
+	_mapCamera->setCharacterAddressLink(_character);
+	_mapCamera->setObjectMemoryAddressLink(_object);
+
+	_object->setcharacterMemoryAddressLink(_character);
+	_object->setMapCameraMemoryAddressLink(_mapCamera);
 
 	return S_OK;
 }

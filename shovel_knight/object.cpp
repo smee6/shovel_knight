@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "object.h"
+#include "character.h"
+#include "mapCamera.h"
 
 object::object()
 {
