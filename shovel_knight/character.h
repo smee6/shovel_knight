@@ -84,6 +84,8 @@ public:
 	void setCharacterY(float y) { _y = y; }										// 캐릭터 Y값 설정
 	void setCharacterDirection(bool direction) { _direction = direction; }		// 캐릭터 방향 설정
 	void setState(state state) { _state = state; }								// 캐릭터의 상태 설정
+	void setJumpPower(float jumpPower) { _jumpPower = jumpPower; }				// 캐릭터의 상태 설정
+	void setSpeed(float speed) { _speed = speed; }								// 캐릭터의 상태 설정
 
 	void setMapCameraMemoryAddressLink(mapCamera* mapCamera) { _mapCamera = mapCamera; } // 맵 카매라 클라스 링크 
 	void setObjectMemoryAddressLink(object* object) { _object = object; }		// 오브젝트 클라스 링크 

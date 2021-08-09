@@ -17,20 +17,12 @@ HRESULT mapCamera::init()
 {
 	gameNode::init();
 
-
-
 	// 배경
-	_background = IMAGEMANAGER->addImage("배경", "resources/map_black.bmp", 23000, 4500, true, RGB(255, 0, 255));
-
-
-
-
-
-
+	_background = IMAGEMANAGER->addImage("배경", "image/resources/map_black.bmp", 23000, 4500, true, RGB(255, 0, 255));
 
 	// 카메라
-	_camera.left = _character->getCharacterX() - (WIDTH / 2);
-	_camera.right = _character->getCharacterX() + (WIDTH / 2);
+	//_camera.left = _character->getCharacterX() - (WIDTH / 2);
+	//_camera.right = _character->getCharacterX() + (WIDTH / 2);
 	// 카메라 중간
 
 	_camera.top = 200;
@@ -62,7 +54,8 @@ void mapCamera::update()
 {
 	gameNode::update();
 
-
+	_camera.left = _character->getCharacterX() - (WIDTH / 2);
+	_camera.right = _character->getCharacterX() + (WIDTH / 2);
 	CameraMove(_camera);
 
 
@@ -73,14 +66,10 @@ void mapCamera::update()
 }
 
 //여기다 그려줘라!!!
-void mapCamera::render(HDC hdc)
+void mapCamera::render()
 {
-
-
 	_background->render(getMemDC(), _camX, _camY);
-	//_background->render(backDC, 0, 0, _bx, _by, WINSIZEX, WINSIZEY);
-
-
+	//_background->render(getMemDC(), 0, 0, _bx, _by, WINSIZEX WINSIZEY);
 
 	if (KEYMANAGER->isToggleKey(VK_TAB))
 	{
@@ -88,11 +77,7 @@ void mapCamera::render(HDC hdc)
 
 	}
 
-
-
-
 	char str[128];
-
 
 	sprintf_s(str, "cameraleft : %d", _camera.left);
 	TextOut(getMemDC(), 10, 70, str, strlen(str));
@@ -101,7 +86,10 @@ void mapCamera::render(HDC hdc)
 	TextOut(getMemDC(), 10, 90, str, strlen(str));
 	sprintf_s(str, "camY : %d", _camY);
 	TextOut(getMemDC(), 100, 90, str, strlen(str));
+}
 
+void mapCamera::Collision()
+{
 
 }
 
@@ -127,29 +115,29 @@ void mapCamera::CameraMove(RECT& camera)
 	// camera 상자 안에서만 플레이어가 직접 이동(혹은 카메라 이동이 불가능할 경우)
 	if (_background->getHeight() <= WINSIZEY - _camY || _camY == 0 || _character->getCharacterRect().bottom < camera.bottom || _character->getCharacterRect().top > camera.top)
 	{
-		//_character->getCharacterY() -= _player.jumpPower;
-		//_player.jumpPower -= _player.gravity;
+		_character->setCharacterY(_character->getCharacterY() - _character->getJumpPower());
+		_character->setJumpPower(_character->getJumpPower() - _character->getGravity());
 	}
 
 	// 배경화면의 왼쪽 끝이 윈도우 창의 왼쪽이랑 같아지면 이동 정지
 	// 배경화면의 오른쪽 끝이 윈도우 창의 오른쪽이랑 같아지면 이동 정지
 	if (_camX >= 0 || _camX >= -5050)
 	{
-		_player.speed = SPEED;
+		_character->setSpeed(SPEED);
 	}
 	else
 	{
-		_player.speed = SPEED;
+		_character->setSpeed(SPEED);
 		_camFollowX = false;
 	}
 
 	if (_camY <= 0 || _camY < -2139)
 	{
-		_player.speed = SPEED;
+		_character->setSpeed(SPEED);
 	}
 	else
 	{
-		_player.speed = SPEED;
+		_character->setSpeed(SPEED);
 		_camFollowY = false;
 	}
 
@@ -169,7 +157,7 @@ void mapCamera::CameraMove(RECT& camera)
 			if (_camX < 0)
 			{
 				_camX += SPEED;
-				_player.speed = 0;
+				_character->setSpeed(0);
 				_character->setCharacterX(_camera.left + 40);
 			}
 		}
@@ -179,14 +167,14 @@ void mapCamera::CameraMove(RECT& camera)
 			if (_camX + _background->getWidth() >= WINSIZEX)
 			{
 				_camX -= SPEED;
-				_player.speed = 0;
+				_character->setSpeed(0);
 				_character->setCharacterX(_camera.right - 40);
 			}
 
 		}
 		else
 		{
-			_player.speed = SPEED;
+			_character->setSpeed(SPEED);
 		}
 	}
 
@@ -212,39 +200,35 @@ void mapCamera::CameraMove(RECT& camera)
 	}
 
 
-
-	else if (!_camFollowX)
+	if (!_camFollowX)
 	{
 		if (_LR && _isCamMove)
 		{
 			_camX -= SPEED;
-			_player.speed = 0;
-			_player.x -= SPEED;
+			_character->setSpeed(0);
+			_character->setCharacterX(_character->getCharacterX() - SPEED);
+			//_player.x -= SPEED;
 		}
 		else if (!_LR && _isCamMove)
 		{
 			_camX += SPEED;
-			_player.speed = 0;
-			_player.x += SPEED;
+			_character->setSpeed(0);
+			_character->setCharacterX(_character->getCharacterX() + SPEED);
+			//_player.x += SPEED;
 		}
 		else
 		{
-			_player.speed = SPEED;
+			_character->setSpeed(SPEED);
 		}
 	}
-
-
-
-
-
 
 	//카메라 위로 이동
 
 	if (!_camFollowY)
 	{
 		_camY += SPEED;
-		_player.jumpPower = 0;
-		_player.y += SPEED;
+		_character->setJumpPower(0);
+		_character->setCharacterY(_character->getCharacterY() + SPEED);
 
 		if (_camY > -1500 + ((_mapCountY - 1) * WINSIZEY)) _camFollowY = true;
 	}
@@ -254,7 +238,7 @@ void mapCamera::CameraMove(RECT& camera)
 		{
 			if (2850 - _mapCountY * WINSIZEY >= WINSIZEY - _camY)
 			{
-				_camY += _player.jumpPower;
+				_camY += _character->getJumpPower();
 				_character->setCharacterY(camera.bottom - 50);
 			}
 		}
@@ -264,10 +248,6 @@ void mapCamera::CameraMove(RECT& camera)
 		_mapCountY++;
 		_camFollowY = false;
 	}
-
-
-
-
 
 	// 2. 좌표값을 이용하는 방법
 	// 캐릭터의 중심 x,y좌표값을 일정 좌표값과 비교해서

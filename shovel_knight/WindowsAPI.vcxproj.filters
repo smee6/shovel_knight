@@ -61,6 +61,15 @@
     <Filter Include="playGround\character">
       <UniqueIdentifier>{f0e212a9-635e-43d5-afc0-9b14c73b758d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="playGround\enemy">
+      <UniqueIdentifier>{1cd4a3f9-3caf-4fea-86bf-268935a3b1bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="playGround\object">
+      <UniqueIdentifier>{0b3bb541-9556-42dc-83bf-19f9819dff29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="playGround\mapCamera">
+      <UniqueIdentifier>{c7d1ca97-6cfd-4078-9e28-0fc913ca4f3e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -150,6 +159,36 @@
     <ClInclude Include="character.h">
       <Filter>playGround\character</Filter>
     </ClInclude>
+    <ClInclude Include="beeto.h">
+      <Filter>playGround\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="dragon.h">
+      <Filter>playGround\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy.h">
+      <Filter>playGround\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="enemyManager.h">
+      <Filter>playGround\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="steed.h">
+      <Filter>playGround\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="wizard.h">
+      <Filter>playGround\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="uiManager.h">
+      <Filter>playGround\character</Filter>
+    </ClInclude>
+    <ClInclude Include="openingScene.h">
+      <Filter>playGround\loadingScene</Filter>
+    </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>playGround\object</Filter>
+    </ClInclude>
+    <ClInclude Include="mapCamera.h">
+      <Filter>playGround\mapCamera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WindowsAPI.cpp">
@@ -226,6 +265,36 @@
     </ClCompile>
     <ClCompile Include="character.cpp">
       <Filter>playGround\character</Filter>
+    </ClCompile>
+    <ClCompile Include="beeto.cpp">
+      <Filter>playGround\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="dragon.cpp">
+      <Filter>playGround\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy.cpp">
+      <Filter>playGround\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="enemyManager.cpp">
+      <Filter>playGround\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="steed.cpp">
+      <Filter>playGround\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="wizard.cpp">
+      <Filter>playGround\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="uiManager.cpp">
+      <Filter>playGround\character</Filter>
+    </ClCompile>
+    <ClCompile Include="openingScene.cpp">
+      <Filter>playGround\loadingScene</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>playGround\object</Filter>
+    </ClCompile>
+    <ClCompile Include="mapCamera.cpp">
+      <Filter>playGround\mapCamera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -18,9 +18,22 @@ HRESULT inGameScene::init()
 
 	_character = new character;
 	_ui = new uiManager;
+	_mapCamera = new mapCamera;
+	_object = new object;
 
 	_character->init();
 	_ui->init();
+	_mapCamera->init();
+	_object->init();
+
+	_character->setMapCameraMemoryAddressLink(_mapCamera);
+	_character->setObjectMemoryAddressLink(_object);
+
+	_mapCamera->setCharacterAddressLink(_character);
+	_mapCamera->setObjectMemoryAddressLink(_object);
+
+	_object->setcharacterMemoryAddressLink(_character);
+	_object->setMapCameraMemoryAddressLink(_mapCamera);
 
 	return S_OK;
 }
