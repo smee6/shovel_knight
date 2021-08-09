@@ -4,8 +4,6 @@
 #define SPEED 5.0f									// 이동 속도
 #define GRAVITY 0.8f								// 중력 값
 #define JUMPPOWER 18.0f								// 점프 파워 값
-#define RCMAX 4										// 테스트용 렉트
-#define HANGRCMAX 2									// 테스트용 사다리 렉트
 
 enum state
 {
@@ -20,6 +18,9 @@ enum state
 	HANG				// 사다리 타기
 };
 
+class object;
+class mapCamera;
+
 class character : public gameNode
 {
 private:
@@ -27,6 +28,9 @@ private:
 	RECT _imgRect;									// 캐릭터의 이미지 렉트
 	RECT _collisionRect;							// 캐릭터의 충돌 렉트(모든 충돌은 요놈으로)
 	state _state;									// 캐릭터의 상태 값
+
+	mapCamera* _mapCamera;							// 맵 카메라 클래스
+	object* _object;								// 오브젝트 클래스
 
 	float _x, _y;									// 캐릭터의 중점 X, Y 값
 	float _speed;									// 캐릭터 이동속도 값
@@ -42,13 +46,8 @@ private:
 	int _count;										// 프레임 이미지 인터벌
 	int _hangCount;									// 사다리 카운트로 이 카운트에 따라 hang 이미지 갱신
 
-	// ----------------------------------------------------------------------
-	RECT _rc[RCMAX];								// 테스트용 렉트
-	RECT _attackRc;									// 피격 테스트용 렉트
-	RECT _hangRc[HANGRCMAX];						// 사다리 테스트용 렉트
 	int _rcNum;										// 현재 어떤 장애물에 충돌했는지 기록
-	int _hangRcNum;
-	image* _backGroundCollision;
+	int _hangRcNum;									// 현재 어떤 사다리에 충돌했는지 기록
 
 public:
 	character();
@@ -71,6 +70,9 @@ public:
 
 	float getCharacterX() { return _x; }										// 캐릭터 X값 반환
 	float getCharacterY() { return _y; }										// 캐릭터 Y값 반환
+	float getSpeed() { return _speed; }											// 캐릭터 스피드값 반환
+	float getJumpPower() { return _jumpPower; }									// 캐릭터 점프 값 반환
+	float getGravity() { return _gravity; }										// 캐릭터 중력 값 반환
 	bool getDirection() { return _direction; }									// 캐릭터 방향 반환
 	int getCurrentFrame() { return _currentFrame; }								// 캐릭터 현재 프레임 반환
 	state getState() { return _state; }											// 캐릭터 상태 반환
@@ -83,7 +85,8 @@ public:
 	void setCharacterDirection(bool direction) { _direction = direction; }		// 캐릭터 방향 설정
 	void setState(state state) { _state = state; }								// 캐릭터의 상태 설정
 
-	//void setMapMemoryAddressLink(mapManager* mapM) { _mapM = mapM; }			// 맵매니저 클라스 링크 
+	void setMapCameraMemoryAddressLink(mapCamera* mapCamera) { _mapCamera = mapCamera; } // 맵 카매라 클라스 링크 
+	void setObjectMemoryAddressLink(object* object) { _object = object; }		// 오브젝트 클라스 링크 
 	//void setEnemyMemoryAddressLink(enemyManager* eM) { _eM = eM; }			// 이너미매니저 클래스 링크
 
 };
