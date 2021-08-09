@@ -5,6 +5,8 @@
 #include "character.h"
 #include "object.h"
 #include "mapCamera.h"
+#include "openingScene.h"
+
 
 class playGround : public gameNode
 {

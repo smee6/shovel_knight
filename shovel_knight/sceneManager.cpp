@@ -48,6 +48,7 @@ void sceneManager::update()
 void sceneManager::render()
 {
 	if (_currentScene) _currentScene->render();
+
 }
 
 gameNode* sceneManager::addScene(string sceneName, gameNode * scene)
@@ -84,4 +85,9 @@ HRESULT sceneManager::changeScene(string sceneName)
 	}
 
 	return E_FAIL;
+}
+
+void sceneManager::nowHP(int x)
+{
+	hp = x;
 }
