@@ -20,11 +20,13 @@ HRESULT enemy::init(const char* imageName, POINT position, ENEMYDIRECTION enemyD
 	_enemyDirection = enemyDirection;
 	_currentFrameX = _currentFrameY = 0;
 	_imageCount  = 0;
-	//_imageName = IMAGEMANAGER->findImage("beeto and move");
+	
 	_x = position.x;
 	_y = position.y;
 	_enemyName = imageName;
 	_cast = _enemyName;
+
+	_imageName = IMAGEMANAGER->findImage("beeto and move");
 
 	_randCount = RND->getFromIntTo(0, 100);
 	_moveCount = 0;
