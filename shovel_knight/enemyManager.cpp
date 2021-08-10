@@ -43,28 +43,17 @@ void enemyManager::render()
 void enemyManager::enemySetting()
 {
     
+	enemy* enemyBeeto;
 	
-	for(int i = 0; i < 1; i++)
-	{
-        enemy* enemyBeeto;
-		enemyBeeto = new beeto;
-		//enemyBeeto->init("beeto", enemyPosition(i), E_RIGHT);
-		_vEnemy.push_back(enemyBeeto);
-	}
-	
+    //for (int i = 0; i < 50; i++)
+    //{
+        enemyBeeto = new beeto;
+        enemyBeeto->init("beeto", PointMake(600, 500 ), E_LEFT);
+        _vEnemy.push_back(enemyBeeto);
+    //}
 }
 
-POINT enemyManager::enemyPosition(int i)
-{
-	POINT position;
-	
-	if (i == 0)
-	{
-		 position = PointMake(100, 100);
-	}
 
-	return position;
-}
 
 void enemyManager::enemyBulletFire()
 {
@@ -81,8 +70,8 @@ void enemyManager::collision()
 
 void enemyManager::enemyImageStorage()
 {
-    
     //beeto
+    IMAGEMANAGER->addFrameImage("beeto and idle", "image/shovel knight_beeto and move.bmp", 280, 78, 4, 2, true, RGB(255, 0, 255));
     IMAGEMANAGER->addFrameImage("beeto and move", "image/shovel knight_beeto and move.bmp", 280, 78, 4, 2, true, RGB(255, 0, 255));
     IMAGEMANAGER->addFrameImage("beeto and die", "image/shovel knight_beeto and die.bmp", 123, 81, 2, 2, true, RGB(255, 0, 255));
     //steed

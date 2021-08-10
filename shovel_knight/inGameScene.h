@@ -4,6 +4,7 @@
 #include "uiManager.h"
 #include "object.h"
 #include "mapCamera.h"
+#include "enemyManager.h"
 
 class inGameScene : public gameNode
 {
@@ -12,7 +13,7 @@ class inGameScene : public gameNode
 	image* _backGround;
 	mapCamera* _mapCamera;
 	object* _object;
-
+	enemyManager* _enemyManager;
 
 public:
 	inGameScene();

@@ -3,6 +3,7 @@
 #include "beeto.h"
 #include "wizard.h"
 #include "steed.h"
+#include "dragon.h"
 #include <vector>
 #include "bullets.h"
 
@@ -16,10 +17,8 @@ private:
 	vEnemy		_vEnemy;
 	viEnemy		_viEnemy;
 
-	
 	bullet* _bullet;
 
-	
 public:
 	enemyManager();
 	~enemyManager();
@@ -30,7 +29,6 @@ public:
 	void render();
 
 	void enemySetting();	//적을 만드는 함수
-	POINT enemyPosition(int i);	//적 위치 함수
 
 	void enemyBulletFire();
 

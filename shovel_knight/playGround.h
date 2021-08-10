@@ -6,7 +6,7 @@
 #include "object.h"
 #include "mapCamera.h"
 #include "openingScene.h"
-
+#include "enemyManager.h"
 
 class playGround : public gameNode
 {
@@ -19,6 +19,7 @@ private:
 
 	mapCamera* _mapCamera;
 
+	enemyManager* _enemyManager;
 
 public:
 	playGround();

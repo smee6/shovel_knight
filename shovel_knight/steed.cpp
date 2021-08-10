@@ -12,3 +12,7 @@ steed::~steed()
 void steed::move()
 {
 }
+
+void steed::die()
+{
+}

@@ -12,3 +12,7 @@ wizard::~wizard()
 void wizard::attack()
 {
 }
+
+void wizard::die()
+{
+}

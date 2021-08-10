@@ -18,11 +18,14 @@ HRESULT inGameScene::init()
 	_ui = new uiManager;
 	_mapCamera = new mapCamera;
 	_object = new object;
+	_enemyManager = new enemyManager;
 
 	_character->init();
 	_ui->init();
 	_mapCamera->init();
 	_object->init();
+	_enemyManager->init();
+	_enemyManager->enemySetting();
 
 	_character->setMapCameraMemoryAddressLink(_mapCamera);
 	_character->setObjectMemoryAddressLink(_object);
@@ -46,7 +49,9 @@ void inGameScene::release()
 void inGameScene::update()
 {
 	_mapCamera->update();
+	_enemyManager->update();
 	_character->update();
+
 	
 	SCENEMANAGER->nowHP(_character->getCurrentHp());
 	//캐릭터의 현재 에이치피를 씬매니져로 전송
@@ -58,6 +63,7 @@ void inGameScene::render()
 
 	//_backGround->render(getMemDC(), 0, 0);
 	_mapCamera->render();
+	_enemyManager->render();
 	_character->render();
 
 	_ui->render();
