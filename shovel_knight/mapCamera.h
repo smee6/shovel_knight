@@ -14,6 +14,7 @@ private:
 
 	// background image
 	image* _background;
+	image* _background_magenta;
 
 	float _xPower, _yPower;
 
@@ -48,6 +49,7 @@ public:
 	void Collision();
 
 
+	image* getBackGround() { return _background; }
 
 	void SetCamera(RECT& camera, int left, int top, int width, int height);
 	void CameraMove(RECT& camera);

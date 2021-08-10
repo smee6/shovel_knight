@@ -18,12 +18,13 @@ HRESULT mapCamera::init()
 	gameNode::init();
 
 	// 배경
-	_background = IMAGEMANAGER->addImage("배경", "image/resources/map_black.bmp", 23000, 4500, true, RGB(255, 0, 255));
+	_background = IMAGEMANAGER->addImage("배경", "image/map_black.bmp", 23000, 4500, true, RGB(255, 0, 255));
+	_background_magenta = IMAGEMANAGER->addImage("배경마젠타", "image/map_magenta.bmp", 23000, 4500, false, RGB(255, 0, 255));
 
 	// 카메라
 	//_camera.left = _character->getCharacterX() - (WIDTH / 2);
 	//_camera.right = _character->getCharacterX() + (WIDTH / 2);
-	// 카메라 중간
+	// 카메라 중간s
 
 	_camera.top = 200;
 	_camera.bottom = WINSIZEY - 200;
@@ -68,13 +69,15 @@ void mapCamera::update()
 //여기다 그려줘라!!!
 void mapCamera::render()
 {
+
 	_background->render(getMemDC(), _camX, _camY);
+
 	//_background->render(getMemDC(), 0, 0, _bx, _by, WINSIZEX WINSIZEY);
 
 	if (KEYMANAGER->isToggleKey(VK_TAB))
 	{
+		_background_magenta->render(getMemDC(), _camX, _camY);
 		Rectangle(getMemDC(), _camera);
-
 	}
 
 	char str[128];

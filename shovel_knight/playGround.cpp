@@ -16,13 +16,7 @@ HRESULT playGround::init()
 {
 	gameNode::init(true);
 
-	IMAGEMANAGER->addImage("배경", "image/shovel_knight_map.bmp", 1280, 720, true, RGB(255, 0, 255));
-
-	_backGround = IMAGEMANAGER->findImage("배경");
-
 	SCENEMANAGER->addScene("인게임씬", new inGameScene);
-
-	
 
 	SCENEMANAGER->addScene("title", new openingScene);
 
@@ -56,11 +50,6 @@ void playGround::render()
 	//==============위에는 제발 건드리지 마라 ============
 	
 	SCENEMANAGER->render();
-
-	// 캐릭터랑 백그라운드는 나중에 인게임에서 따로 
-	//_backGround->render(getMemDC(), 0, 0);
-
-	//_character->render();
 
 	TIMEMANAGER->render(getMemDC());
 

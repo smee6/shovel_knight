@@ -14,8 +14,6 @@ inGameScene::~inGameScene()
 HRESULT inGameScene::init()
 {
 
-	_backGround = IMAGEMANAGER->findImage("배경");
-
 	_character = new character;
 	_ui = new uiManager;
 	_mapCamera = new mapCamera;
@@ -35,6 +33,9 @@ HRESULT inGameScene::init()
 	_object->setcharacterMemoryAddressLink(_character);
 	_object->setMapCameraMemoryAddressLink(_mapCamera);
 
+	//_backGround = _mapCamera->getBackGround();
+
+
 	return S_OK;
 }
 
@@ -44,6 +45,7 @@ void inGameScene::release()
 
 void inGameScene::update()
 {
+	_mapCamera->update();
 	_character->update();
 	
 	SCENEMANAGER->nowHP(_character->getCurrentHp());
@@ -53,10 +55,9 @@ void inGameScene::update()
 
 void inGameScene::render()
 {
-	IMAGEMANAGER->findImage("배경")->render(getMemDC());
 
-	_backGround->render(getMemDC(), 0, 0);
-
+	//_backGround->render(getMemDC(), 0, 0);
+	_mapCamera->render();
 	_character->render();
 
 	_ui->render();
