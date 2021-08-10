@@ -190,8 +190,18 @@ void object::sandBlockSetting()
 {
 	//발판처럼 느낌 비슷하게 가면 될거같다~
 	
+	for (int i = 0; i < SANDBLOCKMAX; i++) //
+	{
+		_sandBlock[i].type = 1;
+		_sandBlock[i].index = 10;
+		_sandBlock[i].rc = RectMakeCenter(_sandBlock[i].x, _sandBlock[i].y, 100, 100);
+
+	}
+
+	// 큰 흙더미의 각 좌표
+
 	
-	
+	// 작은 흙더미의 각 좌표
 
 }
 
@@ -205,28 +215,77 @@ void object::jewelSetting()
 
 void object::bubbleSetting()
 {
+
 }
 
 void object::fireBallSetting()
 {
+
 }
 
 void object::ladderSetting()
 {
-
-	// 사다리의 각 좌표
-
-	_ladder[0].x = 100;
-	_ladder[0].y = 100;
-
 	for (int i = 0; i < LADDERMAX; i++) //11개
 	{
 
 		_ladder[i].type = 1;
 		_ladder[i].index = 21;
-		_ladder[i].rc = RectMakeCenter(_ladder[i].x - _mapCamera->getCamX(), _ladder[i].y - _mapCamera->getCamY(), 50, 250);
 
+		// 기준점이 50,0 이 된거다
+		_mapCamera->MakeObject(_ladder[i].rc, _ladder[i].x, _ladder[i].y, 50, _ladder[i].height);
+
+		
+		//_ladder[i].x + _mapCamera->getCamX(), _ladder[i].y + _mapCamera->getCamY(), 50, 250
+		// void MakeObject(RECT& rect, int left, int right, int top, int bottom); 복붙해온거
+		//                (생성할 렉트,    중점,     중점,     가로,    세로   )
 	}
+
+
+	// 0,-2200을 항상 더해준다고 생각하고 좌표를 설정하라
+	// 사다리의 각 좌표
+
+	//camy - 2200 -> 위치 도달
+	_ladder[0].x = 8450;
+	_ladder[0].y = 2100;
+	_ladder[0].height = 400;
+
+
+	//camy - 1495 -> 위치 도달
+	_ladder[1].x = 7625;
+	_ladder[1].y = 1400;
+	_ladder[1].height = 700;
+	
+	//_ladder[2].x = 100;
+	//_ladder[2].y = 100;
+	//
+	//_ladder[3].x = 100;
+	//_ladder[3].y = 100;
+	//
+	//_ladder[4].x = 100;
+	//_ladder[4].y = 100;
+	//
+	//_ladder[5].x = 100;
+	//_ladder[5].y = 100;
+	//
+	//_ladder[6].x = 100;
+	//_ladder[6].y = 100;
+	//
+	//_ladder[7].x = 100;
+	//_ladder[7].y = 100;
+	//
+	//_ladder[8].x = 100;
+	//_ladder[8].y = 100;
+	//
+	//_ladder[9].x = 100;
+	//_ladder[9].y = 100;
+	//
+	//_ladder[10].x = 100;
+	//_ladder[10].y = 100;
+	//
+	//_ladder[11].x = 100;
+	//_ladder[11].y = 100;
+
+	
 
 
 	
@@ -234,11 +293,34 @@ void object::ladderSetting()
 
 void object::render()
 {
+	char str[128];
+
+	sprintf_s(str, "ladder.x : %d", _ladder[0].rc.left);
+	TextOut(getMemDC(), 10, 120, str, strlen(str));
+
+	sprintf_s(str, "ladder.y : %d", _ladder[0].rc.top);
+	TextOut(getMemDC(), 10, 140, str, strlen(str));
+
+
+
 	if (KEYMANAGER->isToggleKey(VK_TAB))
 	{
-		for (int i = 0; i < LADDERMAX; i++) //11개
+
+
+		for (int i = 0; i < LADDERMAX; i++) // 사다리 11개
 		{
 			Rectangle(getMemDC(), _ladder[i].rc);
+			
+		}
+
+		for (int i = 0; i < PLATFORMMAX; i++) // 움직이는 발판 5개
+		{
+			Rectangle(getMemDC(), _platform[i].rc);
+		}
+
+		for (int i = 0; i < SANDBLOCKMAX; i++) // 흙더미
+		{
+			Rectangle(getMemDC(), _sandBlock[i].rc);
 		}
 	}	
 }
