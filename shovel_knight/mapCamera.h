@@ -1,9 +1,9 @@
 #pragma once
 #include "gameNode.h"
 
-
-#define WIDTH 80
-#define HEIGHT 100
+#define SPEED 5.0f
+#define WIDTH 55
+#define HEIGHT 96
 
 class character;
 class object;
@@ -23,10 +23,10 @@ private:
 
 	// Camera
 	RECT _camera;
-	int _camX, _camY;
+	int _camX, _camY;				// 맵 전체의 left, top 값
 
-	int _mapCountX;
-	int _mapCountY;
+	int _mapCountX;					// 맵을 1280으로 나눴을 때의 x값
+	int _mapCountY;					// 맵을 720으로 나눴을 때의 y값
 
 	bool _isCamMove;
 	bool _isCamMove2;
@@ -46,10 +46,8 @@ public:
 	virtual void update();			//연산하는 함수
 	virtual void render();			//그리기 함수
 
-	void Collision();
-
-
 	image* getBackGround() { return _background; }
+	image* getBackGroundMagenta() { return _background_magenta; }
 
 	void SetCamera(RECT& camera, int left, int top, int width, int height);
 	void CameraMove(RECT& camera);

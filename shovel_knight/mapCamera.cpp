@@ -30,7 +30,7 @@ HRESULT mapCamera::init()
 	_camera.bottom = WINSIZEY - 200;
 
 	_camX = 0;
-	_camY = -2000;
+	_camY = -2200;
 
 	_mapCountX = 1;
 	_mapCountY = 0;
@@ -57,22 +57,15 @@ void mapCamera::update()
 
 	_camera.left = _character->getCharacterX() - (WIDTH / 2);
 	_camera.right = _character->getCharacterX() + (WIDTH / 2);
+
 	CameraMove(_camera);
-
-
-
-	Collision();
-
 
 }
 
 //여기다 그려줘라!!!
 void mapCamera::render()
 {
-
 	_background->render(getMemDC(), _camX, _camY);
-
-	//_background->render(getMemDC(), 0, 0, _bx, _by, WINSIZEX WINSIZEY);
 
 	if (KEYMANAGER->isToggleKey(VK_TAB))
 	{
@@ -89,11 +82,6 @@ void mapCamera::render()
 	TextOut(getMemDC(), 10, 90, str, strlen(str));
 	sprintf_s(str, "camY : %d", _camY);
 	TextOut(getMemDC(), 100, 90, str, strlen(str));
-}
-
-void mapCamera::Collision()
-{
-
 }
 
 void mapCamera::SetCamera(RECT& camera, int left, int top, int width, int height)
@@ -155,7 +143,7 @@ void mapCamera::CameraMove(RECT& camera)
 
 	if (_camFollowX)
 	{
-		if (_character->getCharacterX() <= camera.left + 40 && KEYMANAGER->isStayKeyDown(VK_LEFT))
+		if (_character->getCharacterX() <= camera.left + 40 && KEYMANAGER->isStayKeyDown('A'))
 		{
 			if (_camX < 0)
 			{
@@ -165,7 +153,7 @@ void mapCamera::CameraMove(RECT& camera)
 			}
 		}
 		// 카메라 오른쪽으로 이동 (배경은 왼쪽으로) _player.x >= camera.right - 40 && 
-		else if (_character->getCharacterX() >= camera.right - 40 && KEYMANAGER->isStayKeyDown(VK_RIGHT))
+		else if (_character->getCharacterX() >= camera.right - 40 && KEYMANAGER->isStayKeyDown('D'))
 		{
 			if (_camX + _background->getWidth() >= WINSIZEX)
 			{
