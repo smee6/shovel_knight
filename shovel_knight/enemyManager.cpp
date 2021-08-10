@@ -47,9 +47,9 @@ void enemyManager::enemySetting()
 	
     //for (int i = 0; i < 50; i++)
     //{
-        enemyBeeto = new beeto;
-        enemyBeeto->init("beeto", PointMake(600, 500 ), E_LEFT);
-        _vEnemy.push_back(enemyBeeto);
+       // enemyBeeto = new beeto;
+       // enemyBeeto->init("beeto", PointMake(600, 500 ), E_LEFT);
+       // _vEnemy.push_back(enemyBeeto);
     //}
 }
 
