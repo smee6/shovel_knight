@@ -204,6 +204,10 @@ void object::fireBallSetting()
 {
 }
 
+void object::ladderSetting()
+{
+}
+
 void object::render()
 {
 }

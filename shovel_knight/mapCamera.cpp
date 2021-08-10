@@ -106,12 +106,14 @@ void mapCamera::CameraMove(RECT& camera)
 	// camera 상자 안에서만 플레이어가 직접 이동(혹은 카메라 이동이 불가능할 경우)
 	if (_background->getHeight() <= WINSIZEY - _camY || _camY == 0 || _character->getCharacterRect().bottom < camera.bottom || _character->getCharacterRect().top > camera.top)
 	{
-		_character->setCharacterY(_character->getCharacterY() - _character->getJumpPower());
-		_character->setJumpPower(_character->getJumpPower() - _character->getGravity());
+		//_character->setCharacterY(_character->getCharacterY() - _character->getJumpPower());
+		//_character->setJumpPower(_character->getJumpPower() - _character->getGravity());
 	}
 
 	// 배경화면의 왼쪽 끝이 윈도우 창의 왼쪽이랑 같아지면 이동 정지
 	// 배경화면의 오른쪽 끝이 윈도우 창의 오른쪽이랑 같아지면 이동 정지
+	
+	//x값 이동
 	if (_camX >= 0 || _camX >= -5050)
 	{
 		_character->setSpeed(SPEED);
@@ -122,6 +124,7 @@ void mapCamera::CameraMove(RECT& camera)
 		_camFollowX = false;
 	}
 
+	//y값 이동
 	if (_camY <= 0 || _camY < -2139)
 	{
 		_character->setSpeed(SPEED);

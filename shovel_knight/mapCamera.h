@@ -48,6 +48,7 @@ public:
 
 	image* getBackGround() { return _background; }
 	image* getBackGroundMagenta() { return _background_magenta; }
+	float getSpeed() { return SPEED; }
 
 	void SetCamera(RECT& camera, int left, int top, int width, int height);
 	void CameraMove(RECT& camera);

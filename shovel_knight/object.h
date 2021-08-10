@@ -7,6 +7,7 @@
 #define JUMPPOWER 18.0f								// 점프 파워 값
 #define PLATFORMMAX 5
 #define SANDBLOCKMAX 128
+#define LADDERMAX 5
 
 class character;
 class mapCamera;
@@ -34,7 +35,15 @@ struct tagSandBlock
 	int type;
 	int index;
 	int currentFrame;								// 프레임 이미지 인덱스
+};
 
+struct tagLadder
+{
+	RECT rc;										//	오브젝트의 렉트
+	float x, y;										//	오브젝트의 중점 X, Y 값
+
+	int type;
+	int index;
 };
 
 class object : public gameNode
@@ -48,16 +57,19 @@ private:
 
 	tagSandBlock _sandBlock[SANDBLOCKMAX];
 
+	tagLadder _tagLadder[LADDERMAX];
+
 	character* _character;
 
 	mapCamera* _mapCamera;
+
 
 
 	//1번타입 - 캐릭터와 충돌했을때 진로를 막는것들 - 발판, 흙더미
 	//2번타입 - 캐릭터와 충돌했을때 사라지는것들 - 체력회복 오브젝트, 보석류
 	//3번타입 - 캐릭터와 충돌했을때 데미지를 받는것들 - 물방울, 파이어볼
 
-	//1번타입의 인덱스 값 설정 - 1.좌우 발판, 2.상하 발판, 10.큰 흙더미, 11.작은 흙더미
+	//1번타입의 인덱스 값 설정 - 1.좌우 발판, 2.상하 발판, 10.큰 흙더미, 11.작은 흙더미, 21. 사다리
 
 	//2번타입의 인덱스 값 설정 - 1.사과, 2.치킨, 10.큰다이아, 11.동전, 12. 사파이어
 
@@ -79,8 +91,13 @@ public:
 	void jewelSetting();
 	void bubbleSetting();
 	void fireBallSetting();
+	void ladderSetting();
 
+	int getPlatformrMax() { return PLATFORMMAX; }
+	int getLadderMax() { return LADDERMAX; }
 
+	tagPlatform getPlatform() { return _platform[PLATFORMMAX]; }
+	tagLadder getLadder() {	return _tagLadder[LADDERMAX];}
 
 
 	virtual HRESULT init();
