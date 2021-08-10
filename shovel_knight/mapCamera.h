@@ -48,6 +48,10 @@ public:
 
 	image* getBackGround() { return _background; }
 	image* getBackGroundMagenta() { return _background_magenta; }
+
+	int getCamX() { return _camX; }					//camX - 배경이 시작되는 left 좌표
+	int getCamY() { return _camY; }					//camY - 배경이 시작되는 top 좌표
+
 	float getSpeed() { return SPEED; }
 
 	void SetCamera(RECT& camera, int left, int top, int width, int height);

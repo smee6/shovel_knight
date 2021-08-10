@@ -1,7 +1,6 @@
 #pragma once
 #include "gameNode.h"
 
-#define SPEED 5.0f									// 이동 속도
 #define GRAVITY 0.8f								// 중력 값
 #define JUMPPOWER 18.0f								// 점프 파워 값
 
