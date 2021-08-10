@@ -24,12 +24,13 @@ HRESULT object::init()
 
 
 
-	platformSetting();
-	sandBlockSetting();
-	potionSetting();
-	jewelSetting();
-	bubbleSetting();
-	fireBallSetting();
+	//platformSetting();
+	//sandBlockSetting();
+	//potionSetting();
+	//jewelSetting();
+	//bubbleSetting();
+	//fireBallSetting();
+	//ladderSetting();
 
 	return S_OK;
 }
@@ -40,10 +41,13 @@ void object::release()
 
 void object::update()
 {
-
+	platformSetting();
+	ladderSetting();
 	gravity();
 	collision();
+
 	imgFrameSetting();
+
 	objectMove();
 }
 
@@ -136,27 +140,27 @@ void object::platformSetting()
 	//발판의 x, y값 설정 - 좌표값
 
 	//좌우
-	_platform[0].x = 100;
-	_platform[0].y = 100;
-	_platform[0].min = 50;     //수치 수정은 추후에 체크하면서
-	_platform[0].max = 150;
-
-	_platform[1].x = 200;
-	_platform[1].y = 200;
-	_platform[1].min = 50;
-	_platform[1].max = 150;
-
-	_platform[2].x = 300;
-	_platform[2].y = 300;
-	_platform[2].min = 50;
-	_platform[2].max = 150;
-
-	//상하
-	_platform[3].x = 100;
-	_platform[3].y = 100;
-
-	_platform[4].x = 100;
-	_platform[4].y = 100;
+	//_platform[0].x = 100;
+	//_platform[0].y = 100;
+	//_platform[0].min = 50;     //수치 수정은 추후에 체크하면서
+	//_platform[0].max = 150;
+	//
+	//_platform[1].x = 200;
+	//_platform[1].y = 200;
+	//_platform[1].min = 50;
+	//_platform[1].max = 150;
+	//
+	//_platform[2].x = 300;
+	//_platform[2].y = 300;
+	//_platform[2].min = 50;
+	//_platform[2].max = 150;
+	//
+	////상하
+	//_platform[3].x = 100;
+	//_platform[3].y = 100;
+	//
+	//_platform[4].x = 100;
+	//_platform[4].y = 100;
 
 	//움직이는 발판 좌우 3개 - 0, 1, 2
 	for (int i = 0; i < 3; i++)
@@ -210,20 +214,31 @@ void object::fireBallSetting()
 void object::ladderSetting()
 {
 
+	// 사다리의 각 좌표
+
+	_ladder[0].x = 100;
+	_ladder[0].y = 100;
+
 	for (int i = 0; i < LADDERMAX; i++) //11개
 	{
 
 		_ladder[i].type = 1;
-		_ladder[i].index = 10;
-		_ladder[i].rc = RectMakeCenter(_ladder[i].x, _ladder[i].y, 100, 50);
+		_ladder[i].index = 21;
+		_ladder[i].rc = RectMakeCenter(_ladder[i].x - _mapCamera->getCamX(), _ladder[i].y - _mapCamera->getCamY(), 50, 250);
 
 	}
 
 
-	// 사다리의 각 좌표
-
+	
 }
 
 void object::render()
 {
+	if (KEYMANAGER->isToggleKey(VK_TAB))
+	{
+		for (int i = 0; i < LADDERMAX; i++) //11개
+		{
+			Rectangle(getMemDC(), _ladder[i].rc);
+		}
+	}	
 }
