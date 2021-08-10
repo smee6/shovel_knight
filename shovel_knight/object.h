@@ -12,7 +12,7 @@
 class character;
 class mapCamera;
 
-struct tagPlatform
+struct tagPlatform //움직이는 발판
 {
 	image* objectImage;								//	오브젝트의 이미지
 	RECT rc;										//	오브젝트의 렉트
@@ -26,7 +26,7 @@ struct tagPlatform
 	bool isDirection;								//	오브젝트의 방향전환을 위한 불값					
 };
 
-struct tagSandBlock
+struct tagSandBlock //흙더미
 {
 	image* objectImage;								//	오브젝트의 이미지
 	RECT rc;										//	오브젝트의 렉트
@@ -37,7 +37,7 @@ struct tagSandBlock
 	int currentFrame;								// 프레임 이미지 인덱스
 };
 
-struct tagLadder
+struct tagLadder //사다리
 {
 	RECT rc;										//	오브젝트의 렉트
 	float x, y;										//	오브젝트의 중점 X, Y 값
@@ -57,7 +57,7 @@ private:
 
 	tagSandBlock _sandBlock[SANDBLOCKMAX];
 
-	tagLadder _tagLadder[LADDERMAX];
+	tagLadder _ladder[LADDERMAX];
 
 	character* _character;
 
@@ -97,7 +97,8 @@ public:
 	int getLadderMax() { return LADDERMAX; }
 
 	tagPlatform getPlatform(int arrNum) { return _platform[arrNum]; }
-	tagLadder getLadder(int arrNum) {	return _tagLadder[arrNum];}
+	tagLadder getLadder(int arrNum) {	return _ladder[arrNum];}
+
 
 
 	virtual HRESULT init();
