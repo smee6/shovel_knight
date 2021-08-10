@@ -96,8 +96,8 @@ public:
 	int getPlatformrMax() { return PLATFORMMAX; }
 	int getLadderMax() { return LADDERMAX; }
 
-	tagPlatform getPlatform() { return _platform[PLATFORMMAX]; }
-	tagLadder getLadder() {	return _tagLadder[LADDERMAX];}
+	tagPlatform getPlatform(int arrNum) { return _platform[arrNum]; }
+	tagLadder getLadder(int arrNum) {	return _tagLadder[arrNum];}
 
 
 	virtual HRESULT init();
