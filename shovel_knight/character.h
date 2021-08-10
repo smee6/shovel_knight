@@ -2,7 +2,7 @@
 #include "gameNode.h"
 
 #define GRAVITY 0.8f								// 중력 값
-#define JUMPPOWER 18.0f								// 점프 파워 값
+#define JUMPPOWER 25.0f								// 점프 파워 값
 
 enum state
 {
