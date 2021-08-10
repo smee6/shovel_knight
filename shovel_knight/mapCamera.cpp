@@ -71,6 +71,7 @@ void mapCamera::render()
 	{
 		_background_magenta->render(getMemDC(), _camX, _camY);
 		Rectangle(getMemDC(), _camera);
+
 	}
 
 	char str[128];
@@ -116,7 +117,6 @@ void mapCamera::CameraMove(RECT& camera)
 	//x값 이동
 	if (_camX >= 0 || _camX >= -5050)
 	{
-		_character->setSpeed(SPEED);
 	}
 	else
 	{
@@ -127,7 +127,6 @@ void mapCamera::CameraMove(RECT& camera)
 	//y값 이동
 	if (_camY <= 0 || _camY < -2139)
 	{
-		_character->setSpeed(SPEED);
 	}
 	else
 	{

@@ -51,7 +51,7 @@ void inGameScene::update()
 	_mapCamera->update();
 	_enemyManager->update();
 	_character->update();
-
+	_object->update();
 	
 	SCENEMANAGER->nowHP(_character->getCurrentHp());
 	//캐릭터의 현재 에이치피를 씬매니져로 전송
@@ -65,6 +65,7 @@ void inGameScene::render()
 	_mapCamera->render();
 	_enemyManager->render();
 	_character->render();
+	_object->render();
 
 	_ui->render();
 	

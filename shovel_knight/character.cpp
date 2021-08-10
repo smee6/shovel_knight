@@ -361,16 +361,46 @@ void character::collision() // 캐릭터 충돌 처리
     // 바닥 픽셀 충돌 처리
     if (_state == JUMP || _state == JUMPATTACK || _state == JUMPBOTTOMATTACK || _state == HURT)
     {
-        int proveY = _y + ((_collisionRect.bottom - _collisionRect.top) / 2) - _mapCamera->getCamY();
-        for (int i = proveY - 10; i < proveY + 10; i++)
+        int proveYBottom = _y + ((_collisionRect.bottom - _collisionRect.top) / 2) - _mapCamera->getCamY();
+        for (int i = proveYBottom; i < proveYBottom + 10; i++)
         {
             if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), _x - _mapCamera->getCamX(), i) == RGB(255, 0, 255))
             {
-                _y = i - (_collisionRect.bottom - _collisionRect.top) / 2 - 5 + _mapCamera->getCamY();
+                _y = i - (_collisionRect.bottom - _collisionRect.top) / 2 + _mapCamera->getCamY();
                 _gravity = _jumpPower = 0;
                 _state = IDLE;
                 imgSetting();
                 _isPixelCollision = true;
+                break;
+            }
+        }
+
+        int proveYTop = _y - ((_collisionRect.bottom - _collisionRect.top) / 2) - _mapCamera->getCamY();
+        for (int i = proveYTop; i > proveYTop - 10; i--)
+        {
+            if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), _x - _mapCamera->getCamX(), i) == RGB(255, 0, 255))
+            {
+                _gravity = GRAVITY;
+                _state = JUMP;
+                imgSetting();
+                _isPixelCollision = false;
+                break;
+            }
+        }
+    }
+
+    // 걸어다닐 때 바닥에 픽셀 충돌 안 되면 바닥으로 떨어진다
+    if (_state == IDLE || _state == RUN)
+    {
+        int proveYBottom = _y + ((_collisionRect.bottom - _collisionRect.top) / 2) - _mapCamera->getCamY();
+        for (int i = proveYBottom; i < proveYBottom + 10; i++)
+        {
+            if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), _x - _mapCamera->getCamX(), i) != RGB(255, 0, 255))
+            {
+                _gravity = GRAVITY;
+                _state = JUMP;
+                imgSetting();
+                _isPixelCollision = false;
                 break;
             }
         }
@@ -379,8 +409,8 @@ void character::collision() // 캐릭터 충돌 처리
     // 벽면 픽셀 충돌 처리
     if (_direction == 0) // 오른쪽 보고 있을 때
     {
-        int proveX = _x + ((_collisionRect.right - _collisionRect.left) / 2) - _mapCamera->getCamX();
-        for (int i = proveX - 10; i < proveX + 10; i++)
+        int proveXRight = _x + ((_collisionRect.right - _collisionRect.left) / 2) - _mapCamera->getCamX();
+        for (int i = proveXRight - 10; i < proveXRight + 10; i++)
         {
             if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), i, _y - _mapCamera->getCamY()) == RGB(255, 0, 255))
             {
@@ -391,8 +421,8 @@ void character::collision() // 캐릭터 충돌 처리
     }
     else // 왼쪽 보고 있을 때
     {
-        int proveX = _x - ((_collisionRect.right - _collisionRect.left) / 2) - _mapCamera->getCamX();
-        for (int i = proveX + 10; i >= proveX - 10; i--)
+        int proveXLeft = _x - ((_collisionRect.right - _collisionRect.left) / 2) - _mapCamera->getCamX();
+        for (int i = proveXLeft + 10; i >= proveXLeft - 10; i--)
         {
             if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), i, _y - _mapCamera->getCamY()) == RGB(255, 0, 255))
             {
