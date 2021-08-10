@@ -186,20 +186,8 @@ void object::sandBlockSetting()
 {
 	//발판처럼 느낌 비슷하게 가면 될거같다~
 	
-	for (int i = 0; i < 11; i++) //11개
-	{
-		
-		_ladder[i].type = 1;
-		_ladder[i].index = 10;
-		_ladder[i].rc = RectMakeCenter(_ladder[i].x, _ladder[i].y, 100, 50);
-		
-	}
-
-
-	// 사다리의 각 좌표
-
-	_platform[0].x = 100;
-	_platform[0].y = 100;
+	
+	
 
 }
 
@@ -221,6 +209,19 @@ void object::fireBallSetting()
 
 void object::ladderSetting()
 {
+
+	for (int i = 0; i < LADDERMAX; i++) //11개
+	{
+
+		_ladder[i].type = 1;
+		_ladder[i].index = 10;
+		_ladder[i].rc = RectMakeCenter(_ladder[i].x, _ladder[i].y, 100, 50);
+
+	}
+
+
+	// 사다리의 각 좌표
+
 }
 
 void object::render()
