@@ -16,6 +16,8 @@ private:
 
 	mapSceneList _mSceneList;
 	bool isUIcall;
+	int _gold = 0;
+	int _mana = 0;
 
 public:
 	sceneManager();
@@ -33,5 +35,14 @@ public:
 
 	int hp = 0;
 	void nowHP(int x);
+
+
+	// SCENEMANAGER-> getGold() 같은 식으로 사용
+	int getGold();
+	void setGold(int x);
+
+	int getMana();
+	void setMana(int x);
+
 };
 
