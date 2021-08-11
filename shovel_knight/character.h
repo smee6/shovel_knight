@@ -4,6 +4,7 @@
 #define GRAVITY 0.8f								// 중력 값
 #define JUMPPOWER 25.0f								// 점프 파워 값
 
+// 상태 정의
 enum state
 {
 	IDLE,				// 아이들
@@ -17,6 +18,7 @@ enum state
 	HANG				// 사다리 타기
 };
 
+// 전방 선언
 class object;
 class mapCamera;
 
@@ -86,9 +88,9 @@ public:
 	void setJumpPower(float jumpPower) { _jumpPower = jumpPower; }				// 캐릭터의 상태 설정
 	void setSpeed(float speed) { _speed = speed; }								// 캐릭터의 상태 설정
 
-	void setMapCameraMemoryAddressLink(mapCamera* mapCamera) { _mapCamera = mapCamera; } // 맵 카매라 클라스 링크 
-	void setObjectMemoryAddressLink(object* object) { _object = object; }		// 오브젝트 클라스 링크 
-	//void setEnemyMemoryAddressLink(enemyManager* eM) { _eM = eM; }			// 이너미매니저 클래스 링크
+	void setMapCameraMemoryAddressLink(mapCamera* mapCamera) { _mapCamera = mapCamera; }			// 맵 카매라 클라스 링크 
+	void setObjectMemoryAddressLink(object* object) { _object = object; }							// 오브젝트 클라스 링크 
+	//void setEnemyMemoryAddressLink(enemyManager* enemyManager) { _enemyManager = enemyManager; }	// 이너미매니저 클래스 링크
 
 };
 

@@ -49,8 +49,8 @@ void character::release()
 void character::update() // 업데이트
 {
     gravity();
-    collision();
     controll();
+    collision();
     hang();
     attack();
     imgFrameSetting();
@@ -62,7 +62,7 @@ void character::update() // 업데이트
 
 void character::controll() // 캐릭터 컨트롤키 처리
 {
-    if (_state != ATTACK && _state != HURT) // 공격 상태, 피격 상태가 아닐 때
+    if (_state != ATTACK && _state != HURT && _state != DEATH) // 공격 상태, 피격 상태, 죽음 상태가 아닐 때
     {
         // 달리기
         if (KEYMANAGER->isStayKeyDown('A'))
@@ -160,21 +160,23 @@ void character::controll() // 캐릭터 컨트롤키 처리
         {
             RECT temp;
             RECT ladder = _object->getLadder(i).rc;
-            if (IntersectRect(&temp, &_collisionRect, &ladder))
+
+            if (IntersectRect(&temp, &_collisionRect, &ladder)) // 사다리랑 충돌된 상태에서~
             {
-                if (KEYMANAGER->isStayKeyDown('A') && _state == HANG)
+                if (KEYMANAGER->isStayKeyDown('A') && _state == HANG) // 사다리를 붙잡은 상태에서 좌로 벗어나려고 할 때
                 {
                     _gravity = GRAVITY;
                     _state = JUMP;
                     imgSetting();
                 }
-                if (KEYMANAGER->isStayKeyDown('D') && _state == HANG)
+
+                if (KEYMANAGER->isStayKeyDown('D') && _state == HANG) // 사다리를 붙잡은 상태에서 우로 벗어나려고 할 때
                 {
                     _gravity = GRAVITY;
                     _state = JUMP;
                     imgSetting();
                 }
-                if (KEYMANAGER->isStayKeyDown('W')) 
+                if (KEYMANAGER->isStayKeyDown('W')) // 사다리 붙잡기 && 상단 이동 
                 {
                     _state = HANG;
                     imgSetting();
@@ -184,7 +186,7 @@ void character::controll() // 캐릭터 컨트롤키 처리
                     _x = (temp.left + temp.right) / 2;
                     _y -= _mapCamera->getSpeed() / 1.5;
                 }
-                if (KEYMANAGER->isStayKeyDown('S'))
+                if (KEYMANAGER->isStayKeyDown('S')) // 사다리 붙잡기 && 하단 이동 
                 {
                     _state = HANG;
                     imgSetting();
@@ -294,7 +296,7 @@ void character::imgFrameSetting() // 캐릭터 이미지 프레임 처리
 void character::gravity() // 캐릭터 중력 처리
 {
     // 캐릭터가 중력받아서 내려가기 시작할 때 이미지 갱신
-    if (_jumpPower < 0 && _state != JUMPBOTTOMATTACK && _state != JUMPATTACK && _state != HURT && _state != HANG)
+    if (_jumpPower < 0 && _state == JUMP)
         _characterImg = IMAGEMANAGER->findImage("캐릭터_점프2");
 
     // 중력 값 적용
@@ -323,7 +325,8 @@ void character::hang() // 캐릭터 사다리 타기 처리
         if (_hangCount >= 19) _hangCount = 1;
     }
 
-    // 어떤 사다리 충돌했는지
+
+    // 어떤 사다리 충돌했는지 체크
     for (int i = 0; i < _object->getLadderMax(); i++)
     {
         RECT temp;
@@ -339,32 +342,81 @@ void character::hang() // 캐릭터 사다리 타기 처리
     RECT ladder = _object->getLadder(_hangRcNum).rc;
     if (!IntersectRect(&temp, &_collisionRect, &ladder))
     {
-        if (ladder.top >= _collisionRect.bottom)
+        if (ladder.top >= _collisionRect.bottom) // 사다리의 꼭대기 도착
         {
             _hangRcNum = 0;
-            if (_state == HANG) _state = IDLE;
-            imgSetting();
+            if (_state == HANG)
+            {
+                _state = IDLE;
+                imgSetting();
+            }
         }
 
-        if (ladder.bottom <= _collisionRect.top)
+        if (ladder.bottom <= _collisionRect.top) // 사다리의 밑부분 도착
         {
             _hangRcNum = 0;
-            if (_state == HANG) _state = JUMP;
-            imgSetting();
-            _gravity = GRAVITY;
+            if (_state == HANG)
+            {
+                _state = JUMP;
+                imgSetting();
+                _gravity = GRAVITY;
+            }
         }
     }  
 }
 
 void character::collision() // 캐릭터 충돌 처리
 {
-    // 바닥 픽셀 충돌 처리
+    // 걸어다닐 때 바닥에 픽셀 충돌 안 되면 바닥으로 떨어진다
+    if (_state == IDLE || _state == RUN)
+    {
+        // 캐릭터 바닥을 검사하기 위한 변수
+        int proveYBottom = _collisionRect.bottom - _mapCamera->getCamY();
+
+        for (int i = proveYBottom; i < proveYBottom + 1; i++)
+        {
+            // 캐릭터 충돌 렉트의 오른쪽 값, proveYBottom 좌표 값에 마젠타가 없으면 떨어지는 처리
+            if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), _collisionRect.left - _mapCamera->getCamX(), i) != RGB(255, 0, 255))
+            {
+                _gravity = GRAVITY;
+                _state = JUMP;
+                imgSetting();
+                _isPixelCollision = false;
+                break;
+            }
+            // 캐릭터 충돌 렉트의 오른쪽 값, proveYBottom 좌표 값에 마젠타가 없으면 떨어지는 처리
+            if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), _collisionRect.right - _mapCamera->getCamX(), i) != RGB(255, 0, 255))
+            {
+                _gravity = GRAVITY;
+                _state = JUMP;
+                imgSetting();
+                _isPixelCollision = false;
+                break;
+            }
+        }
+    }
+
+    // 공중에 있는 상태에서 처리
     if (_state == JUMP || _state == JUMPATTACK || _state == JUMPBOTTOMATTACK || _state == HURT)
     {
+        // 바닥 픽셀 충돌 처리
         int proveYBottom = _y + ((_collisionRect.bottom - _collisionRect.top) / 2) - _mapCamera->getCamY();
+        
         for (int i = proveYBottom; i < proveYBottom + 10; i++)
         {
-            if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), _x - _mapCamera->getCamX(), i) == RGB(255, 0, 255))
+            if (_jumpPower > 0) continue;
+            // 캐릭터 충돌 렉트의 오른쪽 값, proveYBottom 좌표 값에 마젠타가 있으면 충돌 처리
+            if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), _collisionRect.left - _mapCamera->getCamX(), i) == RGB(255, 0, 255))
+            {
+                _y = i - (_collisionRect.bottom - _collisionRect.top) / 2 + _mapCamera->getCamY();
+                _gravity = _jumpPower = 0;
+                _state = IDLE;
+                imgSetting();
+                _isPixelCollision = true;
+                break;
+            }
+            // 캐릭터 충돌 렉트의 오른쪽 값, proveYBottom 좌표 값에 마젠타가 있으면 충돌 처리
+            if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), _collisionRect.right - _mapCamera->getCamX(), i) == RGB(255, 0, 255))
             {
                 _y = i - (_collisionRect.bottom - _collisionRect.top) / 2 + _mapCamera->getCamY();
                 _gravity = _jumpPower = 0;
@@ -375,28 +427,27 @@ void character::collision() // 캐릭터 충돌 처리
             }
         }
 
+        // 상단 픽셀 충돌 처리
         int proveYTop = _y - ((_collisionRect.bottom - _collisionRect.top) / 2) - _mapCamera->getCamY();
-        for (int i = proveYTop; i > proveYTop - 10; i--)
+
+        for (int i = proveYTop; i > proveYTop - 1; i--)
         {
-            if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), _x - _mapCamera->getCamX(), i) == RGB(255, 0, 255))
+            // 캐릭터 충돌 렉트의 왼쪽 값, proveYTop 좌표 값에 마젠타가 있으면 충돌 처리
+            if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), _collisionRect.left - _mapCamera->getCamX(), i) == RGB(255, 0, 255))
             {
+                _y = i + (_collisionRect.bottom - _collisionRect.top) / 2 + _mapCamera->getCamY() + 3;
+                if(_jumpPower > 0) _jumpPower = 0;
                 _gravity = GRAVITY;
                 _state = JUMP;
                 imgSetting();
                 _isPixelCollision = false;
                 break;
             }
-        }
-    }
-
-    // 걸어다닐 때 바닥에 픽셀 충돌 안 되면 바닥으로 떨어진다
-    if (_state == IDLE || _state == RUN)
-    {
-        int proveYBottom = _y + ((_collisionRect.bottom - _collisionRect.top) / 2) - _mapCamera->getCamY();
-        for (int i = proveYBottom; i < proveYBottom + 10; i++)
-        {
-            if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), _x - _mapCamera->getCamX(), i) != RGB(255, 0, 255))
+            // 캐릭터 충돌 렉트의 오른쪽 값, proveYTop 좌표 값에 마젠타가 있으면 충돌 처리
+            if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), _collisionRect.right - _mapCamera->getCamX(), i) == RGB(255, 0, 255))
             {
+                _y = i + (_collisionRect.bottom - _collisionRect.top) / 2 + _mapCamera->getCamY() + 3;
+                if (_jumpPower > 0) _jumpPower = 0;
                 _gravity = GRAVITY;
                 _state = JUMP;
                 imgSetting();
@@ -407,27 +458,48 @@ void character::collision() // 캐릭터 충돌 처리
     }
 
     // 벽면 픽셀 충돌 처리
-    if (_direction == 0) // 오른쪽 보고 있을 때
+    if (_state != HANG && _state != DEATH)
     {
-        int proveXRight = _x + ((_collisionRect.right - _collisionRect.left) / 2) - _mapCamera->getCamX();
-        for (int i = proveXRight - 10; i < proveXRight + 10; i++)
+        if (_direction == 0) // 오른쪽 보고 있을 때
         {
-            if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), i, _y - _mapCamera->getCamY()) == RGB(255, 0, 255))
+            // 캐릭터 우측을 검사하기 위한 변수
+            int proveXRight = _x + ((_collisionRect.right - _collisionRect.left) / 2) - _mapCamera->getCamX();
+
+            for (int i = proveXRight - 1; i < proveXRight + 1; i++)
             {
-                _x = i - (_collisionRect.right - _collisionRect.left) / 2 - _mapCamera->getSpeed() + _mapCamera->getCamX();
-                break;
+                // proveXRight 좌표 값, 캐릭터 충돌 렉트의 상단 값에 마젠타가 있으면 충돌 처리 
+                if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), i, _y - _mapCamera->getCamY()) == RGB(255, 0, 255))
+                {
+                    _x = i - (_collisionRect.right - _collisionRect.left) / 2 - _mapCamera->getSpeed() + _mapCamera->getCamX();
+                    break;
+                }
+                // proveXRight 좌표 값, 캐릭터 충돌 렉트의 하단 값에 마젠타가 있으면 충돌 처리 
+                if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), i, _collisionRect.bottom - 10 - _mapCamera->getCamY()) == RGB(255, 0, 255))
+                {
+                    _x = i - (_collisionRect.right - _collisionRect.left) / 2 - _mapCamera->getSpeed() + _mapCamera->getCamX();
+                    break;
+                }
             }
         }
-    }
-    else // 왼쪽 보고 있을 때
-    {
-        int proveXLeft = _x - ((_collisionRect.right - _collisionRect.left) / 2) - _mapCamera->getCamX();
-        for (int i = proveXLeft + 10; i >= proveXLeft - 10; i--)
+        else // 왼쪽 보고 있을 때
         {
-            if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), i, _y - _mapCamera->getCamY()) == RGB(255, 0, 255))
+            // 캐릭터 좌측을 검사하기 위한 변수
+            int proveXLeft = _x - ((_collisionRect.right - _collisionRect.left) / 2) - _mapCamera->getCamX();
+
+            for (int i = proveXLeft + 1; i >= proveXLeft - 1; i--)
             {
-                _x = i + (_collisionRect.right - _collisionRect.left) / 2 + _mapCamera->getSpeed() + _mapCamera->getCamX();
-                break;
+                // proveXLeft 좌표 값, 캐릭터 충돌 렉트의 상단 값에 마젠타가 있으면 충돌 처리 
+                if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), i, _y - _mapCamera->getCamY()) == RGB(255, 0, 255))
+                {
+                    _x = i + (_collisionRect.right - _collisionRect.left) / 2 + _mapCamera->getSpeed() + _mapCamera->getCamX();
+                    break;
+                }
+                // proveXLeft 좌표 값, 캐릭터 충돌 렉트의 하단 값에 마젠타가 있으면 충돌 처리 
+                if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), i, _collisionRect.bottom - 10 - _mapCamera->getCamY()) == RGB(255, 0, 255))
+                {
+                    _x = i + (_collisionRect.right - _collisionRect.left) / 2 + _mapCamera->getSpeed() + _mapCamera->getCamX();
+                    break;
+                }
             }
         }
     }
@@ -585,9 +657,21 @@ void character::render() // 캐릭터 렌더
     }
 
     //// 현재 프레임
-    //char str[128];
-    //sprintf_s(str, "_currentFrame : %d", _currentFrame);
-    //TextOut(getMemDC(), 0, 100, str, strlen(str));
+    char str[128];
+    sprintf_s(str, "_currentFrame : %d", _currentFrame);
+    TextOut(getMemDC(), 0, 220, str, strlen(str));
+
+    sprintf_s(str, "_state : %d", _state);
+    TextOut(getMemDC(), 0, 240, str, strlen(str));
+
+    sprintf_s(str, "_direction : %d", _direction);
+    TextOut(getMemDC(), 0, 160, str, strlen(str));
+
+    sprintf_s(str, "_charcterX : %d", (int)_x);
+    TextOut(getMemDC(), 0, 180, str, strlen(str));
+
+    sprintf_s(str, "_charcterY : %d", (int)_y);
+    TextOut(getMemDC(), 0, 200, str, strlen(str));
 }
 
 
