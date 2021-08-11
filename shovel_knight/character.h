@@ -36,7 +36,6 @@ private:
 	mapCamera* _mapCamera;							// 맵 카메라 클래스
 	object* _object;								// 오브젝트 클래스
 
-
 	float _x, _y;									// 캐릭터의 중점 X, Y 값
 	float _speed;									// 캐릭터 이동속도 값
 	float _jumpPower;								// 점프력 값

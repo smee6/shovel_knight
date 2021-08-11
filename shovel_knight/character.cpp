@@ -27,8 +27,8 @@ HRESULT character::init() // 인잇
     IMAGEMANAGER->addFrameImage("캐릭터_스킬", "image/shovel_character_skill.bmp", 252, 192, 2, 2, true, RGB(255, 0, 255));
 
     _characterImg = IMAGEMANAGER->findImage("캐릭터_아이들");
-    _x = 400;
-    _y = 580;
+    _x = 200;
+    _y = 380;
     _state = IDLE;
     _direction = 0;
     _isPixelCollision = true;
@@ -695,7 +695,7 @@ void character::shop(int arrNum) // 캐릭터 상점 이용 처리
     switch (arrNum)
     {
     case 1: // 대장장이 아저쒸
-        _ui->fireshopOn();
+        _ui->talklingManOn();
         break;
     case 2: // 미녀 언니
         _ui->fireshopOn();
