@@ -18,7 +18,7 @@ private:
 	bool isUIcall;
 	bool hasFire =false;
 	int _gold = 10000;
-	int _mana = 0;
+	int _mana = 100;
 
 public:
 	sceneManager();
