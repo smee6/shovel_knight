@@ -182,10 +182,10 @@ void object::platformSetting()
 	//발판의 x, y값 설정 - 좌표값
 
 	//좌우
-	//_platform[0].x = 100;
-	//_platform[0].y = 100;
-	//_platform[0].min = 50;     //수치 수정은 추후에 체크하면서
-	//_platform[0].max = 150;
+	_platform[0].x = 2000;
+	_platform[0].y = 2700;
+	_platform[0].min = 50;     //수치 수정은 추후에 체크하면서
+	_platform[0].max = 150;
 	//
 	//_platform[1].x = 200;
 	//_platform[1].y = 200;
@@ -205,13 +205,18 @@ void object::platformSetting()
 	//_platform[4].y = 100;
 
 	//움직이는 발판 좌우 3개 - 0, 1, 2
+
+	// void MakeObject(RECT& rect, int left, int right, int top, int bottom); 복붙해온거
+		//                (생성할 렉트,    중점,     중점,     가로,    세로   )
+
 	for (int i = 0; i < 3; i++)
 	{
 		_platform[i].isDirection = false;
 		_platform[i].type = 1;
 		_platform[i].index = 1;
 		_platform[i].speed = SPEED;
-		_platform[i].rc = RectMakeCenter(_platform[i].x, _platform[i].y, 100, 50);
+		_mapCamera->MakeObject(_platform[i].rc, _platform[i].x, _platform[i].y, 200, 50);
+		//_platform[i].rc = RectMakeCenter(_platform[i].x, _platform[i].y, 100, 50);
 		//_platform[i].objectImage = IMAGEMANAGER->addImage("목숨", "image/life.bmp", 50, 50, true, RGB(255, 0, 255));
 	}
 
@@ -222,7 +227,8 @@ void object::platformSetting()
 		_platform[i].type = 1;
 		_platform[i].index = 2;
 		_platform[i].speed = SPEED;
-		_platform[i].rc = RectMakeCenter(_platform[i].x, _platform[i].y, 100, 50);
+		_mapCamera->MakeObject(_platform[i].rc, _platform[i].x, _platform[i].y, 200, 50);
+		//_platform[i].rc = RectMakeCenter(_platform[i].x, _platform[i].y, 100, 50);
 		//_platform[i].objectImage = IMAGEMANAGER->addImage("목숨", "image/life.bmp", 50, 50, true, RGB(255, 0, 255));
 	}
 
