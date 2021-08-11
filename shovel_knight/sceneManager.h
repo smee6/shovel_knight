@@ -16,6 +16,9 @@ private:
 
 	mapSceneList _mSceneList;
 	bool isUIcall;
+	bool hasFire =false;
+	int _gold = 10000;
+	int _mana = 0;
 
 public:
 	sceneManager();
@@ -33,5 +36,20 @@ public:
 
 	int hp = 0;
 	void nowHP(int x);
+
+
+	// SCENEMANAGER-> getGold() 같은 식으로 사용
+	int getGold();
+	void setGold(int x);
+
+	int getMana();
+	void setMana(int x);
+
+	// 파이어 유물을 사다.
+	void getFire();
+
+	// 파이어 유물을  보유하고 있는지 아닌지 체크해서 반환해준다;
+	bool checkFire();
+
 };
 

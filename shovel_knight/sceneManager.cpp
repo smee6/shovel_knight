@@ -91,3 +91,33 @@ void sceneManager::nowHP(int x)
 {
 	hp = x;
 }
+
+int sceneManager::getGold()
+{
+	return _gold;
+}
+
+void sceneManager::setGold(int x)
+{
+	_gold = x;
+}
+
+int sceneManager::getMana()
+{
+	return _mana;
+}
+
+void sceneManager::setMana(int x)
+{
+	_mana = x;
+}
+
+void sceneManager::getFire()
+{
+	hasFire = true;
+}
+
+bool sceneManager::checkFire()
+{
+	return hasFire;
+}
