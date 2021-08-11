@@ -76,7 +76,7 @@ void uiManager::render()
 	char str[128];
 
 
-	SetTextColor(getMemDC(), RGB(255, 188, 0));
+	SetTextColor(getMemDC(), RGB(255, 255, 255));
 
 	HFONT font2 = CreateFont(32, 0, 0, 0, 700, false, false, false,
 		DEFAULT_CHARSET, OUT_STROKE_PRECIS, CLIP_DEFAULT_PRECIS,
