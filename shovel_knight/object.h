@@ -41,6 +41,7 @@ struct tagLadder //사다리
 {
 	RECT rc;										//	오브젝트의 렉트
 	float x, y;										//	오브젝트의 중점 X, Y 값
+	float height;									//  오브젝트의 세로 길이
 
 	int type;
 	int index;

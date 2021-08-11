@@ -60,6 +60,8 @@ void mapCamera::update()
 
 	CameraMove(_camera);
 
+	
+
 }
 
 //여기다 그려줘라!!!
@@ -134,6 +136,13 @@ void mapCamera::CameraMove(RECT& camera)
 		_camFollowY = false;
 	}
 
+	if (_camY >= -1495) // 11일 학원가서 까먹지말고 이부분 수정할것
+	{
+		_character->setSpeed(SPEED);
+		_camY = -1480;
+		_camFollowY = false;
+	}
+
 
 	// 1. 사각형을 이용하는 방법
 	// 일정 범위의 사각형 rc와 캐릭터의 rc의 같은 요소(left, right, top, bottom)의 값이 같아지면
@@ -145,23 +154,23 @@ void mapCamera::CameraMove(RECT& camera)
 
 	if (_camFollowX)
 	{
-		if (_character->getCharacterX() <= camera.left + 40 && KEYMANAGER->isStayKeyDown('A'))
+		if (_character->getCharacterX() <= camera.left&& KEYMANAGER->isStayKeyDown('A'))
 		{
 			if (_camX < 0)
 			{
 				_camX += SPEED;
 				_character->setSpeed(0);
-				_character->setCharacterX(_camera.left + 40);
+				_character->setCharacterX(_camera.left);
 			}
 		}
 		// 카메라 오른쪽으로 이동 (배경은 왼쪽으로) _player.x >= camera.right - 40 && 
-		else if (_character->getCharacterX() >= camera.right - 40 && KEYMANAGER->isStayKeyDown('D'))
+		else if (_character->getCharacterX() >= camera.right&& KEYMANAGER->isStayKeyDown('D'))
 		{
 			if (_camX + _background->getWidth() >= WINSIZEX)
 			{
 				_camX -= SPEED;
 				_character->setSpeed(0);
-				_character->setCharacterX(_camera.right - 40);
+				_character->setCharacterX(_camera.right);
 			}
 
 		}
@@ -216,8 +225,9 @@ void mapCamera::CameraMove(RECT& camera)
 	}
 
 	//카메라 위로 이동
+	// camfollowy는 init에서 true 상태임
 
-	if (!_camFollowY)
+	if (!_camFollowY) //false 상태
 	{
 		_camY += SPEED;
 		_character->setJumpPower(0);
@@ -236,8 +246,9 @@ void mapCamera::CameraMove(RECT& camera)
 			}
 		}
 	}
-	if (_character->getCharacterY() < 0)
+	if (_character->getCharacterY() < 0) //초기값이 0이되면 안될거같은데~ 총 6칸
 	{
+		//위로가는거니까 마이너스로 되어야되는거 아닌가?
 		_mapCountY++;
 		_camFollowY = false;
 	}
