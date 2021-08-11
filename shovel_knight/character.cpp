@@ -37,7 +37,7 @@ HRESULT character::init() // 인잇
     _hangCount = _rcNum = 0;
 
     _imgRect = RectMakeCenter(_x, _y, _characterImg->getFrameWidth(), _characterImg->getFrameHeight());
-    _collisionRect = RectMakeCenter(_x, _y, 55, 96);
+    _collisionRect = RectMakeCenter(_x, _y, 56, 96);
 
     return S_OK;
 }
@@ -54,10 +54,10 @@ void character::update() // 업데이트
     hang();
     attack();
     imgFrameSetting();
-    
+
     // 렉트 갱신
     _imgRect = RectMakeCenter(_x, _y, _characterImg->getFrameWidth(), _characterImg->getFrameHeight());
-    _collisionRect = RectMakeCenter(_x, _y, 55, 96);
+    _collisionRect = RectMakeCenter(_x, _y, 56, 96);
 }
 
 void character::controll() // 캐릭터 컨트롤키 처리
@@ -114,20 +114,35 @@ void character::controll() // 캐릭터 컨트롤키 처리
             _speed = 0;
         }
 
-        // 공격
-        if (KEYMANAGER->isOnceKeyDown('J'))
+        // 공격 또는 상점 이용
+        for (int i = 0; i < _object->getNPCMAX(); i++)
         {
-            if (_state != JUMPATTACK)
+            RECT temp;
+            RECT npc = _object->getNPC(i).rc; // 상점 npc 렉트 받아옴
+            if (IntersectRect(&temp, &_collisionRect, &npc))
             {
-                if (_state == JUMP || _state == JUMPBOTTOMATTACK) // 점프 상태
+                if (KEYMANAGER->isOnceKeyDown('J'))
                 {
-                    _state = JUMPATTACK;
-                    imgSetting();                  
+                    shop(i); // 충돌된 npc의 상점 이용
                 }
-                else if(_state == IDLE || _state == RUN)// 점프 상태가 아닐 때
+            }
+            else // 아무 npc랑 충돌되지 않았을 땐 공격
+            {
+                if (KEYMANAGER->isOnceKeyDown('J'))
                 {
-                    _state = ATTACK;
-                    imgSetting();
+                    if (_state != JUMPATTACK)
+                    {
+                        if (_state == JUMP || _state == JUMPBOTTOMATTACK) // 점프 상태
+                        {
+                            _state = JUMPATTACK;
+                            imgSetting();
+                        }
+                        else if (_state == IDLE || _state == RUN)// 점프 상태가 아닐 때
+                        {
+                            _state = ATTACK;
+                            imgSetting();
+                        }
+                    }
                 }
             }
         }
@@ -160,6 +175,7 @@ void character::controll() // 캐릭터 컨트롤키 처리
         {
             RECT temp;
             RECT ladder = _object->getLadder(i).rc;
+
             if (IntersectRect(&temp, &_collisionRect, &ladder)) // 사다리랑 충돌된 상태에서~
             {
                 if (KEYMANAGER->isStayKeyDown('A') && _state == HANG) // 사다리를 붙잡은 상태에서 좌로 벗어나려고 할 때
@@ -168,6 +184,7 @@ void character::controll() // 캐릭터 컨트롤키 처리
                     _state = JUMP;
                     imgSetting();
                 }
+
                 if (KEYMANAGER->isStayKeyDown('D') && _state == HANG) // 사다리를 붙잡은 상태에서 우로 벗어나려고 할 때
                 {
                     _gravity = GRAVITY;
@@ -323,6 +340,7 @@ void character::hang() // 캐릭터 사다리 타기 처리
         if (_hangCount >= 19) _hangCount = 1;
     }
 
+
     // 어떤 사다리 충돌했는지 체크
     for (int i = 0; i < _object->getLadderMax(); i++)
     {
@@ -367,22 +385,22 @@ void character::collision() // 캐릭터 충돌 처리
     // 걸어다닐 때 바닥에 픽셀 충돌 안 되면 바닥으로 떨어진다
     if (_state == IDLE || _state == RUN)
     {
-        // 캐릭터 바닥을 검사하기 위한 변수
-        int proveYBottom = _collisionRect.bottom - _mapCamera->getCamY();
+        int proveYBottom = _collisionRect.bottom - _mapCamera->getCamY(); // 캐릭터 바닥을 검사하기 위한 변수
+        int collisionCount = 0;                                           // 캐릭터 충돌 렉트의 좌우측이 모두 충돌되지 않는지 체크
 
         for (int i = proveYBottom; i < proveYBottom + 1; i++)
         {
-            // 캐릭터 충돌 렉트의 오른쪽 값, proveYBottom 좌표 값에 마젠타가 없으면 떨어지는 처리
+            // 캐릭터 충돌 렉트의 오른쪽 값, proveYBottom 좌표 값에 마젠타가 없으면 체크
             if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), _collisionRect.left - _mapCamera->getCamX(), i) != RGB(255, 0, 255))
             {
-                _gravity = GRAVITY;
-                _state = JUMP;
-                imgSetting();
-                _isPixelCollision = false;
-                break;
+                collisionCount++;
             }
-            // 캐릭터 충돌 렉트의 오른쪽 값, proveYBottom 좌표 값에 마젠타가 없으면 떨어지는 처리
+            // 캐릭터 충돌 렉트의 오른쪽 값, proveYBottom 좌표 값에 마젠타가 없으면 체크
             if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), _collisionRect.right - _mapCamera->getCamX(), i) != RGB(255, 0, 255))
+            {
+                collisionCount++;
+            }
+            if (collisionCount >= 2) // 충돌 렉트의 좌우측이 모두 체크되면 바닥으로 떨어지는 처리
             {
                 _gravity = GRAVITY;
                 _state = JUMP;
@@ -390,7 +408,6 @@ void character::collision() // 캐릭터 충돌 처리
                 _isPixelCollision = false;
                 break;
             }
-
         }
     }
 
@@ -639,6 +656,22 @@ void character::death() // 캐릭터 죽음 처리
     {
         _state = DEATH;
         imgSetting();
+    }
+}
+
+void character::shop(int arrNum) // 캐릭터 상점 이용 처리
+{
+    switch (arrNum)
+    {
+    case 0: // 대장장이 아저쒸
+        //_ui->
+        break;
+    case 1: // 미녀 언니
+    
+        break;
+    case 2: // 앙마 염소
+    
+        break;
     }
 }
 
