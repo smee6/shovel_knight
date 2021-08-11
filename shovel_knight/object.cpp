@@ -16,7 +16,7 @@ HRESULT object::init()
 {
 	//필요한것
 	//1순위 움직이는 발판(좌우, 상하), 흙(큰, 작), 보석류(광석), 먹을것(사과, 치킨) - 체력회복
-	//2순위 물방울(용이 쏘는것, 바닥에서 올라오는 것), 파이어볼(유저, 몹),
+	//2순위 물방울(용이 쏘는것, 바닥에서 올라오는 것)
 	//물방울은 - 최초에 밑에서 상승했다가 일정범위에 도달하면 좌우로 조금씩 움직이는?
 
 
@@ -43,6 +43,7 @@ void object::update()
 {
 	platformSetting();
 	ladderSetting();
+	npcSetting();
 	gravity();
 	collision();
 
@@ -246,8 +247,8 @@ void object::ladderSetting()
 
 	//camy - 2200 -> 위치 도달
 	_ladder[0].x = 8450;
-	_ladder[0].y = 2100;
-	_ladder[0].height = 400;
+	_ladder[0].y = 2000;
+	_ladder[0].height = 500;
 
 
 	//camy - 1495 -> 위치 도달
@@ -255,9 +256,10 @@ void object::ladderSetting()
 	_ladder[1].y = 1400;
 	_ladder[1].height = 700;
 	
-	//_ladder[2].x = 100;
-	//_ladder[2].y = 100;
-	//
+	_ladder[2].x = 8100;
+	_ladder[2].y = 2600;
+	_ladder[2].height = 600;
+
 	//_ladder[3].x = 100;
 	//_ladder[3].y = 100;
 	//
@@ -291,6 +293,30 @@ void object::ladderSetting()
 	
 }
 
+void object::npcSetting()
+{
+	for (int i = 0; i < NPCMAX; i++)
+	{
+		_npc[i].type = 4;
+		_mapCamera->MakeObject(_npc[i].rc, _npc[i].x, _npc[i].y, _npc[i].width, _npc[i].height);
+	}
+
+	_npc[0].x = 310;
+	_npc[0].y = 2470;
+	_npc[0].width = 120;
+	_npc[0].height = 150;
+
+	_npc[1].x = 950;
+	_npc[1].y = 2470;
+	_npc[1].width = 120;
+	_npc[1].height = 150;
+
+	_npc[2].x = 430;
+	_npc[2].y = 2690;
+	_npc[2].width = 120;
+	_npc[2].height = 150;
+}
+
 void object::render()
 {
 	char str[128];
@@ -321,6 +347,11 @@ void object::render()
 		for (int i = 0; i < SANDBLOCKMAX; i++) // 흙더미
 		{
 			Rectangle(getMemDC(), _sandBlock[i].rc);
+		}
+
+		for (int i = 0; i < NPCMAX; i++) // npc
+		{
+			Rectangle(getMemDC(), _npc[i].rc);
 		}
 	}	
 }
