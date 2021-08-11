@@ -51,9 +51,10 @@ void inGameScene::update()
 {
 	_mapCamera->update();
 	_enemyManager->update();
+	_ui->update();
 	_character->update();
 	_object->update();
-	_ui->update();
+
 
 	SCENEMANAGER->nowHP(_character->getCurrentHp());
 	//캐릭터의 현재 에이치피를 씬매니져로 전송
