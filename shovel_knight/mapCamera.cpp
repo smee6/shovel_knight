@@ -2,6 +2,7 @@
 #include "mapCamera.h"
 #include "character.h"
 #include "object.h"
+#include "enemyManager.h"
 
 mapCamera::mapCamera()
 {

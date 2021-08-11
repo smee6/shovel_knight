@@ -7,6 +7,7 @@
 
 class character;
 class object;
+class enemyMananger;
 
 class mapCamera : public gameNode
 {
@@ -20,6 +21,7 @@ private:
 
 	character* _character;
 	object* _object;
+	enemyManager* _enemyManager;					// 이너미 매니저 클래스
 
 	// Camera
 	RECT _camera;
@@ -66,6 +68,7 @@ public:
 	//void RendObject(RECT rect[], int max);
 	//void RendObject(RECT& rect);
 
-	void setCharacterAddressLink(character* character) { _character = character; }			// 캐릭터 클라스 링크 
+	void setCharacterAddressLink(character* character) { _character = character; }	// 캐릭터 클라스 링크 
 	void setObjectMemoryAddressLink(object* object) { _object = object; }			// 오브젝트 클라스 링크 
+	void setEnemyMemoryAddressLink(enemyManager* enemyManager) { _enemyManager = enemyManager; }	// 이너미매니저 클래스 링크
 };
