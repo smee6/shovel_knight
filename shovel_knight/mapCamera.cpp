@@ -157,32 +157,34 @@ void mapCamera::CameraMove(RECT& camera)
 	//if (_player.x - _camX == -3840) _camFollow = false;
 
 	// 카메라 왼쪽으로 이동 (배경은 오른쪽으로)
-
-	if (_camFollowX)
+	if (_character->getState() != ATTACK && _character->getState() != SKILL)
 	{
-		if (_character->getCharacterX() <= camera.left&& KEYMANAGER->isStayKeyDown('A'))
+		if (_camFollowX)
 		{
-			if (_camX < 0)
+			if (_character->getCharacterX() <= camera.left && KEYMANAGER->isStayKeyDown('A'))
 			{
-				_camX += SPEED;
-				_character->setSpeed(0);
-				_character->setCharacterX(_camera.left);
+				if (_camX < 0)
+				{
+					_camX += SPEED;
+					_character->setSpeed(0);
+					_character->setCharacterX(_camera.left);
+				}
 			}
-		}
-		// 카메라 오른쪽으로 이동 (배경은 왼쪽으로) _player.x >= camera.right - 40 && 
-		else if (_character->getCharacterX() >= camera.right&& KEYMANAGER->isStayKeyDown('D'))
-		{
-			if (_camX + _background->getWidth() >= WINSIZEX)
+			// 카메라 오른쪽으로 이동 (배경은 왼쪽으로) _player.x >= camera.right - 40 && 
+			else if (_character->getCharacterX() >= camera.right && KEYMANAGER->isStayKeyDown('D'))
 			{
-				_camX -= SPEED;
-				_character->setSpeed(0);
-				_character->setCharacterX(_camera.right);
-			}
+				if (_camX + _background->getWidth() >= WINSIZEX)
+				{
+					_camX -= SPEED;
+					_character->setSpeed(0);
+					_character->setCharacterX(_camera.right);
+				}
 
-		}
-		else
-		{
-			_character->setSpeed(SPEED);
+			}
+			else
+			{
+				_character->setSpeed(SPEED);
+			}
 		}
 	}
 
