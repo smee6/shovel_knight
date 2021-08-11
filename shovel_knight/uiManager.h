@@ -11,6 +11,10 @@ private:
 
 	bool fireShopOpen;
 	int	 fireCnt = 1;
+
+	bool talkOpen;
+	int	 talkCnt;
+	int	 vibcnt;
 	
 
 public:
@@ -31,5 +35,12 @@ public:
 
 	void fireshopOn();
 	void fireshopOff();
+
+	void talklingMan();
+
+	void talklingManOn();
+	void talklingManOff();
+
+
 };
 

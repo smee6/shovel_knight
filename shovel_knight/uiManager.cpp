@@ -23,6 +23,13 @@ HRESULT uiManager::init()
 	IMAGEMANAGER->addImage("hp8", "image/UI/UI_hp8.bmp", 1280, 720, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("fireUI", "image/UI/UI_fire.bmp", 1280, 720, true, RGB(255, 0, 255));
 
+	IMAGEMANAGER->addImage("talkframe", "image/UI/UI_dial.bmp", 1280, 720, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addImage("t1", "image/UI/UI_dial_1.bmp", 1280, 720, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addImage("t2", "image/UI/UI_dial_2.bmp", 1280, 720, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addImage("t3", "image/UI/UI_dial_3.bmp", 1280, 720, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addImage("t4", "image/UI/UI_dial_4.bmp", 1280, 720, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addImage("t5", "image/UI/UI_dial_5.bmp", 1280, 720, true, RGB(255, 0, 255));
+
 	IMAGEMANAGER->addImage("goatshop1", "image/UI/goat_1.bmp", 1280, 720, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("goatshop2", "image/UI/goat_2.bmp", 1280, 720, true, RGB(255, 0, 255));
 
@@ -42,6 +49,8 @@ void uiManager::update()
 	goatshop();
 
 	fireshop();
+
+	talklingMan();
 	//게임 신에서 ui-> goatShopOn() 과 ui->goatShopoOff 로 상점 불러내기/없애기 관리해주세요.
 }
 
@@ -71,6 +80,45 @@ void uiManager::render()
 		if (fireCnt == 2) IMAGEMANAGER->findImage("fireshop2")->render(getMemDC());
 	}
 	
+	if (talkOpen) {
+		IMAGEMANAGER->findImage("talkframe")->render(getMemDC());
+
+		vibcnt++;
+		if (vibcnt >= 7) {
+			vibcnt = 0;
+		}
+
+		talkCnt++;
+		if (talkCnt >= 5)
+		{
+			IMAGEMANAGER->findImage("t1")->render(getMemDC());
+			if (talkCnt >= 30)
+			{
+				IMAGEMANAGER->findImage("t2")->render(getMemDC());
+				if (talkCnt >= 110)
+				{
+					IMAGEMANAGER->findImage("t3")->render(getMemDC());
+					if (talkCnt >= 240)
+					{
+						IMAGEMANAGER->findImage("t4")->render(getMemDC(),vibcnt, vibcnt/2);
+						if (talkCnt >= 360)
+						{
+							IMAGEMANAGER->findImage("t5")->render(getMemDC());
+							if (talkCnt >= 500)
+							{
+								talkCnt = 0;
+								talklingManOff();
+							}
+						}
+					}
+
+				}
+			}
+		}
+
+
+	}
+
 
 
 
@@ -186,4 +234,21 @@ void uiManager::fireshopOn()
 void uiManager::fireshopOff()
 {
 	fireShopOpen = false;
+}
+
+void uiManager::talklingMan()
+{
+	if (talkOpen) {
+
+	}
+}
+
+void uiManager::talklingManOn()
+{
+	talkOpen = true;
+}
+
+void uiManager::talklingManOff()
+{
+	talkOpen = false;
 }
