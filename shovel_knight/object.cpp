@@ -305,16 +305,19 @@ void object::npcSetting()
 	_npc[0].y = 2470;
 	_npc[0].width = 120;
 	_npc[0].height = 150;
+	_npc[0].index = 1;
 
 	_npc[1].x = 950;
 	_npc[1].y = 2470;
 	_npc[1].width = 120;
 	_npc[1].height = 150;
+	_npc[1].index = 2;
 
 	_npc[2].x = 430;
 	_npc[2].y = 2690;
 	_npc[2].width = 120;
 	_npc[2].height = 150;
+	_npc[2].index = 3;
 }
 
 void object::render()
