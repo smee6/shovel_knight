@@ -23,6 +23,7 @@ enum state
 class object;
 class mapCamera;
 class uiManager;
+class enemyManager;
 
 class character : public gameNode
 {
@@ -35,6 +36,7 @@ private:
 	uiManager* _ui;									// ui 클래스
 	mapCamera* _mapCamera;							// 맵 카메라 클래스
 	object* _object;								// 오브젝트 클래스
+	enemyManager* _enemyManager;					// 이너미 매니저 클래스
 
 	float _x, _y;									// 캐릭터의 중점 X, Y 값
 	float _speed;									// 캐릭터 이동속도 값
@@ -48,7 +50,8 @@ private:
 	int _currentHP, _maxHP;							// 캐릭터 현재, 맥스 체력
 	int _currentFrame;								// 프레임 이미지 인덱스
 	int _count;										// 프레임 이미지 인터벌
-	int _hangCount;									// 사다리 카운트로 이 카운트에 따라 hang 이미지 갱신
+	int _hangFrameCount;							// 사다리 카운트로 이 카운트에 따라 hang 이미지 갱신
+	int _skillFrameCount;							// 스킬 행동의 카운트로 이 카운트에 따라 이미지 멈추는 시점 계산
 
 	int _rcNum;										// 현재 어떤 장애물에 충돌했는지 기록
 	int _hangRcNum;									// 현재 어떤 사다리에 충돌했는지 기록
@@ -96,7 +99,7 @@ public:
 	void setMapCameraMemoryAddressLink(mapCamera* mapCamera) { _mapCamera = mapCamera; }			// 맵 카매라 클라스 링크 
 	void setObjectMemoryAddressLink(object* object) { _object = object; }							// 오브젝트 클라스 링크 
 	void setUIMemoryAddressLink(uiManager* uiManager) { _ui = uiManager; }							// ui 클라스 링크 
-	//void setEnemyMemoryAddressLink(enemyManager* enemyManager) { _enemyManager = enemyManager; }	// 이너미매니저 클래스 링크
+	void setEnemyMemoryAddressLink(enemyManager* enemyManager) { _enemyManager = enemyManager; }	// 이너미매니저 클래스 링크
 
 };
 

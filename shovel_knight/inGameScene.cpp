@@ -30,6 +30,7 @@ HRESULT inGameScene::init()
 	_character->setMapCameraMemoryAddressLink(_mapCamera);
 	_character->setObjectMemoryAddressLink(_object);
 	_character->setUIMemoryAddressLink(_ui);
+	_character->setEnemyMemoryAddressLink(_enemyManager);
 
 	_mapCamera->setCharacterAddressLink(_character);
 	_mapCamera->setObjectMemoryAddressLink(_object);
@@ -37,8 +38,10 @@ HRESULT inGameScene::init()
 	_object->setcharacterMemoryAddressLink(_character);
 	_object->setMapCameraMemoryAddressLink(_mapCamera);
 
-	//_backGround = _mapCamera->getBackGround();
+	_enemyManager->setcharacterMemoryAddressLink(_character);
+	_enemyManager->setmapCameraMemoryAddressLinK(_mapCamera);
 
+	//_backGround = _mapCamera->getBackGround();
 
 	return S_OK;
 }
@@ -66,8 +69,8 @@ void inGameScene::render()
 	//_backGround->render(getMemDC(), 0, 0);
 	_mapCamera->render();
 	_enemyManager->render();
-	_character->render();
 	_object->render();
+	_character->render();
 
 	_ui->render();
 	

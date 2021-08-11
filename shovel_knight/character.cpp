@@ -3,6 +3,7 @@
 #include "mapCamera.h"
 #include "object.h"
 #include "uiManager.h"
+#include "enemyManager.h"
 
 character::character()
 {
@@ -36,7 +37,7 @@ HRESULT character::init() // 인잇
     _currentHP = _maxHP = 8;
     _currentFrame = _count = 0;
     _damage = 1;
-    _hangCount = _rcNum = 0;
+    _hangFrameCount = _rcNum = 0;
 
     _imgRect = RectMakeCenter(_x, _y, _characterImg->getFrameWidth(), _characterImg->getFrameHeight());
     _collisionRect = RectMakeCenter(_x, _y, 56, 96);
@@ -64,7 +65,7 @@ void character::update() // 업데이트
 
 void character::controll() // 캐릭터 컨트롤키 처리
 {
-    if (_state != ATTACK && _state != HURT && _state != DEATH) // 공격 상태, 피격 상태, 죽음 상태가 아닐 때
+    if (_state != ATTACK && _state != SKILL && _state != HURT && _state != DEATH) // 공격 상태, 피격 상태, 죽음 상태가 아닐 때
     {
         // 달리기
         if (KEYMANAGER->isStayKeyDown('A'))
@@ -208,7 +209,7 @@ void character::controll() // 캐릭터 컨트롤키 처리
                 {
                     _state = HANG;
                     imgSetting();
-                    _hangCount++;
+                    _hangFrameCount++;
                     _gravity = _jumpPower = 0;
 
                     _x = (temp.left + temp.right) / 2;
@@ -218,7 +219,7 @@ void character::controll() // 캐릭터 컨트롤키 처리
                 {
                     _state = HANG;
                     imgSetting();
-                    _hangCount++;
+                    _hangFrameCount++;
                     _gravity = _jumpPower = 0;
 
                     _x = (ladder.left + ladder.right) / 2; //(temp.left + temp.right) / 2;
@@ -236,7 +237,7 @@ void character::controll() // 캐릭터 컨트롤키 처리
                 {
                     _state = HANG;
                     imgSetting();
-                    _hangCount++;
+                    _hangFrameCount++;
                     _gravity = _jumpPower = 0;
 
                     _x = (ladder.left + ladder.right) / 2;
@@ -317,7 +318,18 @@ void character::imgFrameSetting() // 캐릭터 이미지 프레임 처리
 
             // X프레임 이미지 갱신
             _characterImg->setFrameX(_currentFrame);
+
+            // 스킬 프레임 카운트 증가
+            if (_state == SKILL) _skillFrameCount++;
         }
+    }
+
+    // 일정 스킬 애니메이션을 진행했으면 스킬 모션 초기화
+    if (_skillFrameCount >= 6)
+    {
+        _skillFrameCount = 0;
+        _state = IDLE;
+        imgSetting();
     }
 
     // 카운트 초기화
@@ -331,7 +343,7 @@ void character::gravity() // 캐릭터 중력 처리
         _characterImg = IMAGEMANAGER->findImage("캐릭터_점프2");
 
     // 중력 값 적용
-    if (_state == JUMP || _state == JUMPATTACK || _state == JUMPBOTTOMATTACK || _state == HURT) // 점프 상태, 피격 상태일 때
+    if (_state == JUMP || _state == JUMPATTACK || _state == JUMPBOTTOMATTACK || _state == HURT || _state == SKILL) // 점프 상태, 피격 상태일 때
     {
         _y -= _jumpPower;
         _jumpPower -= _gravity;
@@ -350,10 +362,10 @@ void character::hang() // 캐릭터 사다리 타기 처리
     // 사다리 타기 이미지 갱신(사다리 타기는 이동 안 할때는 붙잡고 있어야 해서 예외 처리)
     if (_state == HANG)
     {
-        if (_hangCount % 10 == 0) _characterImg->setFrameX(0);
-        else if (_hangCount % 19 == 0) _characterImg->setFrameX(1);
+        if (_hangFrameCount % 10 == 0) _characterImg->setFrameX(0);
+        else if (_hangFrameCount % 19 == 0) _characterImg->setFrameX(1);
 
-        if (_hangCount >= 19) _hangCount = 1;
+        if (_hangFrameCount >= 19) _hangFrameCount = 1;
     }
 
 
