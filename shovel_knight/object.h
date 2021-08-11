@@ -7,7 +7,7 @@
 #define JUMPPOWER 18.0f								// 점프 파워 값
 #define PLATFORMMAX 5
 #define SANDBLOCKMAX 128
-#define LADDERMAX 11
+#define LADDERMAX 15
 #define NPCMAX 3
 #define BUBBLEMAX 20
 

@@ -188,8 +188,8 @@ void object::platformSetting()
 	_platform[0].max = 150;
 	
 	//-8800, -1470
-	_platform[1].x = 200;
-	_platform[1].y = 200;
+	_platform[1].x = 9400;
+	_platform[1].y = 2050;
 	_platform[1].min = 50;
 	_platform[1].max = 150;
 	//
@@ -313,8 +313,8 @@ void object::ladderSetting()
 
 	//camy - 2200 -> 위치 도달
 	_ladder[0].x = 8450;
-	_ladder[0].y = 2000;
-	_ladder[0].height = 500;
+	_ladder[0].y = 1800;
+	_ladder[0].height = 800;
 
 
 	//camy - 1495 -> 위치 도달
@@ -322,20 +322,26 @@ void object::ladderSetting()
 	_ladder[1].y = 1400;
 	_ladder[1].height = 700;
 	
-	//임시 사다리임 수정해야됨
-	_ladder[2].x = 8100;
-	_ladder[2].y = 2600;
-	_ladder[2].height = 600;
+	//10080, 1475 큰용 옆
+	_ladder[2].x = 11160;
+	_ladder[2].y = 2000;
+	_ladder[2].height = 400;
 
-	//_ladder[3].x = 100;
-	//_ladder[3].y = 100;
-	//
-	//_ladder[4].x = 100;
-	//_ladder[4].y = 100;
-	//
-	//_ladder[5].x = 100;
-	//_ladder[5].y = 100;
-	//
+	//10080, 2200
+	_ladder[3].x = 10345;
+	_ladder[3].y = 2800;
+	_ladder[3].height = 300;
+	
+	//10080, 2925 사다리 2개맵 아래사다리
+	_ladder[4].x = 11010;
+	_ladder[4].y = 3350;
+	_ladder[4].height = 230;
+	
+	//10080, 2925 사다리 2개맵 윗사다리
+	_ladder[5].x = 10600;
+	_ladder[5].y = 3100;
+	_ladder[5].height = 230;
+	
 	//_ladder[6].x = 100;
 	//_ladder[6].y = 100;
 	//
@@ -354,6 +360,10 @@ void object::ladderSetting()
 	//_ladder[11].x = 100;
 	//_ladder[11].y = 100;
 
+	//임시 사다리
+	_ladder[10].x = 8100;
+	_ladder[10].y = 2600;
+	_ladder[10].height = 600;
 	
 
 
