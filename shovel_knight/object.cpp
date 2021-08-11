@@ -132,6 +132,47 @@ void object::objectMove()
 		}
 	}
 
+	//버블 움직임
+
+	for (int i = 0; i < BUBBLEMAX; i++)
+	{
+		if (_bubble[i].topMax < _bubble[i].y)
+		{
+				_bubble[i].speed = 1;
+
+				//버블의 좌우 움직임 불값 전환을 위한 문구
+				if (_bubble[i].min > _bubble[i].x)
+				{
+					_platform[i].isDirection = true;
+				}
+				else if (_bubble[i].max < _bubble[i].x)
+				{
+					_bubble[i].isDirection = false;
+				}
+
+				// 버블의 디렉션이 트루값일때 문구
+				if(_bubble[i].isDirection == true)
+				{
+					_bubble[i].x += _bubble[i].speed;
+				}
+				else
+				{
+					_bubble[i].x -= _bubble[i].speed;
+				}
+				
+		}
+		else 	_bubble[i].y -= _bubble[i].speed;
+
+		if (!_bubble[i].isAlive) // 버블이 터졌을때 초기값을 불러와야 함
+		{
+			_bubble[i].x = _bubble[i].startX;
+			_bubble[i].y = _bubble[i].startY;
+			_bubble[i].topMax;
+			_bubble[i].speed = 5;
+			_bubble[i].isAlive = true;
+		}
+	}
+
 
 
 }
@@ -217,6 +258,24 @@ void object::jewelSetting()
 void object::bubbleSetting()
 {
 
+
+	for (int i = 0; i < BUBBLEMAX; i++) //11개
+	{
+		_bubble[i].isAlive = true;
+		_bubble[i].type = 3;
+		_bubble[i].index = 1;
+		_bubble[i].speed = 5; // 테스트 해보면서 수정
+		_bubble[i].min = _bubble[i].startX - 5;
+		_bubble[i].max = _bubble[i].startX + 5;
+	}
+
+	//버블의 시작 좌표값
+
+	_bubble[0].startX;
+	_bubble[0].startY;
+	_bubble[0].topMax;
+
+
 }
 
 void object::fireBallSetting()
@@ -256,6 +315,7 @@ void object::ladderSetting()
 	_ladder[1].y = 1400;
 	_ladder[1].height = 700;
 	
+	//임시 사다리임 수정해야됨
 	_ladder[2].x = 8100;
 	_ladder[2].y = 2600;
 	_ladder[2].height = 600;
