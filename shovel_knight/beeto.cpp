@@ -9,7 +9,7 @@ beeto::~beeto()
 {
 }
 
-void beeto::move()
+void beeto::move()		
 {
 	_moveCount++;
 	
@@ -35,6 +35,6 @@ void beeto::die()
 
 void beeto::enemyAI()
 {
-	if (_enemyState == E_IDLE) _enemyState = E_MOVE;
-	//if (Ãæµ¹½Ã) _enemyState = die;
+	if (_enemyState == E_IDLE) _enemyState = E_DIE;
+	if (_hitCount == 1) _enemyState = E_DIE;
 }

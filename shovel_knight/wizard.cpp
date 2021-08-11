@@ -16,3 +16,8 @@ void wizard::attack()
 void wizard::die()
 {
 }
+
+void wizard::enemyAI()
+{
+	if (_hitCount == 2) _enemyState = E_DIE;
+}
