@@ -2,6 +2,7 @@
 #include "character.h"
 #include "mapCamera.h"
 #include "object.h"
+#include "uiManager.h"
 
 character::character()
 {
@@ -121,27 +122,31 @@ void character::controll() // 캐릭터 컨트롤키 처리
             RECT npc = _object->getNPC(i).rc; // 상점 npc 렉트 받아옴
             if (IntersectRect(&temp, &_collisionRect, &npc))
             {
+                int x = i + 1;
                 if (KEYMANAGER->isOnceKeyDown('J'))
                 {
-                    shop(i); // 충돌된 npc의 상점 이용
+                    shop(x); // 충돌된 npc의 상점 이용
                 }
             }
-            else // 아무 npc랑 충돌되지 않았을 땐 공격
+        }
+
+        for (int i = 0; i < _object->getNPCMAX(); i++)
+        {
+            RECT temp;
+            RECT npc = _object->getNPC(i).rc; // 상점 npc 렉트 받아옴
+            if (KEYMANAGER->isOnceKeyDown('J') && !IntersectRect(&temp, &_collisionRect, &npc)) // 아무 npc랑 충돌되지 않았을 땐 공격
             {
-                if (KEYMANAGER->isOnceKeyDown('J'))
+                if (_state != JUMPATTACK)
                 {
-                    if (_state != JUMPATTACK)
+                    if (_state == JUMP || _state == JUMPBOTTOMATTACK) // 점프 상태
                     {
-                        if (_state == JUMP || _state == JUMPBOTTOMATTACK) // 점프 상태
-                        {
-                            _state = JUMPATTACK;
-                            imgSetting();
-                        }
-                        else if (_state == IDLE || _state == RUN)// 점프 상태가 아닐 때
-                        {
-                            _state = ATTACK;
-                            imgSetting();
-                        }
+                        _state = JUMPATTACK;
+                        imgSetting();
+                    }
+                    else if (_state == IDLE || _state == RUN)// 점프 상태가 아닐 때
+                    {
+                        _state = ATTACK;
+                        imgSetting();
                     }
                 }
             }
@@ -663,14 +668,14 @@ void character::shop(int arrNum) // 캐릭터 상점 이용 처리
 {
     switch (arrNum)
     {
-    case 0: // 대장장이 아저쒸
-        //_ui->
+    case 1: // 대장장이 아저쒸
+        _ui->fireshopOn();
         break;
-    case 1: // 미녀 언니
-    
+    case 2: // 미녀 언니
+        _ui->fireshopOn();
         break;
-    case 2: // 앙마 염소
-    
+    case 3: // 앙마 염소
+        _ui->goatshopOn();
         break;
     }
 }

@@ -29,6 +29,7 @@ HRESULT inGameScene::init()
 
 	_character->setMapCameraMemoryAddressLink(_mapCamera);
 	_character->setObjectMemoryAddressLink(_object);
+	_character->setUIMemoryAddressLink(_ui);
 
 	_mapCamera->setCharacterAddressLink(_character);
 	_mapCamera->setObjectMemoryAddressLink(_object);

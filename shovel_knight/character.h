@@ -21,6 +21,7 @@ enum state
 // 전방 선언
 class object;
 class mapCamera;
+class uiManager;
 
 class character : public gameNode
 {
@@ -30,8 +31,10 @@ private:
 	RECT _collisionRect;							// 캐릭터의 충돌 렉트(모든 충돌은 요놈으로)
 	state _state;									// 캐릭터의 상태 값
 
+	uiManager* _ui;									// ui 클래스
 	mapCamera* _mapCamera;							// 맵 카메라 클래스
 	object* _object;								// 오브젝트 클래스
+
 
 	float _x, _y;									// 캐릭터의 중점 X, Y 값
 	float _speed;									// 캐릭터 이동속도 값
@@ -91,6 +94,7 @@ public:
 
 	void setMapCameraMemoryAddressLink(mapCamera* mapCamera) { _mapCamera = mapCamera; }			// 맵 카매라 클라스 링크 
 	void setObjectMemoryAddressLink(object* object) { _object = object; }							// 오브젝트 클라스 링크 
+	void setUIMemoryAddressLink(uiManager* uiManager) { _ui = uiManager; }							// ui 클라스 링크 
 	//void setEnemyMemoryAddressLink(enemyManager* enemyManager) { _enemyManager = enemyManager; }	// 이너미매니저 클래스 링크
 
 };
