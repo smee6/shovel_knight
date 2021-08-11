@@ -26,26 +26,37 @@ protected:
 
 	image*			_imageName;			//적이 사용할 이미지 이름
 	RECT			_rc;				//적 렉트
+	RECT			_proveRC;			//적이 플레이어를 감지하는 렉트
+
 	//이미지 프레임 번호로 사용할 변수
 	int				_currentFrameX;
 	int				_currentFrameY;
 
-	float _x;							//적 렉트의 left 
-	float _y;							//적 렉트의 top 
+	//적 렉트 left,top
+	float _x; 
+	float _y;
 
 	int				_imageCount;				//적 이미지 프레임 카운트 용
-	const char*		_enemyName;			//init 함수 첫번 째 매개변수를 쓰기위해 만든 변수
-
+	
 	//이미지 이름을 조합하기 위한 문자열 변수
-	string			_cast;				
+	string			_enemyName;				
 	string			_str;
-	string			_strsum;
+	string			_strSum;
 
 	//적 패턴을 카운트별로 나누기 위한 변수
 	int _randCount;
 	int _moveCount;
 	int _attackCount;
-	int _diecount;
+	int _dieCount;
+	int _hitCount;	//플레이어에게 맞은 횟수 카운트
+
+	bool _isDefense;	//플레이어에게 맞은 상태일 때 피격되지 않게 하는 변수
+	int _defenseCount;	//카운트가 지나면 다시 _isHit를 false로 바꿀 변수
+
+	//적 죽었을 때 모션에 필요한 변수
+	float _jumpPower;
+	float _gravity;
+
 public:
 	enemy();
 	~enemy();
@@ -66,5 +77,12 @@ public:
 
 	//에너미 렉트에 대한 접근자
 	inline RECT getRect() { return _rc; }
+	inline RECT getproveRect() { return _proveRC; }
+
+	bool getDefense() { return _isDefense; }	// true일 때 플레이어와 충돌 되지 않게 하는 접근자
+	//int getHit() { return _hitCount; }
+	
+	//플레이어와 충돌 시 카운트 증가 시킬 설정자
+	void setHit(int i) { _hitCount += i; }
 };
 

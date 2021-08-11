@@ -16,3 +16,7 @@ void dragon::move()
 void dragon::attack()
 {
 }
+
+void dragon::enemyAI()
+{
+}

@@ -48,7 +48,7 @@ void enemyManager::enemySetting()
     //for (int i = 0; i < 50; i++)
     //{
         enemyBeeto = new beeto;
-        enemyBeeto->init("beeto", PointMake(600, 500 ), E_LEFT);
+        enemyBeeto->init("steed", PointMake(600, 200 ), E_LEFT);
         _vEnemy.push_back(enemyBeeto);
     //}
 }
@@ -86,5 +86,6 @@ void enemyManager::enemyImageStorage()
     IMAGEMANAGER->addFrameImage("dragon and idle", "image/shovel knight_dragon and idle.bmp", 6000, 300, 12, 1, true, RGB(255, 0, 255));
     IMAGEMANAGER->addFrameImage("dragon and move", "image/shovel knight_dragon and move.bmp", 3000, 300, 6, 1, true, RGB(255, 0, 255));
     IMAGEMANAGER->addFrameImage("dragon and attack", "image/shovel knight_dragon and attack.bmp", 3000, 300, 6, 1, true, RGB(255, 0, 255));
+    IMAGEMANAGER->addFrameImage("dragon and die", "image/shovel knight_dragon and die.bmp", 500, 300, 1, 1, true, RGB(255, 0, 255));
     //boss
 }
