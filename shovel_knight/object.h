@@ -9,6 +9,7 @@
 #define SANDBLOCKMAX 128
 #define LADDERMAX 11
 #define NPCMAX 3
+#define BUBBLEMAX 20
 
 class character;
 class mapCamera;
@@ -53,11 +54,29 @@ struct tagNPC // npc
 	image* npcImage;								//  npc의 이미지
 	RECT rc;										//	npc의 렉트
 	float x, y;										//	npc의 중점 X, Y 값
-	float width, height;									//  npc의 가로, 세로 길이
+	float width, height;							//  npc의 가로, 세로 길이
 
 	int type;
 	int index;
 };
+
+struct tagBubble // 물방울 
+{
+	image* objectImage;								//  오브젝트의 이미지
+	RECT rc;										//	오브젝트의 렉트
+	float x, y;										//	오브젝트의 중점 X, Y 값
+	float startX, startY;							//  오브젝트의 시작 X, Y 값
+	float width, height;							//  오브젝트의 가로, 세로 길이
+	float min, max;									//	오브젝트의 X의 최소, 최대값
+	float topMax;									//	오브젝트의 Y의 최대값
+	float speed;									//	오브젝트 이동속도 값
+
+	int type;
+	int index;
+	bool isAlive;									//  방울이 터졌는지에 대한 여부
+	bool isDirection;								//	오브젝트의 방향전환을 위한 불값
+};
+
 
 class object : public gameNode
 {
@@ -73,6 +92,8 @@ private:
 	tagLadder _ladder[LADDERMAX];
 
 	tagNPC _npc[NPCMAX];
+
+	tagBubble _bubble[BUBBLEMAX];
 
 	character* _character;
 
