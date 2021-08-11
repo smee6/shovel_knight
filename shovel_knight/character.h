@@ -45,6 +45,7 @@ private:
 
 	bool _direction;								// 캐릭터가 바라보고 있는 방향 0 == 오른쪽 방향, 1 == 왼쪽 방향 바라봄
 	bool _isPixelCollision;							// 캐릭터가 픽셀 충돌 중인가?
+	bool _isRectCollision;							// 캐릭터가 렉트 충돌 중안거?
 
 	int _damage;									// 캐릭터 데미지
 	int _currentHP, _maxHP;							// 캐릭터 현재, 맥스 체력

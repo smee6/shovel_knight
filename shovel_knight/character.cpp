@@ -33,6 +33,7 @@ HRESULT character::init() // 인잇
     _state = IDLE;
     _direction = 0;
     _isPixelCollision = true;
+    _isRectCollision = false;
     _speed = _gravity = _jumpPower = 0;
     _currentHP = _maxHP = 8;
     _currentFrame = _count = 0;
@@ -165,6 +166,7 @@ void character::controll() // 캐릭터 컨트롤키 처리
                 _state = JUMP;
                 imgSetting();
                 _isPixelCollision = false;
+                _isRectCollision = false;
             }
         }
 
@@ -411,13 +413,15 @@ void character::hang() // 캐릭터 사다리 타기 처리
 void character::collision() // 캐릭터 충돌 처리
 {
     // 걸어다닐 때 바닥에 픽셀 충돌 안 되면 바닥으로 떨어진다
-    if (_state == IDLE || _state == RUN)
+    if (_state == IDLE || _state == RUN )
     {
         int proveYBottom = _collisionRect.bottom - _mapCamera->getCamY(); // 캐릭터 바닥을 검사하기 위한 변수
         int collisionCount = 0;                                           // 캐릭터 충돌 렉트의 좌우측이 모두 충돌되지 않는지 체크
 
         for (int i = proveYBottom; i < proveYBottom + 1; i++)
         {
+            if (_isRectCollision == true) break; // 렉트 충돌 중일 때는 픽셀 충돌 필요 없으니 브레이크
+
             // 캐릭터 충돌 렉트의 오른쪽 값, proveYBottom 좌표 값에 마젠타가 없으면 체크
             if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), _collisionRect.left - _mapCamera->getCamX(), i) != RGB(255, 0, 255))
             {
@@ -557,18 +561,6 @@ void character::collision() // 캐릭터 충돌 처리
             float width = temp.right - temp.left;
             float height = temp.bottom - temp.top;
 
-            if (width <= height) // 옆면 충돌
-            {
-                if (_collisionRect.left <= platform.left) // 왼쪽에서 충돌
-                {
-                    _x -= _mapCamera->getSpeed();
-                }
-                else // 오른쪽에서 충돌
-                {
-                    _x += _mapCamera->getSpeed();
-                }
-            }
-
             if (width > height) // 상하 충돌
             {
                 _rcNum = i; // 현재 어떤 장애물에 충돌했는지 기록
@@ -579,11 +571,24 @@ void character::collision() // 캐릭터 충돌 처리
                     _gravity = _jumpPower = 0; // 중력, 점프파워 초기화
                     _state = IDLE;
                     imgSetting();
+                    _isRectCollision = true;
                 }
                 else // 위에서 충돌
                 {
                     _y += height;
                     _jumpPower = 0;
+                }
+            }
+
+            if (width <= height) // 옆면 충돌
+            {
+                if (_collisionRect.left <= platform.left) // 왼쪽에서 충돌
+                {
+                    _x -= width;
+                }
+                else // 오른쪽에서 충돌
+                {
+                    _x += width;
                 }
             }
         }
@@ -594,16 +599,15 @@ void character::collision() // 캐릭터 충돌 처리
     {
         RECT platform = _object->getPlatform(_rcNum).rc;
         POINT check;
-        if (_direction == 0) check.x = _collisionRect.left;
-        else check.x = _collisionRect.right;
-        //check.x = _x;
-        check.y = _collisionRect.bottom;
+        check.x = _x;
+        check.y = _collisionRect.bottom + 1;
 
         if (!PtInRect(&platform, check) && _state == RUN)
         {
             _gravity = GRAVITY;
             _state = JUMP;
             imgSetting();
+            _isRectCollision = false;
         }
     }
 
