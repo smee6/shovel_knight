@@ -16,7 +16,8 @@ private:
 
 	mapSceneList _mSceneList;
 	bool isUIcall;
-	int _gold = 0;
+	bool hasFire =false;
+	int _gold = 10000;
 	int _mana = 0;
 
 public:
@@ -43,6 +44,12 @@ public:
 
 	int getMana();
 	void setMana(int x);
+
+	// 파이어 유물을 사다.
+	void getFire();
+
+	// 파이어 유물을  보유하고 있는지 아닌지 체크해서 반환해준다;
+	bool checkFire();
 
 };
 

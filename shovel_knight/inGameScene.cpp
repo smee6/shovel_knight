@@ -53,6 +53,8 @@ void inGameScene::update()
 	_character->update();
 	_object->update();
 	_ui->update();
+	
+	_ui->fireshopOn();
 
 	SCENEMANAGER->nowHP(_character->getCurrentHp());
 	//캐릭터의 현재 에이치피를 씬매니져로 전송

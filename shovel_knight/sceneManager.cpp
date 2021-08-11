@@ -111,3 +111,13 @@ void sceneManager::setMana(int x)
 {
 	_mana = x;
 }
+
+void sceneManager::getFire()
+{
+	hasFire = true;
+}
+
+bool sceneManager::checkFire()
+{
+	return hasFire;
+}
