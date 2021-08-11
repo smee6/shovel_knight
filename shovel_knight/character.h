@@ -68,6 +68,7 @@ public:
 	void attack();																// 캐릭터 공격 처리
 	void hitDamage(float damage);												// 캐릭터 피격 시 처리
 	void death();																// 캐릭터 죽음 처리
+	void shop(int arrNum);														// 캐릭터 상점 이용 처리
 
 	float getCharacterX() { return _x; }										// 캐릭터 X값 반환
 	float getCharacterY() { return _y; }										// 캐릭터 Y값 반환
