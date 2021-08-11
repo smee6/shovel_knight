@@ -21,13 +21,14 @@ HRESULT enemy::init(const char* imageName, POINT position, ENEMYDIRECTION enemyD
 	_currentFrameX = _currentFrameY = 0;
 	_imageCount  = 0;
 	
-	_x = position.x;
-	_y = position.y;
 	_enemyName = imageName;
 	_str = " and idle";
 	_strSum = _enemyName + _str;
 
 	_imageName = IMAGEMANAGER->findImage(_strSum);
+
+	_x = position.x;
+	_y = position.y - _imageName->getFrameHeight();
 
 	_randCount = RND->getFromIntTo(0, 100);
 	_moveCount = 0;
@@ -49,6 +50,7 @@ void enemy::update()
 {
 	enemyAI();
 	enemyFrame();
+
 	_rc = RectMake(_x, _y,
 		_imageName->getFrameWidth(), _imageName->getFrameHeight());
 	

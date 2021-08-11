@@ -7,6 +7,10 @@
 #include <vector>
 #include "bullets.h"
 
+class mapCamera;
+class character;
+
+
 class enemyManager : public gameNode
 {
 private:
@@ -19,6 +23,8 @@ private:
 
 	bullet* _bullet;
 
+	mapCamera* _mapCamera;
+	character* _character;
 public:
 	enemyManager();
 	~enemyManager();
@@ -37,6 +43,10 @@ public:
 	void collision();
 
 	void enemyImageStorage();		//적 이미지 저장 함수
+
+	//링크
+	void setMapCameraMemoryAddressLink(mapCamera* mapCamera) { _mapCamera = mapCamera; }
+	void setCharacterMemoryAddressLink(character* character) { _character = character; }
 
 	vector<enemy*> getVMinion() { return _vEnemy; }
 	vector<enemy*>::iterator getVIMinion() { return _viEnemy; }

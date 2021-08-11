@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "enemyManager.h"
+#include "character.h"
+#include "mapCamera.h"
 
 enemyManager::enemyManager()
 {
@@ -48,7 +50,7 @@ void enemyManager::enemySetting()
     //for (int i = 0; i < 50; i++)
     //{
         enemyBeeto = new beeto;
-        enemyBeeto->init("steed", PointMake(600, 200 ), E_LEFT);
+        enemyBeeto->init("dragon", PointMake(600, WINSIZEY - 140), E_LEFT);
         _vEnemy.push_back(enemyBeeto);
     //}
 }

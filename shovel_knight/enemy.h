@@ -78,6 +78,7 @@ public:
 	//에너미 렉트에 대한 접근자
 	inline RECT getRect() { return _rc; }
 	inline RECT getproveRect() { return _proveRC; }
+	inline image* getImageName() { return _imageName; }
 
 	bool getDefense() { return _isDefense; }	// true일 때 플레이어와 충돌 되지 않게 하는 접근자
 	//int getHit() { return _hitCount; }
