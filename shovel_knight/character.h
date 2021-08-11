@@ -15,7 +15,8 @@ enum state
 	JUMPBOTTOMATTACK,	// 점프 하단 공격
 	HURT,				// 피격
 	DEATH,				// 죽음
-	HANG				// 사다리 타기
+	HANG,				// 사다리 타기
+	SKILL				// 파이어볼 발사
 };
 
 // 전방 선언
@@ -69,6 +70,7 @@ public:
 	void hang();																// 캐릭터 사다리 타기 처리
 	void collision();															// 캐릭터 충돌 처리
 	void attack();																// 캐릭터 공격 처리
+	void skill();																// 캐릭터 스킬 처리
 	void hitDamage(float damage);												// 캐릭터 피격 시 처리
 	void death();																// 캐릭터 죽음 처리
 	void shop(int arrNum);														// 캐릭터 상점 이용 처리

@@ -24,6 +24,7 @@ HRESULT character::init() // 인잇
     IMAGEMANAGER->addFrameImage("캐릭터_피격", "image/shovel_character_hurt.bmp", 105, 234, 1, 2, true, RGB(255, 0, 255));
     IMAGEMANAGER->addFrameImage("캐릭터_죽음", "image/shovel_character_death.bmp", 333, 204, 3, 2, true, RGB(255, 0, 255));
     IMAGEMANAGER->addFrameImage("캐릭터_사다리", "image/shovel_character_hang.bmp", 150, 96, 2, 1, true, RGB(255, 0, 255));
+    IMAGEMANAGER->addFrameImage("캐릭터_스킬", "image/shovel_character_skill.bmp", 252, 192, 2, 2, true, RGB(255, 0, 255));
 
     _characterImg = IMAGEMANAGER->findImage("캐릭터_아이들");
     _x = 400;
@@ -115,7 +116,7 @@ void character::controll() // 캐릭터 컨트롤키 처리
             _speed = 0;
         }
 
-        // 공격 또는 상점 이용
+        // 상점 이용
         for (int i = 0; i < _object->getNPCMAX(); i++)
         {
             RECT temp;
@@ -130,6 +131,7 @@ void character::controll() // 캐릭터 컨트롤키 처리
             }
         }
 
+        // 상점 이용 안 할 때 공격
         for (int i = 0; i < _object->getNPCMAX(); i++)
         {
             RECT temp;
@@ -173,6 +175,12 @@ void character::controll() // 캐릭터 컨트롤키 처리
                 _state = JUMPBOTTOMATTACK;
                 imgSetting();
             }
+        }
+
+        // 스킬 사용
+        if (KEYMANAGER->isOnceKeyDown('U'))
+        {
+            skill();
         }
 
         // 사다리 타기
@@ -270,6 +278,9 @@ void character::imgSetting() // 상태에 따라 이미지 처리
         break;
     case HANG:
         _characterImg = IMAGEMANAGER->findImage("캐릭터_사다리");
+        break;
+    case SKILL:
+        _characterImg = IMAGEMANAGER->findImage("캐릭터_스킬");
         break;
     }
 
@@ -638,6 +649,21 @@ void character::attack() // 캐릭터 공격 처리
                 _state = JUMP;
                 imgSetting();
             }
+        }
+    }
+}
+
+void character::skill()
+{
+    if (SCENEMANAGER->checkFire() == true) // 불지팡이 보유 중일 때
+    {
+        if (SCENEMANAGER->getMana() >= 5)
+        {
+            SCENEMANAGER->setMana(SCENEMANAGER->getMana() - 5);
+            _state = SKILL;
+            imgSetting();
+
+            // fireball() 발사!!!
         }
     }
 }
