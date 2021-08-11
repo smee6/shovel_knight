@@ -11,7 +11,7 @@ class object;
 class mapCamera : public gameNode
 {
 private:
-
+	int temp =0;
 	// background image
 	image* _background;
 	image* _background_magenta;
@@ -32,7 +32,7 @@ private:
 	bool _isCamMove2;
 
 	int _LR;
-	int _TB;
+	int _TB = 0;
 
 	bool _camFollowX;
 	bool _camFollowY;

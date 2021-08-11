@@ -85,6 +85,9 @@ void mapCamera::render()
 	TextOut(getMemDC(), 10, 90, str, strlen(str));
 	sprintf_s(str, "camY : %d", _camY);
 	TextOut(getMemDC(), 100, 90, str, strlen(str));
+
+	sprintf_s(str, "_TB : %d", _TB);
+	TextOut(getMemDC(), 100, 300, str, strlen(str));
 }
 
 void mapCamera::SetCamera(RECT& camera, int left, int top, int width, int height)
@@ -127,21 +130,23 @@ void mapCamera::CameraMove(RECT& camera)
 	}
 
 	//y값 이동
-	if (_camY <= 0 || _camY < -2139)
+	/*if (_camY <= 0 || _camY < -2139)
 	{
 	}
 	else
 	{
 		_character->setSpeed(SPEED);
 		_camFollowY = false;
-	}
+	}*/
 
-	if (_camY >= -1495) // 11일 학원가서 까먹지말고 이부분 수정할것
-	{
-		_character->setSpeed(SPEED);
-		_camY = -1480;
-		_camFollowY = false;
-	}
+
+
+	//if (_camY >= -1495) // 11일 학원가서 까먹지말고 이부분 수정할것
+	//{
+	//	_character->setSpeed(SPEED);
+	//	_camY = -1480;
+	//	_camFollowY = false;
+	//}
 
 
 	// 1. 사각형을 이용하는 방법
@@ -226,8 +231,52 @@ void mapCamera::CameraMove(RECT& camera)
 
 	//카메라 위로 이동
 	// camfollowy는 init에서 true 상태임
+	// 필수!!! 캐릭터 살짝 움직이기 - 안하면 맵 무지성으로 길을잃음
 
-	if (!_camFollowY) //false 상태
+	// 0보다 작을 때 바텀이
+	if (_character->getCharacterRect().bottom < 0)
+	{
+
+		_camFollowY = false;
+		temp = _camY;	// 한번만 받아온다 (temp에 저장)
+		_TB = 0;
+	}
+	// 탑이 WINSIZEY보다 클때
+	if (_character->getCharacterRect().top > WINSIZEY)
+	{
+		_camFollowY = false;
+		temp = _camY;	// 한번만 받아온다 (temp에 저장)
+		_TB = 1;
+	}
+
+	if (!_camFollowY)
+	{
+		if (_TB == 0)
+		{
+			// 움직이는 모션
+			_camY += SPEED;
+			_character->setJumpPower(0);
+			_character->setCharacterY(_character->getCharacterY() + SPEED);
+
+			// _camY가 temp + WINSIZEY 보다 커지면 멈춰라
+			if (_camY > temp + WINSIZEY) _camFollowY = true;
+		}
+		else
+		{
+			// 움직이는 모션
+			_camY -= SPEED;
+			_character->setJumpPower(0);
+			_character->setCharacterY(_character->getCharacterY() - SPEED);
+
+			// _camY가 temp - WINSIZEY 보다 작아지면 멈춰라
+			if (_camY < temp -  WINSIZEY) _camFollowY = true;
+		}
+		
+		
+	}
+	
+
+	/*if (!_camFollowY && _TB == 0) //false 상태
 	{
 		_camY += SPEED;
 		_character->setJumpPower(0);
@@ -237,12 +286,12 @@ void mapCamera::CameraMove(RECT& camera)
 	}
 	else
 	{
-		if (_character->getCharacterY() >= camera.bottom - 50)
+		if (_character->getCharacterY() >= camera.bottom)
 		{
 			if (2850 - _mapCountY * WINSIZEY >= WINSIZEY - _camY)
 			{
 				_camY += _character->getJumpPower();
-				_character->setCharacterY(camera.bottom - 50);
+				_character->setCharacterY(camera.bottom);
 			}
 		}
 	}
@@ -251,7 +300,38 @@ void mapCamera::CameraMove(RECT& camera)
 		//위로가는거니까 마이너스로 되어야되는거 아닌가?
 		_mapCountY++;
 		_camFollowY = false;
+		_TB = 0;
 	}
+	//아래로 내려간다
+	if (!_camFollowY && _TB == 1) //false 상태
+	{
+
+		_camY -= SPEED;//
+		_character->setJumpPower(0);
+		_character->setCharacterY(_character->getCharacterY() - SPEED);//
+
+		if (_camY < -2850 - ((_mapCountY - 1) * WINSIZEY)) _camFollowY = true;
+	}
+	else
+	{
+		if (_character->getCharacterY() >= camera.top)
+		{
+			if (2850 - _mapCountY * WINSIZEY >= WINSIZEY - _camY)
+			{
+				_camY += _character->getJumpPower();
+				_character->setCharacterY(camera.top);
+			}
+		}
+	}
+	if (_character->getCharacterY() > WINSIZEY) //초기값이 0이되면 안될거같은데~ 총 6칸
+	{
+		//위로가는거니까 마이너스로 되어야되는거 아닌가?
+		_mapCountY--;
+		_camFollowY = false;
+		_TB = 1;
+		
+	}*/
+
 
 	// 2. 좌표값을 이용하는 방법
 	// 캐릭터의 중심 x,y좌표값을 일정 좌표값과 비교해서

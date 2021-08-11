@@ -8,6 +8,7 @@
 #define PLATFORMMAX 5
 #define SANDBLOCKMAX 128
 #define LADDERMAX 11
+#define NPCMAX 3
 
 class character;
 class mapCamera;
@@ -47,6 +48,17 @@ struct tagLadder //사다리
 	int index;
 };
 
+struct tagNPC // npc
+{
+	image* npcImage;								//  npc의 이미지
+	RECT rc;										//	npc의 렉트
+	float x, y;										//	npc의 중점 X, Y 값
+	float width, height;									//  npc의 가로, 세로 길이
+
+	int type;
+	int index;
+};
+
 class object : public gameNode
 {
 private:
@@ -59,6 +71,8 @@ private:
 	tagSandBlock _sandBlock[SANDBLOCKMAX];
 
 	tagLadder _ladder[LADDERMAX];
+
+	tagNPC _npc[NPCMAX];
 
 	character* _character;
 
@@ -93,13 +107,15 @@ public:
 	void bubbleSetting();
 	void fireBallSetting();
 	void ladderSetting();
+	void npcSetting();
 
 	int getPlatformrMax() { return PLATFORMMAX; }
 	int getLadderMax() { return LADDERMAX; }
+	int getNPCMAX() { return NPCMAX; }
 
 	tagPlatform getPlatform(int arrNum) { return _platform[arrNum]; }
 	tagLadder getLadder(int arrNum) {	return _ladder[arrNum];}
-
+	tagNPC getNPC(int arrNum) { return _npc[arrNum]; }
 
 
 	virtual HRESULT init();
