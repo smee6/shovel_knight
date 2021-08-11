@@ -40,6 +40,7 @@ void uiManager::release()
 void uiManager::update()
 {
 	goatshop();
+
 	fireshop();
 	//게임 신에서 ui-> goatShopOn() 과 ui->goatShopoOff 로 상점 불러내기/없애기 관리해주세요.
 }
@@ -123,7 +124,9 @@ void uiManager::goatshop()
 		{
 		case 1:
 			if (KEYMANAGER->isOnceKeyDown('J')) {
-				
+				if (SCENEMANAGER->getGold() >= 100) {
+					SCENEMANAGER->setGold((SCENEMANAGER->getGold() - 100));
+				}
 			}
 		case 2:
 			if (KEYMANAGER->isOnceKeyDown('J')) {
