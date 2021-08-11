@@ -85,12 +85,12 @@ void uiManager::render()
 	HFONT oldFont2 = (HFONT)SelectObject(getMemDC(), font2);
 
 	sprintf_s(str, "%d", SCENEMANAGER->getGold());
-	TextOut(getMemDC(), 80, 26, str, strlen(str));
+	TextOut(getMemDC(), 60, 26, str, strlen(str));
 
 	SetTextColor(getMemDC(), RGB(0, 170, 255));
 
 	sprintf_s(str, "%d", SCENEMANAGER->getMana());
-	TextOut(getMemDC(), 310, 26, str, strlen(str));
+	TextOut(getMemDC(), 305, 26, str, strlen(str));
 
 	SelectObject(getMemDC(), oldFont2);
 	DeleteObject(font2);
