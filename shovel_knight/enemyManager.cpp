@@ -50,7 +50,7 @@ void enemyManager::enemySetting()
     //for (int i = 0; i < 50; i++)
     //{
         enemyBeeto = new beeto;
-        enemyBeeto->init("dragon", PointMake(600, WINSIZEY - 140), E_LEFT);
+        enemyBeeto->init("beeto", PointMake(600, WINSIZEY - 140), E_LEFT);
         _vEnemy.push_back(enemyBeeto);
     //}
 }
@@ -68,6 +68,15 @@ void enemyManager::removeEnemy(int arrNum)
 
 void enemyManager::collision()
 {
+    //for (int i = 0; i < getVEnemy().size(); i++)
+    //{
+    //    RECT temp;
+    //    if (IntersectRect(&temp, &_character->getCharacterRect(), &
+    //        getVEnemy()[i]->getRect()))
+    //    {
+    //
+    //    }
+    //}
 }
 
 void enemyManager::enemyImageStorage()

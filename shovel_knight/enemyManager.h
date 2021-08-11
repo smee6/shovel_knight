@@ -48,7 +48,7 @@ public:
 	void setMapCameraMemoryAddressLink(mapCamera* mapCamera) { _mapCamera = mapCamera; }
 	void setCharacterMemoryAddressLink(character* character) { _character = character; }
 
-	vector<enemy*> getVMinion() { return _vEnemy; }
-	vector<enemy*>::iterator getVIMinion() { return _viEnemy; }
+	vector<enemy*> getVEnemy() { return _vEnemy; }
+	vector<enemy*>::iterator getVIEnemy() { return _viEnemy; }
 };
 

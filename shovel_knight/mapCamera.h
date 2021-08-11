@@ -7,7 +7,7 @@
 
 class character;
 class object;
-class enemyMananger;
+class enemyManager;
 
 class mapCamera : public gameNode
 {

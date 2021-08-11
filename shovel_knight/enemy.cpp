@@ -46,6 +46,7 @@ void enemy::release()
 {
 }
 
+
 void enemy::update()
 {
 	enemyAI();
