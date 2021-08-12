@@ -218,7 +218,7 @@ void enemy::enemyAI()
 	if (_isDefense == true)
 	{
 		_defenseCount++;
-		if (_defenseCount == 50)
+		if (_defenseCount == 15)
 		{
 			_isDefense = false;
 		}
