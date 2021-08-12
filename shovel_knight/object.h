@@ -129,10 +129,13 @@ public:
 	void fireBallSetting();
 	void ladderSetting();
 	void npcSetting();
+	void objectMakeRect();
 
 	int getPlatformrMax() { return PLATFORMMAX; }
 	int getLadderMax() { return LADDERMAX; }
 	int getNPCMAX() { return NPCMAX; }
+	int getBubbleMax() { return BUBBLEMAX; }
+	int getSandBlockMax() { return SANDBLOCKMAX; }
 
 	tagPlatform getPlatform(int arrNum) { return _platform[arrNum]; }
 	tagLadder getLadder(int arrNum) {	return _ladder[arrNum];}

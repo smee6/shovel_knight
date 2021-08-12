@@ -31,6 +31,7 @@ private:
 	image* _characterImg;							// 캐릭터 이미지
 	RECT _imgRect;									// 캐릭터의 이미지 렉트
 	RECT _collisionRect;							// 캐릭터의 충돌 렉트(모든 충돌은 요놈으로)
+	RECT _attackCollisionRect;						// 캐릭터의 삽질 공격 렉트 
 	state _state;									// 캐릭터의 상태 값
 
 	uiManager* _ui;									// ui 클래스
@@ -67,12 +68,20 @@ public:
 	virtual void render();
 
 	void controll();															// 캐릭터 컨트롤키 처리
-	void imgSetting();															// 상태에 따라 이미지 처리
-	void imgFrameSetting();														// 캐릭터 이미지 프레임 처리
 	void gravity();																// 캐릭터 중력 처리
-	void hang();																// 캐릭터 사다리 타기 처리
-	void collision();															// 캐릭터 충돌 처리
+	void pixelCollision();														// 캐릭터 픽셀 충돌 처리
+	void rectCollision();														// 캐릭터 렉트 충돌 처리
+	void attackRect();															// 캐릭터 공격 렉트 처리
+	void imgFrameSetting();														// 캐릭터 이미지 프레임 처리
+
+	void imgSetting();															// 상태에 따라 이미지 처리
+	void idle(bool direction);													// 캐릭터 아이들 처리
+	void run(bool direction);													// 캐릭터 달리기 처리
+	void jump();																// 캐릭터 점프 처리
 	void attack();																// 캐릭터 공격 처리
+	void jumpBottomAttack();													// 캐릭터 하단 공격 처리
+	void hang();																// 캐릭터 사다리 타기 처리
+	void hangOut();																// 캐릭터 사다리 벗어나는 처리
 	void skill();																// 캐릭터 스킬 처리
 	void hitDamage(float damage);												// 캐릭터 피격 시 처리
 	void death();																// 캐릭터 죽음 처리
@@ -87,6 +96,7 @@ public:
 	int getCurrentFrame() { return _currentFrame; }								// 캐릭터 현재 프레임 반환
 	state getState() { return _state; }											// 캐릭터 상태 반환
 	RECT getCharacterRect() { return _collisionRect; }							// 캐릭터 충돌 렉트 반환
+	RECT getAttackRect() { return _attackCollisionRect; }						// 캐릭터 공격 렉트 반환
 	int getCurrentHp() { return _currentHP; }									// 캐릭터 현재 체력 반환
 	int getMaxHp() { return _maxHP; }											// 캐릭터 맥스 체력 반환
 

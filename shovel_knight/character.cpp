@@ -54,14 +54,36 @@ void character::update() // 업데이트
 {
     gravity();
     controll();
-    collision();
-    hang();
-    attack();
+    pixelCollision();
+    rectCollision();
+    attackRect();
     imgFrameSetting();
 
     // 렉트 갱신
     _imgRect = RectMakeCenter(_x, _y, _characterImg->getFrameWidth(), _characterImg->getFrameHeight());
     _collisionRect = RectMakeCenter(_x, _y, 56, 96);
+}
+
+void character::gravity() // 캐릭터 중력 처리
+{
+    // 캐릭터가 중력받아서 내려가기 시작할 때 이미지 갱신
+    if (_jumpPower < 0 && _state == JUMP)
+        _characterImg = IMAGEMANAGER->findImage("캐릭터_점프2");
+
+    // 중력 값 적용
+    if (_state == JUMP || _state == JUMPATTACK || _state == JUMPBOTTOMATTACK || _state == HURT || _state == SKILL) // 점프 상태, 피격 상태일 때
+    {
+        if (_jumpPower < -20.0f) _jumpPower = -20.0f;
+        _y -= _jumpPower;
+        _jumpPower -= _gravity;
+    }
+
+    // 피격 상태일 때 바라본 방향의 뒤로 밀림
+    if (_state == HURT)
+    {
+        if (_direction == 0) _x -= _mapCamera->getSpeed();
+        else _x += _mapCamera->getSpeed();
+    }
 }
 
 void character::controll() // 캐릭터 컨트롤키 처리
@@ -71,51 +93,21 @@ void character::controll() // 캐릭터 컨트롤키 처리
         // 달리기
         if (KEYMANAGER->isStayKeyDown('A'))
         {
-            if (_state != JUMP && _state != JUMPATTACK && _state != JUMPBOTTOMATTACK && _state != HANG)
-            {
-                _state = RUN;
-                imgSetting();
-            }
-
-            _direction = 1;
-            _speed = _mapCamera->getSpeed();
-            _x -= _speed;
+            run(1);
         }
         if (KEYMANAGER->isStayKeyDown('D'))
         {
-            if (_state != JUMP && _state != JUMPATTACK && _state != JUMPBOTTOMATTACK && _state != HANG)
-            {
-                _state = RUN;
-                imgSetting();
-            }
-
-            _direction = 0;
-            _speed = _mapCamera->getSpeed();
-            _x += _speed;
+            run(0);
         }
 
         // 아이들
         if (KEYMANAGER->isOnceKeyUp('A'))
         {
-            if (_state != JUMP && _state != JUMPATTACK && _state != JUMPBOTTOMATTACK && _state != HANG)
-            {
-                _state = IDLE;
-                imgSetting();
-            }
-            
-            _direction = 1;
-            _speed = 0;
+            idle(1);
         }
         if (KEYMANAGER->isOnceKeyUp('D'))
         {
-            if (_state != JUMP && _state != JUMPATTACK && _state != JUMPBOTTOMATTACK && _state != HANG)
-            {
-                _state = IDLE;
-                imgSetting();
-            }
-
-            _direction = 0;
-            _speed = 0;
+            idle(0);
         }
 
         // 상점 이용
@@ -125,10 +117,10 @@ void character::controll() // 캐릭터 컨트롤키 처리
             RECT npc = _object->getNPC(i).rc; // 상점 npc 렉트 받아옴
             if (IntersectRect(&temp, &_collisionRect, &npc))
             {
-                int x = i + 1;
+                int npcIndex = i + 1;
                 if (KEYMANAGER->isOnceKeyDown('J'))
                 {
-                    shop(x); // 충돌된 npc의 상점 이용
+                    shop(npcIndex); // 충돌된 npc의 상점 이용
                 }
             }
         }
@@ -140,19 +132,7 @@ void character::controll() // 캐릭터 컨트롤키 처리
             RECT npc = _object->getNPC(i).rc; // 상점 npc 렉트 받아옴
             if (KEYMANAGER->isOnceKeyDown('J') && !IntersectRect(&temp, &_collisionRect, &npc)) // 아무 npc랑 충돌되지 않았을 땐 공격
             {
-                if (_state != JUMPATTACK)
-                {
-                    if (_state == JUMP || _state == JUMPBOTTOMATTACK) // 점프 상태
-                    {
-                        _state = JUMPATTACK;
-                        imgSetting();
-                    }
-                    else if (_state == IDLE || _state == RUN)// 점프 상태가 아닐 때
-                    {
-                        _state = ATTACK;
-                        imgSetting();
-                    }
-                }
+                attack();
             }
         }
 
@@ -161,12 +141,7 @@ void character::controll() // 캐릭터 컨트롤키 처리
         {
             if (_state != JUMP && _state != JUMPATTACK && _state != JUMPBOTTOMATTACK && _state != HANG)
             {
-                _jumpPower = JUMPPOWER;
-                _gravity = GRAVITY;
-                _state = JUMP;
-                imgSetting();
-                _isPixelCollision = false;
-                _isRectCollision = false;
+                jump();
             }
         }
 
@@ -175,8 +150,7 @@ void character::controll() // 캐릭터 컨트롤키 처리
         {
             if (KEYMANAGER->isStayKeyDown('S'))
             {
-                _state = JUMPBOTTOMATTACK;
-                imgSetting();
+                jumpBottomAttack();
             }
         }
 
@@ -196,36 +170,24 @@ void character::controll() // 캐릭터 컨트롤키 처리
             {
                 if (KEYMANAGER->isStayKeyDown('A') && _state == HANG) // 사다리를 붙잡은 상태에서 좌로 벗어나려고 할 때
                 {
-                    _gravity = GRAVITY;
-                    _state = JUMP;
-                    imgSetting();
+                    hangOut();
                 }
 
                 if (KEYMANAGER->isStayKeyDown('D') && _state == HANG) // 사다리를 붙잡은 상태에서 우로 벗어나려고 할 때
                 {
-                    _gravity = GRAVITY;
-                    _state = JUMP;
-                    imgSetting();
+                    hangOut();
                 }
                 if (KEYMANAGER->isStayKeyDown('W')) // 사다리 붙잡기 && 상단 이동 
                 {
-                    _state = HANG;
-                    imgSetting();
-                    _hangFrameCount++;
-                    _gravity = _jumpPower = 0;
-
-                    _x = (temp.left + temp.right) / 2;
+                    _x = (ladder.left + ladder.right) / 2;
                     _y -= _mapCamera->getSpeed() / 1.5;
+                    hang();
                 }
                 if (KEYMANAGER->isStayKeyDown('S')) // 사다리 붙잡기 && 하단 이동 
                 {
-                    _state = HANG;
-                    imgSetting();
-                    _hangFrameCount++;
-                    _gravity = _jumpPower = 0;
-
-                    _x = (ladder.left + ladder.right) / 2; //(temp.left + temp.right) / 2;
+                    _x = (ladder.left + ladder.right) / 2;
                     _y += _mapCamera->getSpeed() / 1.5;
+                    hang();
                 }
             }
 
@@ -237,183 +199,19 @@ void character::controll() // 캐릭터 컨트롤키 처리
             {
                 if (KEYMANAGER->isStayKeyDown('S') && !IntersectRect(&temp, &_collisionRect, &ladder))
                 {
-                    _state = HANG;
-                    imgSetting();
-                    _hangFrameCount++;
-                    _gravity = _jumpPower = 0;
-
                     _x = (ladder.left + ladder.right) / 2;
                     _y += _mapCamera->getSpeed() / 1.5;
+                    hang();
                 }
             }
         }
     }
 }
 
-void character::imgSetting() // 상태에 따라 이미지 처리
-{
-    // 이미지 변경
-    switch (_state)
-    {
-    case IDLE:
-        _characterImg = IMAGEMANAGER->findImage("캐릭터_아이들");
-        break;
-    case RUN:
-        _characterImg = IMAGEMANAGER->findImage("캐릭터_달리기");
-        break;
-    case JUMP:
-        _characterImg = IMAGEMANAGER->findImage("캐릭터_점프1");
-        break;
-    case ATTACK:
-        _characterImg = IMAGEMANAGER->findImage("캐릭터_공격");
-        break;
-    case JUMPATTACK:
-        _characterImg = IMAGEMANAGER->findImage("캐릭터_점프공격");
-        break;
-    case JUMPBOTTOMATTACK:
-        _characterImg = IMAGEMANAGER->findImage("캐릭터_점프하단공격");
-        break;
-    case HURT:
-        _characterImg = IMAGEMANAGER->findImage("캐릭터_피격");
-        break;
-    case DEATH:
-        _characterImg = IMAGEMANAGER->findImage("캐릭터_죽음");
-        break;
-    case HANG:
-        _characterImg = IMAGEMANAGER->findImage("캐릭터_사다리");
-        break;
-    case SKILL:
-        _characterImg = IMAGEMANAGER->findImage("캐릭터_스킬");
-        break;
-    }
-
-    // 현재 이미지에 맞게 커런트 프레임 초기화
-    if (_state != IDLE && _state != RUN)
-    {
-        if (_direction == 0) _currentFrame = 0;
-        else if (_direction == 1) _currentFrame = _characterImg->getMaxFrameX();
-    }
-}
-
-void character::imgFrameSetting() // 캐릭터 이미지 프레임 처리
-{
-    // 프레임Y 이미지 갱신
-    _characterImg->setFrameY(_direction);
-
-    // 카운트가 일정 수치마다 프레임X 갱신
-    _count++;
-    if (_count % 5 == 0)
-    {
-        // 프레임 초기화
-        if (_state != HANG) // 사다리 상태가 아닐 때(사다리를 예외처리함)
-        {
-            if (_direction == 0)
-            {
-                _currentFrame++;
-                if (_currentFrame > _characterImg->getMaxFrameX()) _currentFrame = 0;
-            }
-            else
-            {
-                _currentFrame--;
-                if (_currentFrame < 0) _currentFrame = _characterImg->getMaxFrameX();
-            }
-
-            // X프레임 이미지 갱신
-            _characterImg->setFrameX(_currentFrame);
-
-            // 스킬 프레임 카운트 증가
-            if (_state == SKILL) _skillFrameCount++;
-        }
-    }
-
-    // 일정 스킬 애니메이션을 진행했으면 스킬 모션 초기화
-    if (_skillFrameCount >= 6)
-    {
-        _skillFrameCount = 0;
-        _state = IDLE;
-        imgSetting();
-    }
-
-    // 카운트 초기화
-    if (_count >= 5) _count = 0;
-}
-
-void character::gravity() // 캐릭터 중력 처리
-{
-    // 캐릭터가 중력받아서 내려가기 시작할 때 이미지 갱신
-    if (_jumpPower < 0 && _state == JUMP)
-        _characterImg = IMAGEMANAGER->findImage("캐릭터_점프2");
-
-    // 중력 값 적용
-    if (_state == JUMP || _state == JUMPATTACK || _state == JUMPBOTTOMATTACK || _state == HURT || _state == SKILL) // 점프 상태, 피격 상태일 때
-    {
-        _y -= _jumpPower;
-        _jumpPower -= _gravity;
-    }
-
-    // 피격 상태일 때 바라본 방향의 뒤로 밀림
-    if (_state == HURT) 
-    {
-        if (_direction == 0) _x -= _mapCamera->getSpeed();
-        else _x += _mapCamera->getSpeed();
-    }
-}
-
-void character::hang() // 캐릭터 사다리 타기 처리
-{
-    // 사다리 타기 이미지 갱신(사다리 타기는 이동 안 할때는 붙잡고 있어야 해서 예외 처리)
-    if (_state == HANG)
-    {
-        if (_hangFrameCount % 10 == 0) _characterImg->setFrameX(0);
-        else if (_hangFrameCount % 19 == 0) _characterImg->setFrameX(1);
-
-        if (_hangFrameCount >= 19) _hangFrameCount = 1;
-    }
-
-
-    // 어떤 사다리 충돌했는지 체크
-    for (int i = 0; i < _object->getLadderMax(); i++)
-    {
-        RECT temp;
-        RECT ladder = _object->getLadder(i).rc;
-        if (IntersectRect(&temp, &_collisionRect, &ladder))
-        {
-            _hangRcNum = i;
-        }
-    }
-
-    // 사다리 벗어나면
-    RECT temp;
-    RECT ladder = _object->getLadder(_hangRcNum).rc;
-    if (!IntersectRect(&temp, &_collisionRect, &ladder))
-    {
-        if (ladder.top >= _collisionRect.bottom) // 사다리의 꼭대기 도착
-        {
-            _hangRcNum = 0;
-            if (_state == HANG)
-            {
-                _state = IDLE;
-                imgSetting();
-            }
-        }
-
-        if (ladder.bottom <= _collisionRect.top) // 사다리의 밑부분 도착
-        {
-            _hangRcNum = 0;
-            if (_state == HANG)
-            {
-                _state = JUMP;
-                imgSetting();
-                _gravity = GRAVITY;
-            }
-        }
-    }  
-}
-
-void character::collision() // 캐릭터 충돌 처리
+void character::pixelCollision() // 캐릭터 픽셀 충돌 처리
 {
     // 걸어다닐 때 바닥에 픽셀 충돌 안 되면 바닥으로 떨어진다
-    if (_state == IDLE || _state == RUN )
+    if (_state == IDLE || _state == RUN)
     {
         int proveYBottom = _collisionRect.bottom - _mapCamera->getCamY(); // 캐릭터 바닥을 검사하기 위한 변수
         int collisionCount = 0;                                           // 캐릭터 충돌 렉트의 좌우측이 모두 충돌되지 않는지 체크
@@ -448,7 +246,7 @@ void character::collision() // 캐릭터 충돌 처리
     {
         // 바닥 픽셀 충돌 처리
         int proveYBottom = _y + ((_collisionRect.bottom - _collisionRect.top) / 2) - _mapCamera->getCamY();
-        
+
         for (int i = proveYBottom; i < proveYBottom + 10; i++)
         {
             if (_jumpPower > 0) continue;
@@ -483,7 +281,7 @@ void character::collision() // 캐릭터 충돌 처리
             if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), _collisionRect.left - _mapCamera->getCamX(), i) == RGB(255, 0, 255))
             {
                 _y = i + (_collisionRect.bottom - _collisionRect.top) / 2 + _mapCamera->getCamY() + 3;
-                if(_jumpPower > 0) _jumpPower = 0;
+                if (_jumpPower > 0) _jumpPower = 0;
                 _gravity = GRAVITY;
                 _state = JUMP;
                 imgSetting();
@@ -550,7 +348,10 @@ void character::collision() // 캐릭터 충돌 처리
             }
         }
     }
+}
 
+void character::rectCollision() // 캐릭터 렉트 충돌 처리
+{
     // 장애물과 렉트 충돌 처리
     for (int i = 0; i < _object->getPlatformrMax(); i++)
     {
@@ -611,6 +412,44 @@ void character::collision() // 캐릭터 충돌 처리
         }
     }
 
+    // 어떤 사다리 충돌했는지 체크
+    for (int i = 0; i < _object->getLadderMax(); i++)
+    {
+        RECT temp;
+        RECT ladder = _object->getLadder(i).rc;
+        if (IntersectRect(&temp, &_collisionRect, &ladder))
+        {
+            _hangRcNum = i;
+        }
+    }
+
+    // 사다리 벗어나면
+    RECT temp;
+    RECT ladder = _object->getLadder(_hangRcNum).rc;
+    if (!IntersectRect(&temp, &_collisionRect, &ladder))
+    {
+        if (ladder.top >= _collisionRect.bottom) // 사다리의 꼭대기 도착
+        {
+            _hangRcNum = 0;
+            if (_state == HANG)
+            {
+                _state = IDLE;
+                imgSetting();
+            }
+        }
+
+        if (ladder.bottom <= _collisionRect.top) // 사다리의 밑부분 도착
+        {
+            _hangRcNum = 0;
+            if (_state == HANG)
+            {
+                _state = JUMP;
+                imgSetting();
+                _gravity = GRAVITY;
+            }
+        }
+    }
+
     //// 피격 테스트용 렉트
     //RECT temp2;
     //if (IntersectRect(&temp2, &_collisionRect, &_attackRc))
@@ -624,8 +463,59 @@ void character::collision() // 캐릭터 충돌 처리
     //}
 }
 
-void character::attack() // 캐릭터 공격 처리
+void character::attackRect() // 캐릭터 공격 렉트 처리
 {
+    // 공격, 점프 공격 시 렉트 생성
+    if (_state == ATTACK || _state == JUMPATTACK)
+    {
+        if (_direction == 0) _attackCollisionRect = RectMakeCenter(_collisionRect.right + 13, _y, 140, 96); // 변경
+        if (_direction == 1) _attackCollisionRect = RectMakeCenter(_collisionRect.left - 13, _y, 140, 96); // 변경
+    }
+
+    // 점프 하단 공격 렉트 생성
+    if (_state == JUMPBOTTOMATTACK)
+    {
+        _attackCollisionRect = RectMakeCenter(_x, _y, 56, 96);
+    }
+
+    // 공격, 점프 공격, 점프 하단 공격 상태가 아니면 공격 렉트 초기화
+    if (_state != ATTACK && _state != JUMPATTACK && _state != JUMPBOTTOMATTACK)
+    {
+        _attackCollisionRect = RectMakeCenter(0, 0, 0, 0);
+    }
+}
+
+void character::imgFrameSetting() // 캐릭터 이미지 프레임 처리
+{
+    // 프레임Y 이미지 갱신
+    _characterImg->setFrameY(_direction);
+
+    // 카운트가 일정 수치마다 프레임X 갱신
+    _count++;
+    if (_count % 5 == 0)
+    {
+        // 프레임 초기화
+        if (_state != HANG) // 사다리 상태가 아닐 때(사다리를 예외처리함)
+        {
+            if (_direction == 0)
+            {
+                _currentFrame++;
+                if (_currentFrame > _characterImg->getMaxFrameX()) _currentFrame = 0;
+            }
+            else
+            {
+                _currentFrame--;
+                if (_currentFrame < 0) _currentFrame = _characterImg->getMaxFrameX();
+            }
+
+            // X프레임 이미지 갱신
+            _characterImg->setFrameX(_currentFrame);
+
+            // 스킬 프레임 카운트 증가
+            if (_state == SKILL) _skillFrameCount++;
+        }
+    }
+
     // 공격 초기화
     if (_state == ATTACK)
     {
@@ -667,6 +557,146 @@ void character::attack() // 캐릭터 공격 처리
             }
         }
     }
+
+    // 일정 스킬 애니메이션을 진행했으면 스킬 모션 초기화
+    if (_skillFrameCount >= 6)
+    {
+        _skillFrameCount = 0;
+        _state = IDLE;
+        imgSetting();
+    }
+
+    // 사다리 타기 이미지 갱신(사다리 타기는 이동 안 할때는 붙잡고 있어야 해서 예외 처리)
+    if (_state == HANG)
+    {
+        if (_hangFrameCount % 10 == 0) _characterImg->setFrameX(0);
+        else if (_hangFrameCount % 19 == 0) _characterImg->setFrameX(1);
+
+        if (_hangFrameCount >= 19) _hangFrameCount = 1;
+    }
+
+    // 카운트 초기화
+    if (_count >= 5) _count = 0;
+}
+
+void character::imgSetting() // 상태에 따라 이미지 처리
+{
+    // 이미지 변경
+    switch (_state)
+    {
+    case IDLE:
+        _characterImg = IMAGEMANAGER->findImage("캐릭터_아이들");
+        break;
+    case RUN:
+        _characterImg = IMAGEMANAGER->findImage("캐릭터_달리기");
+        break;
+    case JUMP:
+        _characterImg = IMAGEMANAGER->findImage("캐릭터_점프1");
+        break;
+    case ATTACK:
+        _characterImg = IMAGEMANAGER->findImage("캐릭터_공격");
+        break;
+    case JUMPATTACK:
+        _characterImg = IMAGEMANAGER->findImage("캐릭터_점프공격");
+        break;
+    case JUMPBOTTOMATTACK:
+        _characterImg = IMAGEMANAGER->findImage("캐릭터_점프하단공격");
+        break;
+    case HURT:
+        _characterImg = IMAGEMANAGER->findImage("캐릭터_피격");
+        break;
+    case DEATH:
+        _characterImg = IMAGEMANAGER->findImage("캐릭터_죽음");
+        break;
+    case HANG:
+        _characterImg = IMAGEMANAGER->findImage("캐릭터_사다리");
+        break;
+    case SKILL:
+        _characterImg = IMAGEMANAGER->findImage("캐릭터_스킬");
+        break;
+    }
+
+    // 현재 이미지에 맞게 커런트 프레임 초기화
+    if (_state != IDLE && _state != RUN)
+    {
+        if (_direction == 0) _currentFrame = 0;
+        else if (_direction == 1) _currentFrame = _characterImg->getMaxFrameX();
+    }
+}
+
+void character::idle(bool direction)
+{
+    if (_state != JUMP && _state != JUMPATTACK && _state != JUMPBOTTOMATTACK && _state != HANG)
+    {
+        _state = IDLE;
+        imgSetting();
+    }
+
+    _direction = direction;
+    _speed = 0;
+}
+
+void character::run(bool direction)
+{
+    if (_state != JUMP && _state != JUMPATTACK && _state != JUMPBOTTOMATTACK && _state != HANG)
+    {
+        _state = RUN;
+        imgSetting();
+    }
+
+    _direction = direction;
+    _speed = _mapCamera->getSpeed();
+
+    if(direction == 1) _x -= _speed;
+    else if (direction == 0) _x += _speed;
+}
+
+void character::jump()
+{
+    _jumpPower = JUMPPOWER;
+    _gravity = GRAVITY;
+    _state = JUMP;
+    imgSetting();
+    _isPixelCollision = false;
+    _isRectCollision = false;
+}
+
+void character::attack() // 캐릭터 공격 처리
+{
+    if (_state != JUMPATTACK)
+    {
+        if (_state == JUMP || _state == JUMPBOTTOMATTACK) // 점프 상태
+        {
+            _state = JUMPATTACK;
+            imgSetting();
+        }
+        else if (_state == IDLE || _state == RUN)// 점프 상태가 아닐 때
+        {
+            _state = ATTACK;
+            imgSetting();
+        }
+    }
+}
+
+void character::jumpBottomAttack()
+{
+    _state = JUMPBOTTOMATTACK;
+    imgSetting();
+}
+
+void character::hang() // 캐릭터 사다리 타기 처리
+{
+    _state = HANG;
+    imgSetting();
+    _hangFrameCount++;
+    _gravity = _jumpPower = 0;
+}
+
+void character::hangOut() // 캐릭터 사다리 벗어나는 처리
+{
+    _gravity = GRAVITY;
+    _state = JUMP;
+    imgSetting();
 }
 
 void character::skill()
@@ -732,6 +762,7 @@ void character::render() // 캐릭터 렌더
     {
         Rectangle(getMemDC(), _imgRect);
         Rectangle(getMemDC(), _collisionRect);
+        Rectangle(getMemDC(), _attackCollisionRect);
     }
 
     //// 현재 프레임

@@ -19,19 +19,26 @@ HRESULT object::init()
 	//2순위 물방울(용이 쏘는것, 바닥에서 올라오는 것)
 	//물방울은 - 최초에 밑에서 상승했다가 일정범위에 도달하면 좌우로 조금씩 움직이는?
 
+	
+
+	//_mapCamera->init();
 
 
+	platformSetting();
+	
+	potionSetting();
+	jewelSetting();
+	bubbleSetting();
+	fireBallSetting();
+	ladderSetting();
+	npcSetting();
+	sandBlockSetting();
+	imgFrameSetting();
+
+	
 
 
-
-	//platformSetting();
-	//sandBlockSetting();
-	//potionSetting();
-	//jewelSetting();
-	//bubbleSetting();
-	//fireBallSetting();
-	//ladderSetting();
-
+	
 	return S_OK;
 }
 
@@ -41,9 +48,13 @@ void object::release()
 
 void object::update()
 {
-	platformSetting();
-	ladderSetting();
-	npcSetting();
+	//platformSetting();
+	//ladderSetting();
+	//npcSetting();
+	//sandBlockSetting();
+	//bubbleSetting();
+	objectMakeRect();
+
 	gravity();
 	collision();
 
@@ -168,7 +179,7 @@ void object::objectMove()
 			_bubble[i].x = _bubble[i].startX;
 			_bubble[i].y = _bubble[i].startY;
 			_bubble[i].topMax;
-			_bubble[i].speed = 5;
+			_bubble[i].speed = 2;
 			_bubble[i].isAlive = true;
 		}
 	}
@@ -239,18 +250,21 @@ void object::sandBlockSetting()
 {
 	//발판처럼 느낌 비슷하게 가면 될거같다~
 	
+
+	// 큰 흙더미의 각 좌표
+	_sandBlock[0].x = 1550;
+	_sandBlock[0].y = 2600;
+
+	// 작은 흙더미의 각 좌표
+
 	for (int i = 0; i < SANDBLOCKMAX; i++) //
 	{
 		_sandBlock[i].type = 1;
 		_sandBlock[i].index = 10;
-		_sandBlock[i].rc = RectMakeCenter(_sandBlock[i].x, _sandBlock[i].y, 100, 100);
-
+		_mapCamera->MakeObject(_sandBlock[i].rc, _sandBlock[i].x, _sandBlock[i].y, 100, 100);
+		//_sandBlock[i].rc = RectMakeCenter(_sandBlock[i].x, _sandBlock[i].y, 100, 100);
 	}
 
-	// 큰 흙더미의 각 좌표
-
-	
-	// 작은 흙더미의 각 좌표
 
 }
 
@@ -264,25 +278,29 @@ void object::jewelSetting()
 
 void object::bubbleSetting()
 {
+	//버블의 시작 좌표값
 
+	//_bubble[0].startX;
+	//_bubble[0].startY;
+	//_bubble[0].topMax;
+
+	_bubble[0].startX = 1700;
+	_bubble[0].startY = 2700;
+	_bubble[0].topMax = 2300;
 
 	for (int i = 0; i < BUBBLEMAX; i++) //11개
 	{
 		_bubble[i].isAlive = true;
 		_bubble[i].type = 3;
 		_bubble[i].index = 1;
-		_bubble[i].speed = 5; // 테스트 해보면서 수정
+		_bubble[i].speed = 1; // 테스트 해보면서 수정
+		_mapCamera->MakeObject(_bubble[i].rc, _bubble[i].startX, _bubble[i].startY, 70, 70);
 		_bubble[i].min = _bubble[i].startX - 5;
 		_bubble[i].max = _bubble[i].startX + 5;
+		
 	}
 
-	//버블의 시작 좌표값
-
-	_bubble[0].startX;
-	_bubble[0].startY;
-	_bubble[0].topMax;
-
-
+	
 }
 
 void object::fireBallSetting()
@@ -292,22 +310,6 @@ void object::fireBallSetting()
 
 void object::ladderSetting()
 {
-	for (int i = 0; i < LADDERMAX; i++) //11개
-	{
-
-		_ladder[i].type = 1;
-		_ladder[i].index = 21;
-
-		// 기준점이 50,0 이 된거다
-		_mapCamera->MakeObject(_ladder[i].rc, _ladder[i].x, _ladder[i].y, 50, _ladder[i].height);
-
-		
-		//_ladder[i].x + _mapCamera->getCamX(), _ladder[i].y + _mapCamera->getCamY(), 50, 250
-		// void MakeObject(RECT& rect, int left, int right, int top, int bottom); 복붙해온거
-		//                (생성할 렉트,    중점,     중점,     가로,    세로   )
-	}
-
-
 	// 0,-2200을 항상 더해준다고 생각하고 좌표를 설정하라
 	// 사다리의 각 좌표
 
@@ -321,7 +323,7 @@ void object::ladderSetting()
 	_ladder[1].x = 7625;
 	_ladder[1].y = 1400;
 	_ladder[1].height = 700;
-	
+
 	//10080, 1475 큰용 옆
 	_ladder[2].x = 11160;
 	_ladder[2].y = 2000;
@@ -331,17 +333,17 @@ void object::ladderSetting()
 	_ladder[3].x = 10345;
 	_ladder[3].y = 2800;
 	_ladder[3].height = 300;
-	
+
 	//10080, 2925 사다리 2개맵 아래사다리
 	_ladder[4].x = 11010;
 	_ladder[4].y = 3350;
 	_ladder[4].height = 230;
-	
+
 	//10080, 2925 사다리 2개맵 윗사다리
 	_ladder[5].x = 10600;
 	_ladder[5].y = 3100;
 	_ladder[5].height = 230;
-	
+
 	//_ladder[6].x = 100;
 	//_ladder[6].y = 100;
 	//
@@ -364,6 +366,23 @@ void object::ladderSetting()
 	_ladder[10].x = 8100;
 	_ladder[10].y = 2600;
 	_ladder[10].height = 600;
+
+
+	for (int i = 0; i < LADDERMAX; i++) //11개
+	{
+
+		_ladder[i].type = 1;
+		_ladder[i].index = 21;
+
+		// 기준점이 50,0 이 된거다
+		_mapCamera->MakeObject(_ladder[i].rc, _ladder[i].x, _ladder[i].y, 50, _ladder[i].height);
+		
+		//_ladder[i].x + _mapCamera->getCamX(), _ladder[i].y + _mapCamera->getCamY(), 50, 250
+		// void MakeObject(RECT& rect, int left, int right, int top, int bottom); 복붙해온거
+		//                (생성할 렉트,    중점,     중점,     가로,    세로   )
+	}
+
+
 	
 
 
@@ -372,12 +391,6 @@ void object::ladderSetting()
 
 void object::npcSetting()
 {
-	for (int i = 0; i < NPCMAX; i++)
-	{
-		_npc[i].type = 4;
-		_mapCamera->MakeObject(_npc[i].rc, _npc[i].x, _npc[i].y, _npc[i].width, _npc[i].height);
-	}
-
 	_npc[0].x = 310;
 	_npc[0].y = 2470;
 	_npc[0].width = 120;
@@ -395,6 +408,45 @@ void object::npcSetting()
 	_npc[2].width = 120;
 	_npc[2].height = 150;
 	_npc[2].index = 3;
+
+	for (int i = 0; i < NPCMAX; i++)
+	{
+		_npc[i].type = 4;
+		_mapCamera->MakeObject(_npc[i].rc, _npc[i].x, _npc[i].y, _npc[i].width, _npc[i].height);
+	}
+
+	
+}
+
+void object::objectMakeRect()
+{
+	for (int i = 0; i < BUBBLEMAX; i++)
+	{
+		_mapCamera->MakeObject(_bubble[i].rc, _bubble[i].startX, _bubble[i].startY, 70, 70);
+	}
+
+	for (int i = 0; i < NPCMAX; i++)
+	{
+		_mapCamera->MakeObject(_npc[i].rc, _npc[i].x, _npc[i].y, _npc[i].width, _npc[i].height);
+	}
+
+
+	for (int i = 0; i < LADDERMAX; i++) //11개
+	{
+		// 기준점이 50,0 이 된거다
+		_mapCamera->MakeObject(_ladder[i].rc, _ladder[i].x, _ladder[i].y, 50, _ladder[i].height);
+	}
+
+	for (int i = 0; i < SANDBLOCKMAX; i++) //
+	{
+		_mapCamera->MakeObject(_sandBlock[i].rc, _sandBlock[i].x, _sandBlock[i].y, 100, 100);
+	}
+
+	for (int i = 0; i < PLATFORMMAX; i++)
+	{
+		_mapCamera->MakeObject(_platform[i].rc, _platform[i].x, _platform[i].y, 190, 50);
+	}
+
 }
 
 void object::render()
@@ -432,6 +484,11 @@ void object::render()
 		for (int i = 0; i < NPCMAX; i++) // npc
 		{
 			Rectangle(getMemDC(), _npc[i].rc);
+		}
+
+		for (int i = 0; i < BUBBLEMAX; i++) // 흙더미
+		{
+			Rectangle(getMemDC(), _bubble[i].rc);
 		}
 	}	
 }
