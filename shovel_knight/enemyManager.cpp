@@ -27,7 +27,7 @@ void enemyManager::update()
 {
     for (_viEnemy = _vEnemy.begin(); _viEnemy != _vEnemy.end(); ++_viEnemy)
     {
-        (*_viEnemy)->update();
+        (*_viEnemy)->update(_mapCamera->getCamX(), _mapCamera->getCamY(), _character->getCharacterX());
     }
 
     enemyBulletFire();
@@ -46,13 +46,18 @@ void enemyManager::enemySetting()
 {
     
 	enemy* enemyBeeto;
-	
-    //for (int i = 0; i < 50; i++)
-    //{
-        enemyBeeto = new beeto;
-        enemyBeeto->init("beeto", PointMake(600, WINSIZEY - 140), E_LEFT);
-        _vEnemy.push_back(enemyBeeto);
-    //}
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(1600, 580), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(2000, 580), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+    
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(3200, 480), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
 }
 
 
@@ -68,15 +73,16 @@ void enemyManager::removeEnemy(int arrNum)
 
 void enemyManager::collision()
 {
-    //for (int i = 0; i < getVEnemy().size(); i++)
-    //{
-    //    RECT temp;
-    //    if (IntersectRect(&temp, &_character->getCharacterRect(), &
-    //        getVEnemy()[i]->getRect()))
-    //    {
-    //
-    //    }
-    //}
+    for (int i = 0; i < getVEnemy().size(); i++)
+    {
+        RECT temp;
+        if (IntersectRect(&temp, &_character->getCharacterRect(), &
+            getVEnemy()[i]->getRect()) && getVEnemy()[i]->getDefense() == false)
+        {
+            getVEnemy()[i]->setDefense(true);
+            getVEnemy()[i]->setHit(1);
+        }
+    }
 }
 
 void enemyManager::enemyImageStorage()

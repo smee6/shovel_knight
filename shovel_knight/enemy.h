@@ -36,6 +36,9 @@ protected:
 	float _x; 
 	float _y;
 
+	//캐릭터 x좌표
+	float _characterX;
+
 	int				_imageCount;				//적 이미지 프레임 카운트 용
 	
 	//이미지 이름을 조합하기 위한 문자열 변수
@@ -65,13 +68,14 @@ public:
 	virtual HRESULT init(const char* imageName, POINT position, ENEMYDIRECTION enemyDirection);
 	virtual void release();
 	virtual void update();
+	virtual void update(int x, int y, float z);		//맵 카메라를 업데이트하기 위한 함수
 	virtual void render();
 
 	virtual void draw();		//그려주는 함수
 	virtual void enemyFrame();	//적의 상태에 따라 프레임돌리는 함수
 	virtual void move();		//움직임 함수
 	virtual void attack();		//공격 함수
-	virtual void die();			//죽음 처리 함수
+	virtual void die();
 
 	virtual void enemyAI();		//적의 상태를 정의하는 함수
 
@@ -81,6 +85,7 @@ public:
 	inline image* getImageName() { return _imageName; }
 
 	bool getDefense() { return _isDefense; }	// true일 때 플레이어와 충돌 되지 않게 하는 접근자
+	void setDefense(bool x) { _isDefense = x; }
 	//int getHit() { return _hitCount; }
 	
 	//플레이어와 충돌 시 카운트 증가 시킬 설정자

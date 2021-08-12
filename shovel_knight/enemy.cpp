@@ -28,16 +28,16 @@ HRESULT enemy::init(const char* imageName, POINT position, ENEMYDIRECTION enemyD
 	_imageName = IMAGEMANAGER->findImage(_strSum);
 
 	_x = position.x;
-	_y = position.y - _imageName->getFrameHeight();
+	_y = position.y;
 
-	_randCount = RND->getFromIntTo(0, 100);
+	_randCount = RND->getFromIntTo(0, 200);
 	_moveCount = 0;
 	_attackCount = 0;
 	_dieCount = 0;
 	_hitCount = 0;
 
 	_jumpPower = 5.0f;
-	_gravity = 0.16f;
+	_gravity = 0.25f;
 
 	return S_OK;
 }
@@ -46,13 +46,19 @@ void enemy::release()
 {
 }
 
-
 void enemy::update()
+{
+}
+
+
+void enemy::update(int x, int y, float z)
 {
 	enemyAI();
 	enemyFrame();
+	
+	_characterX = z;
 
-	_rc = RectMake(_x, _y,
+	_rc = RectMake(x + _x, 2200  + y +_y - _imageName->getFrameHeight(),
 		_imageName->getFrameWidth(), _imageName->getFrameHeight());
 	
 	if (_enemyName == "steed")
@@ -80,7 +86,7 @@ void enemy::render()
 
 void enemy::draw()
 {
-		_imageName->frameRender(getMemDC(), _rc.left, _rc.top, _currentFrameX, _currentFrameY);
+	_imageName->frameRender(getMemDC(), _rc.left, _rc.top, _currentFrameX, _currentFrameY);
 }
 
 void enemy::enemyFrame()
@@ -187,40 +193,34 @@ void enemy::attack()
 
 void enemy::die()
 {
-	/*
-	if (플레이어의 x가 적렉트x보다 크다면)
+
+	if (_characterX > _rc.left)
 	{
 		_enemyDirection = E_LEFT;
-		_x -= 4;
+		_x -= 5;
 		_y -= _jumpPower;
 		_jumpPower -= _gravity;
 	}
-	if (플레이어의 x가 적렉트x보다 작다면)
+
+	if (_characterX < _rc.left)
 	{
 		_enemyDirection = E_RIGHT;
-		_x += 4;
+		_x += 5;
 		_y -= _jumpPower;
 		_jumpPower -= _gravity;
 	}
-	*/
 }
 
 void enemy::enemyAI()
 {
-	/*if (플레이어의 공격에 맞았을 시)
+	if(_isDefense == false) _defenseCount = 0;
 
-	 {
-		_defenseCount = 0;
-		_isDefense = true;
-		
-	 }
-	 if(_isDefense == true)
-	 {
-		_defenseCount ++;
-		if( _defenseCount == 50)
+	if (_isDefense == true)
+	{
+		_defenseCount++;
+		if (_defenseCount == 50)
 		{
 			_isDefense = false;
 		}
-	 }
-	*/
+	}
 }
