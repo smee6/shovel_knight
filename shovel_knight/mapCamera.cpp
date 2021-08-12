@@ -19,8 +19,8 @@ HRESULT mapCamera::init()
 	gameNode::init();
 
 	// 배경
-	_background = IMAGEMANAGER->addImage("배경", "image/map_black.bmp", 23000, 4500, true, RGB(255, 0, 255));
-	_background_magenta = IMAGEMANAGER->addImage("배경마젠타", "image/map_magenta.bmp", 23000, 4500, false, RGB(255, 0, 255));
+	_background = IMAGEMANAGER->addImage("배경", "image/map_end3.bmp", 23000, 4500, true, RGB(255, 0, 255));
+	_background_magenta = IMAGEMANAGER->addImage("배경마젠타", "image/map_magenta3.bmp", 23000, 4500, false, RGB(255, 0, 255));
 
 	// 카메라
 	//_camera.left = _character->getCharacterX() - (WIDTH / 2);
