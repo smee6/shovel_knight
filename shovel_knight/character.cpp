@@ -73,9 +73,9 @@ void character::gravity() // 캐릭터 중력 처리
     // 중력 값 적용
     if (_state == JUMP || _state == JUMPATTACK || _state == JUMPBOTTOMATTACK || _state == HURT || _state == SKILL) // 점프 상태, 피격 상태일 때
     {
+        _jumpPower -= _gravity;
         if (_jumpPower < -20.0f) _jumpPower = -20.0f;
         _y -= _jumpPower;
-        _jumpPower -= _gravity;
     }
 
     // 피격 상태일 때 바라본 방향의 뒤로 밀림
@@ -476,6 +476,30 @@ void character::attackRect() // 캐릭터 공격 렉트 처리
     if (_state == JUMPBOTTOMATTACK)
     {
         _attackCollisionRect = RectMakeCenter(_x, _y, 56, 96);
+
+        //// 점프 하단 공격 처리
+        //for (_enemyManager->getVIEnemy() = _enemyManager->getVEnemy().begin(); _enemyManager->getVIEnemy() != _enemyManager->getVEnemy().end(); ++_enemyManager->getVIEnemy())
+        //{
+        //    RECT temp;
+        //    RECT enemy = _enemyManager->(*getVEnemy()).
+        //        if (IntersectRect(&temp, &_attackCollisionRect, &))
+        //        {
+        //            _jumpPower = JUMPPOWER;
+        //            _gravity = GRAVITY;
+        //        }
+
+
+        //    if ((*_viMinion)->getMonsterIndex() == 1 || (*_viMinion)->getMonsterIndex() == 2)
+        //    {
+        //        _bullet->removeCollision(_mapM->getMapCollisionRc(i));
+        //    }
+        //    if ((*_viMinion)->getMonsterIndex() == 10001)
+        //    {
+        //        _bullet->reflectionCollision(_mapM->getMapCollisionRc(i));
+        //    }
+        //    
+        //}
+
     }
 
     // 공격, 점프 공격, 점프 하단 공격 상태가 아니면 공격 렉트 초기화
@@ -781,6 +805,12 @@ void character::render() // 캐릭터 렌더
 
     sprintf_s(str, "_charcterY : %d", (int)_y);
     TextOut(getMemDC(), 0, 200, str, strlen(str));
+
+    sprintf_s(str, "_jumpPower : %f", _jumpPower);
+    TextOut(getMemDC(), 0, 260, str, strlen(str));
+
+    sprintf_s(str, "_gravity : %f", _gravity);
+    TextOut(getMemDC(), 0, 280, str, strlen(str));
 }
 
 

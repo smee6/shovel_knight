@@ -1,8 +1,8 @@
 #pragma once
 #include "gameNode.h"
 
-#define GRAVITY 0.8f								// 중력 값
-#define JUMPPOWER 25.0f								// 점프 파워 값
+#define GRAVITY 1.0f								// 중력 값
+#define JUMPPOWER 20.0f								// 점프 파워 값
 
 // 상태 정의
 enum state
@@ -99,6 +99,7 @@ public:
 	RECT getAttackRect() { return _attackCollisionRect; }						// 캐릭터 공격 렉트 반환
 	int getCurrentHp() { return _currentHP; }									// 캐릭터 현재 체력 반환
 	int getMaxHp() { return _maxHP; }											// 캐릭터 맥스 체력 반환
+	int getDamage() { return _damage; }											// 캐릭터 데미지 반환
 
 	void setCharacterX(float x) { _x = x; }										// 캐릭터 X값 설정
 	void setCharacterY(float y) { _y = y; }										// 캐릭터 Y값 설정
