@@ -24,6 +24,7 @@ HRESULT inGameScene::init()
 	_character->setObjectMemoryAddressLink(_object);
 	_character->setUIMemoryAddressLink(_ui);
 	_character->setEnemyMemoryAddressLink(_enemyManager);
+	
 
 	_mapCamera->setCharacterAddressLink(_character);
 	_mapCamera->setObjectMemoryAddressLink(_object);
@@ -34,6 +35,8 @@ HRESULT inGameScene::init()
 
 	_enemyManager->setCharacterMemoryAddressLink(_character);
 	_enemyManager->setMapCameraMemoryAddressLink(_mapCamera);
+
+	_ui->setcharacterMemoryAddressLink(_character);
 
 	_character->init();
 	_ui->init();

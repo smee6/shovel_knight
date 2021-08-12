@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "uiManager.h"
+#include "character.h"
 
 uiManager::uiManager()
 {
@@ -11,6 +12,7 @@ uiManager::~uiManager()
 
 HRESULT uiManager::init()
 {
+
 	IMAGEMANAGER->addImage("UIframe", "image/UI/UI_def.bmp", 1280, 720, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("hp0", "image/UI/UI_hp0.bmp", 1280, 720, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("hp1", "image/UI/UI_hp1.bmp", 1280, 720, true, RGB(255, 0, 255));
@@ -183,6 +185,9 @@ void uiManager::goatshop()
 				if (SCENEMANAGER->getGold() >= 100) {
 					SOUNDMANAGER->play("ok", 1.0f);
 					SCENEMANAGER->setGold((SCENEMANAGER->getGold() - 100));
+					//Ã¼·Â»ó½Â
+					_character->setCurrentHP(8);
+
 				}else SOUNDMANAGER->play("cancle", 1.0f);
 			}
 		case 2:
