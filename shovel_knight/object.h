@@ -139,7 +139,7 @@ public:
 	tagLadder getLadder(int arrNum) {	return _ladder[arrNum];}
 	tagNPC getNPC(int arrNum) { return _npc[arrNum]; }
 	tagSandBlock getSandBlock(int arrNum) { return _sandBlock[arrNum]; }
-	tagBubble getBUbble(int arrNum) { return _bubble[arrNum]; }
+	tagBubble getBubble(int arrNum) { return _bubble[arrNum]; }
 
 
 	virtual HRESULT init();
