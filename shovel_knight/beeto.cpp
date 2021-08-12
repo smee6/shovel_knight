@@ -34,6 +34,6 @@ void beeto::enemyAI()
 {
 	enemy::enemyAI();
 	
-	if (_enemyState == E_IDLE) _enemyState = E_MOVE;	//¡÷ºÆ
-	if (_hitCount == 1) _enemyState = E_DIE;
+	if (_enemyState == E_IDLE) _enemyState = E_MOVE;
+	if (_hitCount == 2) _enemyState = E_DIE;
 }
