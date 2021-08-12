@@ -80,6 +80,9 @@ void uiManager::render()
 		if (fireCnt == 2) IMAGEMANAGER->findImage("fireshop2")->render(getMemDC());
 	}
 	
+
+	///  말하는부분은 이미지로 처리해서 렌더에 처박음
+
 	if (talkOpen) {
 		IMAGEMANAGER->findImage("talkframe")->render(getMemDC());
 
@@ -101,6 +104,7 @@ void uiManager::render()
 					if (talkCnt >= 240)
 					{
 						IMAGEMANAGER->findImage("t4")->render(getMemDC(),vibcnt, vibcnt/2);
+						SOUNDMANAGER->play("laugh", 0.6f);
 						if (talkCnt >= 360)
 						{
 							IMAGEMANAGER->findImage("t5")->render(getMemDC());
@@ -162,9 +166,11 @@ void uiManager::goatshop()
 	if (goatShopOpen) {
 		if (KEYMANAGER->isOnceKeyDown('S') && goatCnt < 2) {
 			goatCnt += 1;
+			SOUNDMANAGER->play("cursor", 1.0f);
 		}
 		if (KEYMANAGER->isOnceKeyDown('W') && goatCnt > 1) {
 			goatCnt -= 1;
+			SOUNDMANAGER->play("cursor",1.0f);
 		}
 	}
 	if (goatShopOpen) {
@@ -173,11 +179,13 @@ void uiManager::goatshop()
 		case 1:
 			if (KEYMANAGER->isOnceKeyDown('J')) {
 				if (SCENEMANAGER->getGold() >= 100) {
+					SOUNDMANAGER->play("ok", 1.0f);
 					SCENEMANAGER->setGold((SCENEMANAGER->getGold() - 100));
-				}
+				}else SOUNDMANAGER->play("cancle", 1.0f);
 			}
 		case 2:
 			if (KEYMANAGER->isOnceKeyDown('J')) {
+				SOUNDMANAGER->play("ok", 1.0f);
 				goatshopOff();
 			}
 		}
@@ -201,9 +209,11 @@ void uiManager::fireshop()
 	if (fireShopOpen) {
 		if (KEYMANAGER->isOnceKeyDown('S') && fireCnt < 2) {
 			fireCnt += 1;
+			SOUNDMANAGER->play("cursor", 1.0f);
 		}
 		if (KEYMANAGER->isOnceKeyDown('W') && fireCnt > 1) {
 			fireCnt -= 1;
+			SOUNDMANAGER->play("cursor", 1.0f);
 		}
 	}
 	if (fireShopOpen) {
@@ -211,14 +221,19 @@ void uiManager::fireshop()
 		{
 		case 1:
 			if (KEYMANAGER->isOnceKeyDown('J')) {
-				if (SCENEMANAGER->checkFire()) return;
+				if (SCENEMANAGER->checkFire()) {
+					SOUNDMANAGER->play("cancle", 1.0f); 
+					return;
+				}
 				if (SCENEMANAGER->getGold() >= 1000) {
+					SOUNDMANAGER->play("ok", 1.0f);
 					SCENEMANAGER->getFire();
 					SCENEMANAGER->setGold((SCENEMANAGER->getGold() - 1000));
 				}
 			}
 		case 2:
 			if (KEYMANAGER->isOnceKeyDown('J')) {
+				SOUNDMANAGER->play("ok", 1.0f);
 				fireshopOff();
 			}
 		}
