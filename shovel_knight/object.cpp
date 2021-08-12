@@ -34,6 +34,7 @@ HRESULT object::init()
 
 	//_mapCamera->init();
 
+	IMAGEMANAGER->addImage("플랫폼", "image/object/obj_platform.bmp", 190, 50, true, RGB(255, 0, 255));
 
 	platformSetting();
 	potionSetting();
@@ -215,18 +216,24 @@ void object::platformSetting()
 	_platform[1].min = 50;
 	_platform[1].max = 150;
 	//
-	//13920, 2920 
-	//_platform[2].x = 300;
-	//_platform[2].y = 300;
-	//_platform[2].min = 50;
-	//_platform[2].max = 150;
+	// 13920, 2920 
+	_platform[2].x = 14550;
+	_platform[2].y = 3300;
+	_platform[2].min = 50;
+	_platform[2].max = 150;
 	//
 	////상하
-	//_platform[3].x = 100;
-	//_platform[3].y = 100;
-	//
-	//_platform[4].x = 100;
-	//_platform[4].y = 100;
+	// 13920, 2920 
+	_platform[3].x = 14050;
+	_platform[3].y = 3350;
+	_platform[3].min = 50; 
+	_platform[3].max = 150;
+	
+	// 16480, 1460 
+	_platform[4].x = 17060;
+	_platform[4].y = 1870;
+	_platform[4].min = 50;
+	_platform[4].max = 150;
 
 	//움직이는 발판 좌우 3개 - 0, 1, 2
 
@@ -328,8 +335,8 @@ void object::ladderSetting()
 
 	//camy - 2200 -> 위치 도달
 	_ladder[0].x = 8450;
-	_ladder[0].y = 1800;
-	_ladder[0].height = 800;
+	_ladder[0].y = 2000;
+	_ladder[0].height = 600;
 
 
 	//camy - 1495 -> 위치 도달
@@ -358,33 +365,32 @@ void object::ladderSetting()
 	_ladder[5].height = 230;
 	
 	//13960, 3670
-	_ladder[6].x = 15050;
+	_ladder[6].x = 15045;
 	_ladder[6].y = 3500;
 	_ladder[6].height = 600;
 
 	//13920, 2920 
 	_ladder[7].x = 13910;
-	_ladder[7].y = 2750;
-	_ladder[7].height = 550;
+	_ladder[7].y = 2740;
+	_ladder[7].height = 560;
 	
 	//13920, 2190
-	_ladder[8].x = 14250;
+	_ladder[8].x = 14225;
 	_ladder[8].y = 2050;
 	_ladder[8].height = 350;
-	//
-	//_ladder[9].x = 100;
-	//_ladder[9].y = 100;
-	//
-	//_ladder[10].x = 100;
-	//_ladder[10].y = 100;
-	//
-	//_ladder[11].x = 100;
-	//_ladder[11].y = 100;
+	
+	//19040, 1470
+	_ladder[9].x = 20210;
+	_ladder[9].y = 900;
+	_ladder[9].height = 1000;
+	
+	//19040, 710 마지막 사다리
+	_ladder[10].x = 19440;
+	_ladder[10].y = 350;
+	_ladder[10].height = 700;
+	
 
-	//임시 사다리
-	_ladder[10].x = 8100;
-	_ladder[10].y = 2600;
-	_ladder[10].height = 600;
+	
 
 
 	for (int i = 0; i < LADDERMAX; i++) //11개
@@ -497,7 +503,11 @@ void object::render()
 	sprintf_s(str, "ladder.y : %d", _ladder[0].rc.top);
 	TextOut(getMemDC(), 10, 140, str, strlen(str));
 
-
+	for (int i = 0; i < PLATFORMMAX; i++)
+	{
+		IMAGEMANAGER->findImage("플랫폼")->render(getMemDC(), _platform[i].rc.left, _platform[i].rc.top);
+		//("플랫폼", getMemDC(), _platform[i].rc.left, _platform[i].rc.top);
+	}
 
 	if (KEYMANAGER->isToggleKey(VK_TAB))
 	{
