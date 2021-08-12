@@ -108,7 +108,7 @@ void mapCamera::CameraMove(RECT& camera)
 	//CAMERAMANAGER->MoveCamera(_player.rc, _background, _player.speed, _camX, _camY);
 
 	// 카메라 체크 상자 설정
-	SetCamera(camera, (WINSIZEX / 2) - (WIDTH / 2), 200, WIDTH, 400);
+	SetCamera(camera, (WINSIZEX / 2) - (WIDTH / 2), 200, WIDTH/2, 400);
 
 	// camera 상자 안에서만 플레이어가 직접 이동(혹은 카메라 이동이 불가능할 경우)
 	if (_background->getHeight() <= WINSIZEY - _camY || _camY == 0 || _character->getCharacterRect().bottom < camera.bottom || _character->getCharacterRect().top > camera.top)
@@ -184,6 +184,25 @@ void mapCamera::CameraMove(RECT& camera)
 			else
 			{
 				_character->setSpeed(SPEED);
+			}
+
+			if (_character->getState() == HURT)
+			{
+				if (_camX + _background->getWidth() >= WINSIZEX)
+				{
+					if (_character->getDirection() == 0)
+					{
+						_camX += SPEED;
+						_character->setSpeed(0);
+						_character->setCharacterX(_camera.right);
+					}
+					else
+					{
+						_camX -= SPEED;
+						_character->setSpeed(0);
+						_character->setCharacterX(_camera.left);
+					}
+				}
 			}
 		}
 	}
