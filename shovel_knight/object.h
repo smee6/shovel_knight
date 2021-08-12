@@ -34,6 +34,7 @@ struct tagSandBlock //흙더미
 	int type;
 	int index;
 	int currentFrame;								// 프레임 이미지 인덱스
+	bool isAlive;									// 흙더미가 터졌는지에 대한 여부
 };
 
 struct tagLadder //사다리
@@ -127,6 +128,7 @@ public:
 	void ladderSetting();
 	void npcSetting();
 	void objectMakeRect();
+	void objectDeath();
 
 	int getPlatformrMax() { return PLATFORMMAX; }
 	int getLadderMax() { return LADDERMAX; }
@@ -141,6 +143,7 @@ public:
 	tagSandBlock getSandBlock(int arrNum) { return _sandBlock[arrNum]; }
 	tagBubble getBubble(int arrNum) { return _bubble[arrNum]; }
 
+	void setSandBlock(int arrNum, bool isAlive);
 
 	virtual HRESULT init();
 	virtual void release();

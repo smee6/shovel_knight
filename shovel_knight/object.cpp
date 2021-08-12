@@ -12,6 +12,12 @@ object::~object()
 }
 
 
+void object::setSandBlock(int arrNum, bool isAlive) // 괄호안의 있는것들은 매개변수
+{
+	//샌드블록[arrNum-배열의 숫자].isAlive = 상단의 매개변수값으로 넣어준다.
+	_sandBlock[arrNum].isAlive = isAlive;
+}
+
 HRESULT object::init()
 {
 	//필요한것
@@ -259,6 +265,7 @@ void object::sandBlockSetting()
 
 	for (int i = 0; i < SANDBLOCKMAX; i++) //
 	{
+		_sandBlock[i].isAlive = true;
 		_sandBlock[i].type = 1;
 		_sandBlock[i].index = 10;
 		_mapCamera->MakeObject(_sandBlock[i].rc, _sandBlock[i].x, _sandBlock[i].y, 100, 100);
@@ -453,6 +460,17 @@ void object::objectMakeRect()
 		_mapCamera->MakeObject(_platform[i].rc, _platform[i].x, _platform[i].y, 190, 50);
 	}
 
+}
+
+void object::objectDeath()
+{
+	for (int i = 0; i < SANDBLOCKMAX; i++)
+	{
+		if (_sandBlock[i].isAlive == false)
+		{
+			_mapCamera->MakeObject(_sandBlock[i].rc, _sandBlock[i].x, _sandBlock[i].y, 0, 0);
+		}
+	}
 }
 
 void object::render()
