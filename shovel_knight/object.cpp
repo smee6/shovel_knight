@@ -343,9 +343,12 @@ void object::ladderSetting()
 	_ladder[5].x = 10600;
 	_ladder[5].y = 3100;
 	_ladder[5].height = 230;
+	
+	//13960, 3670
+	_ladder[6].x = 14080;
+	_ladder[6].y = 4000;
+	_ladder[6].height = 230;
 
-	//_ladder[6].x = 100;
-	//_ladder[6].y = 100;
 	//
 	//_ladder[7].x = 100;
 	//_ladder[7].y = 100;

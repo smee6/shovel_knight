@@ -2,9 +2,6 @@
 #include "gameNode.h"
 
 
-#define SPEED 5.0f									// 이동 속도
-#define GRAVITY 0.8f								// 중력 값
-#define JUMPPOWER 18.0f								// 점프 파워 값
 #define PLATFORMMAX 5
 #define SANDBLOCKMAX 128
 #define LADDERMAX 15
@@ -134,12 +131,15 @@ public:
 	int getPlatformrMax() { return PLATFORMMAX; }
 	int getLadderMax() { return LADDERMAX; }
 	int getNPCMAX() { return NPCMAX; }
-	int getBubbleMax() { return BUBBLEMAX; }
-	int getSandBlockMax() { return SANDBLOCKMAX; }
+	int getSandBlockMAX() { return SANDBLOCKMAX; }
+	int getBubbleMAx() { return BUBBLEMAX; }
+
 
 	tagPlatform getPlatform(int arrNum) { return _platform[arrNum]; }
 	tagLadder getLadder(int arrNum) {	return _ladder[arrNum];}
 	tagNPC getNPC(int arrNum) { return _npc[arrNum]; }
+	tagSandBlock getSandBlock(int arrNum) { return _sandBlock[arrNum]; }
+	tagBubble getBUbble(int arrNum) { return _bubble[arrNum]; }
 
 
 	virtual HRESULT init();

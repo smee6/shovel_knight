@@ -62,7 +62,7 @@ void mapCamera::update()
 	CameraMove(_camera);
 
 	
-
+	//테스트
 }
 
 //여기다 그려줘라!!!
