@@ -33,12 +33,13 @@ HRESULT character::init() // 인잇
     _state = IDLE;
     _direction = 0;
     _isPixelCollision = true;
-    _isRectCollision = false;
+    _isPlatformCollision = false;
+    _isSandBlockCollision = false;
     _speed = _gravity = _jumpPower = 0;
     _currentHP = _maxHP = 8;
     _currentFrame = _count = 0;
     _damage = 1;
-    _hangFrameCount = _rcNum = 0;
+    _hangFrameCount = _platformNum = _sandBlockNum = 0;
 
     _imgRect = RectMakeCenter(_x, _y, _characterImg->getFrameWidth(), _characterImg->getFrameHeight());
     _collisionRect = RectMakeCenter(_x, _y, 56, 96);
@@ -54,9 +55,8 @@ void character::update() // 업데이트
 {
     gravity();
     controll();
-    pixelCollision();
-    rectCollision();
-    attackRect();
+    attackRectMake();
+    collision();
     imgFrameSetting();
 
     // 렉트 갱신
@@ -208,6 +208,39 @@ void character::controll() // 캐릭터 컨트롤키 처리
     }
 }
 
+void character::attackRectMake() // 캐릭터 공격 렉트 처리
+{
+    // 공격, 점프 공격 시 렉트 생성
+    if (_state == ATTACK || _state == JUMPATTACK)
+    {
+        if (_direction == 0) _attackCollisionRect = RectMakeCenter(_collisionRect.right + 13, _y + 16, 140, 80); // 변경
+        if (_direction == 1) _attackCollisionRect = RectMakeCenter(_collisionRect.left - 13, _y + 16, 140, 80); // 변경
+    }
+
+    // 점프 하단 공격 렉트 생성
+    if (_state == JUMPBOTTOMATTACK)
+    {
+        _attackCollisionRect = RectMakeCenter(_x, _y + 24, 56, 48);
+    }
+
+    // 공격, 점프 공격, 점프 하단 공격 상태가 아니면 공격 렉트 초기화
+    if (_state != ATTACK && _state != JUMPATTACK && _state != JUMPBOTTOMATTACK)
+    {
+        _attackCollisionRect = RectMakeCenter(0, 0, 0, 0);
+    }
+}
+
+void character::collision() // 충돌 처리 묶음
+{
+    pixelCollision();
+    platformCollision();
+    sandBlockCollision();
+    hangCollision();
+    bubbleCollision();
+    enemyCollision();
+    //jewelCollision();
+}
+
 void character::pixelCollision() // 캐릭터 픽셀 충돌 처리
 {
     // 걸어다닐 때 바닥에 픽셀 충돌 안 되면 바닥으로 떨어진다
@@ -218,7 +251,8 @@ void character::pixelCollision() // 캐릭터 픽셀 충돌 처리
 
         for (int i = proveYBottom; i < proveYBottom + 1; i++)
         {
-            if (_isRectCollision == true) break; // 렉트 충돌 중일 때는 픽셀 충돌 필요 없으니 브레이크
+            if (_isPlatformCollision == true) break; // 렉트 충돌 중일 때는 픽셀 충돌 필요 없으니 브레이크
+            if (_isSandBlockCollision == true) break;
 
             // 캐릭터 충돌 렉트의 오른쪽 값, proveYBottom 좌표 값에 마젠타가 없으면 체크
             if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), _collisionRect.left - _mapCamera->getCamX(), i) != RGB(255, 0, 255))
@@ -350,11 +384,13 @@ void character::pixelCollision() // 캐릭터 픽셀 충돌 처리
     }
 }
 
-void character::rectCollision() // 캐릭터 렉트 충돌 처리
+void character::platformCollision() // 캐릭터 렉트 충돌 처리
 {
-    // 장애물과 렉트 충돌 처리
+    // 발판과 렉트 충돌 처리
     for (int i = 0; i < _object->getPlatformrMax(); i++)
     {
+        if (_isSandBlockCollision == true) break;
+
         RECT temp;
         RECT platform = _object->getPlatform(i).rc;
         if (IntersectRect(&temp, &_collisionRect, &platform))
@@ -364,7 +400,7 @@ void character::rectCollision() // 캐릭터 렉트 충돌 처리
 
             if (width > height) // 상하 충돌
             {
-                _rcNum = i; // 현재 어떤 장애물에 충돌했는지 기록
+                _platformNum = i; // 현재 어떤 장애물에 충돌했는지 기록
 
                 if (_collisionRect.bottom <= platform.bottom) // 밑에서 충돌
                 {
@@ -372,7 +408,7 @@ void character::rectCollision() // 캐릭터 렉트 충돌 처리
                     _gravity = _jumpPower = 0; // 중력, 점프파워 초기화
                     _state = IDLE;
                     imgSetting();
-                    _isRectCollision = true;
+                    _isPlatformCollision = true;
                 }
                 else // 위에서 충돌
                 {
@@ -396,22 +432,127 @@ void character::rectCollision() // 캐릭터 렉트 충돌 처리
     }
 
     // 밑에 장애물이 없다면 중력받아 떨어지는 처리
-    if (_isPixelCollision == false)
+    if (_isPixelCollision == false && _isSandBlockCollision == false)
     {
-        RECT platform = _object->getPlatform(_rcNum).rc;
-        POINT check;
-        check.x = _x;
-        check.y = _collisionRect.bottom + 1;
+        int collisionCount = 0;
+        RECT platform = _object->getPlatform(_platformNum).rc;
+        POINT check, check2;
+        check.x = _collisionRect.left;
+        check2.x = _collisionRect.right;
+        check.y = check2.y = _collisionRect.bottom + 1;
 
         if (!PtInRect(&platform, check) && _state == RUN)
+        {
+            collisionCount++;
+        }
+        if (!PtInRect(&platform, check2) && _state == RUN)
+        {
+            collisionCount++;
+        }
+        if (collisionCount >= 2)
         {
             _gravity = GRAVITY;
             _state = JUMP;
             imgSetting();
-            _isRectCollision = false;
+            _isPlatformCollision = false;
+        }
+    }
+}
+
+void character::sandBlockCollision()
+{
+    // 샌드 블록 공격 처리
+    for (int i = 0; i < _object->getSandBlockMAX(); i++)
+    {
+        RECT temp;
+        RECT sandBlock = _object->getSandBlock(i).rc;
+        if (IntersectRect(&temp, &_attackCollisionRect, &sandBlock))
+        {
+            _object->setSandBlock(i, false); // 샌드블록 제거 신호
+
+            if (_state == JUMPBOTTOMATTACK) // 점프 하단 공격이였을 경우
+            {
+                _jumpPower = JUMPPOWER;
+                _gravity = GRAVITY;
+            }
         }
     }
 
+    // 샌드블록과 렉트 충돌 처리
+    for (int i = 0; i < _object->getSandBlockMAX(); i++)
+    {
+        if (_isPlatformCollision == true) break;
+
+        RECT temp;
+        RECT sandBlock = _object->getSandBlock(i).rc;
+        if (IntersectRect(&temp, &_collisionRect, &sandBlock))
+        {
+            float width = temp.right - temp.left;
+            float height = temp.bottom - temp.top;
+
+            if (width > height) // 상하 충돌
+            {
+                _sandBlockNum = i; // 현재 어떤 장애물에 충돌했는지 기록
+
+                if (_collisionRect.bottom <= sandBlock.bottom) // 밑에서 충돌
+                {
+                    _y -= height;
+                    _gravity = _jumpPower = 0; // 중력, 점프파워 초기화
+                    _state = IDLE;
+                    imgSetting();
+                    _isSandBlockCollision = true;
+                }
+                else // 위에서 충돌
+                {
+                    _y += height;
+                    _jumpPower = 0;
+                }
+            }
+
+            if (width <= height) // 옆면 충돌
+            {
+                if (_collisionRect.left <= sandBlock.left) // 왼쪽에서 충돌
+                {
+                    _x -= width;
+                }
+                else // 오른쪽에서 충돌
+                {
+                    _x += width;
+                }
+            }
+        }
+    }
+
+    // 밑에 장애물이 없다면 중력받아 떨어지는 처리
+    if (_isPixelCollision == false && _isPlatformCollision == false)
+    {
+        int collisionCount = 0;
+        RECT sandBlock = _object->getSandBlock(_sandBlockNum).rc;
+        POINT check, check2;
+        check.x = _collisionRect.left;
+        check2.x = _collisionRect.right;
+        check.y = check2.y = _collisionRect.bottom + 1;
+
+        if (!PtInRect(&sandBlock, check) && _state == RUN)
+        {
+            collisionCount++;
+        }
+        if (!PtInRect(&sandBlock, check2) && _state == RUN)
+        {
+            collisionCount++;
+        }
+        if (collisionCount >= 2)
+        {
+            _gravity = GRAVITY;
+            _state = JUMP;
+            imgSetting();
+            _isSandBlockCollision = false;
+        }
+    }
+}
+
+void character::hangCollision() // 캐릭터 사다리 충돌 처리
+{
     // 어떤 사다리 충돌했는지 체크
     for (int i = 0; i < _object->getLadderMax(); i++)
     {
@@ -449,15 +590,24 @@ void character::rectCollision() // 캐릭터 렉트 충돌 처리
             }
         }
     }
+}
 
-    // 몬스터 피격 처리
-    for (int i = 0; i < _enemyManager->getVEnemy().size(); i++)
+void character::bubbleCollision() // 캐릭터 버블 충돌 처리
+{
+    // 버블 공격 처리
+    for (int i = 0; i < _object->getBubbleMAX(); i++)
     {
         RECT temp;
-        RECT enemy = _enemyManager->getVEnemy()[i]->getRect();
-        if (IntersectRect(&temp, &_collisionRect, &enemy))
+        RECT bubble = _object->getBubble(i).rc;
+        if (IntersectRect(&temp, &_attackCollisionRect, &bubble))
         {
-            if(_state != HURT && _state != JUMPBOTTOMATTACK) hitDamage(1); // 아닐 땐 데미지 받음
+            _object->setBubble(i, false); // 버블 제거 신호
+
+            if (_state == JUMPBOTTOMATTACK) // 점프 하단 공격이였을 경우
+            {
+                _jumpPower = JUMPPOWER;
+                _gravity = GRAVITY;
+            }
         }
     }
 
@@ -471,63 +621,42 @@ void character::rectCollision() // 캐릭터 렉트 충돌 처리
             if (_state != HURT && _state != JUMPBOTTOMATTACK) hitDamage(1); // 아닐 땐 데미지 받음
         }
     }
-
 }
 
-void character::attackRect() // 캐릭터 공격 렉트 처리
+void character::enemyCollision() // 캐릭터 몬스터 충돌 처리
 {
-    // 공격, 점프 공격 시 렉트 생성
-    if (_state == ATTACK || _state == JUMPATTACK)
+    for (int i = 0; i < _enemyManager->getVEnemy().size(); i++)
     {
-        if (_direction == 0) _attackCollisionRect = RectMakeCenter(_collisionRect.right + 13, _y, 140, 96); // 변경
-        if (_direction == 1) _attackCollisionRect = RectMakeCenter(_collisionRect.left - 13, _y, 140, 96); // 변경
-    }
+        RECT temp;
+        RECT enemy = _enemyManager->getVEnemy()[i]->getRect();
 
-    // 점프 하단 공격 렉트 생성
-    if (_state == JUMPBOTTOMATTACK)
-    {
-        _attackCollisionRect = RectMakeCenter(_x, _y + 24, 56, 48);
-
-        // 몬스터 공격 처리
-        for (int i = 0; i <_enemyManager->getVEnemy().size(); i++)
+        if (IntersectRect(&temp, &_attackCollisionRect, &enemy)) // 몬스터에게 공격 처리
         {
-            RECT temp;
-            RECT enemy = _enemyManager->getVEnemy()[i]->getRect();
-            if (IntersectRect(&temp, &_attackCollisionRect, &enemy))
+            if (_state == JUMPBOTTOMATTACK) // 점프 하단 공격이면 위로 다시 튀어 오름
             {
                 _jumpPower = JUMPPOWER;
                 _gravity = GRAVITY;
             }
         }
 
-        // 버블 공격 처리
-        for (int i = 0; i < _object->getBubbleMAX(); i++)
+        if (IntersectRect(&temp, &_collisionRect, &enemy))  // 몬스터에게 피격 처리
         {
-            RECT temp;
-            RECT bubble = _object->getBubble(i).rc;
-            if (IntersectRect(&temp, &_attackCollisionRect, &bubble))
-            {
-                _jumpPower = JUMPPOWER;
-                _gravity = GRAVITY;
-            }
-        }
-
-        for (int i = 0; i < _object->getSandBlockMAX(); i++)
-        {
-            RECT temp;
-            RECT sandBlock = _object->getSandBlock(i).rc;
-            if (IntersectRect(&temp, &_attackCollisionRect, &sandBlock))
-            {
-                _object->setSandBlock(i, false);
-            }
+            if (_state != HURT && _state != JUMPBOTTOMATTACK) hitDamage(1); 
         }
     }
+}
 
-    // 공격, 점프 공격, 점프 하단 공격 상태가 아니면 공격 렉트 초기화
-    if (_state != ATTACK && _state != JUMPATTACK && _state != JUMPBOTTOMATTACK)
-    {
-        _attackCollisionRect = RectMakeCenter(0, 0, 0, 0);
-    }
+void character::jewelCollision() // 캐릭터 쥬얼 충돌 처리
+{
+    //for (int i = 0; i < _object->getJewelMax(); i++)
+    //{
+    //    RECT temp;
+    //    RECT jewel = _object->getJewel(i).rc;
+    //    if (IntersectRect(&temp, &_collisionRect, &jewel))
+    //    {
+    //        _
+    //    }
+    //}
 }
 
 void character::imgFrameSetting() // 캐릭터 이미지 프레임 처리
@@ -669,7 +798,7 @@ void character::imgSetting() // 상태에 따라 이미지 처리
     }
 }
 
-void character::idle(bool direction)
+void character::idle(bool direction) // 캐릭터 아이들 처리
 {
     if (_state != JUMP && _state != JUMPATTACK && _state != JUMPBOTTOMATTACK && _state != HANG)
     {
@@ -681,7 +810,7 @@ void character::idle(bool direction)
     _speed = 0;
 }
 
-void character::run(bool direction)
+void character::run(bool direction) // 캐릭터 달리기 처리
 {
     if (_state != JUMP && _state != JUMPATTACK && _state != JUMPBOTTOMATTACK && _state != HANG)
     {
@@ -696,14 +825,15 @@ void character::run(bool direction)
     else if (direction == 0) _x += _speed;
 }
 
-void character::jump()
+void character::jump() // 캐릭터 점프 처리
 {
     _jumpPower = JUMPPOWER;
     _gravity = GRAVITY;
     _state = JUMP;
     imgSetting();
     _isPixelCollision = false;
-    _isRectCollision = false;
+    _isPlatformCollision = false;
+    _isSandBlockCollision = false;
 }
 
 void character::attack() // 캐릭터 공격 처리
@@ -723,7 +853,7 @@ void character::attack() // 캐릭터 공격 처리
     }
 }
 
-void character::jumpBottomAttack()
+void character::jumpBottomAttack() // 캐릭터 하단 공격 처리
 {
     _state = JUMPBOTTOMATTACK;
     imgSetting();
@@ -744,7 +874,7 @@ void character::hangOut() // 캐릭터 사다리 벗어나는 처리
     imgSetting();
 }
 
-void character::skill()
+void character::skill() // 캐릭터 스킬 처리
 {
     if (SCENEMANAGER->checkFire() == true) // 불지팡이 보유 중일 때
     {
@@ -805,9 +935,17 @@ void character::render() // 캐릭터 렌더
     // 캐릭터 렉트 렌더
     if (KEYMANAGER->isToggleKey(VK_TAB))
     {
-        Rectangle(getMemDC(), _imgRect);
-        Rectangle(getMemDC(), _collisionRect);
-        Rectangle(getMemDC(), _attackCollisionRect);
+        Rectangle(getMemDC(), _imgRect);                                // 이미지 렉트
+        HBRUSH brush = CreateSolidBrush(RGB(0, 255, 0));
+        HBRUSH oldbrush = (HBRUSH)SelectObject(getMemDC(), brush);
+        Rectangle(getMemDC(), _collisionRect);                          // 캐릭터 충돌 렉트(녹색)
+        SelectObject(getMemDC(), oldbrush);
+        DeleteObject(brush);
+        HBRUSH brush2 = CreateSolidBrush(RGB(255, 0, 0));
+        HBRUSH oldbrush2 = (HBRUSH)SelectObject(getMemDC(), brush2);
+        Rectangle(getMemDC(), _attackCollisionRect);                    // 캐릭터 공격 렉트(빨강색)
+        SelectObject(getMemDC(), oldbrush2);
+        DeleteObject(brush2);
     }
 
     //// 현재 프레임
