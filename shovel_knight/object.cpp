@@ -25,7 +25,6 @@ HRESULT object::init()
 
 
 	platformSetting();
-	
 	potionSetting();
 	jewelSetting();
 	bubbleSetting();
@@ -48,7 +47,7 @@ void object::release()
 
 void object::update()
 {
-	//platformSetting();
+	platformSetting();
 	//ladderSetting();
 	//npcSetting();
 	//sandBlockSetting();
@@ -204,6 +203,7 @@ void object::platformSetting()
 	_platform[1].min = 50;
 	_platform[1].max = 150;
 	//
+	//13920, 2920 
 	//_platform[2].x = 300;
 	//_platform[2].y = 300;
 	//_platform[2].min = 50;
@@ -345,16 +345,19 @@ void object::ladderSetting()
 	_ladder[5].height = 230;
 	
 	//13960, 3670
-	_ladder[6].x = 14080;
-	_ladder[6].y = 4000;
-	_ladder[6].height = 230;
+	_ladder[6].x = 15050;
+	_ladder[6].y = 3500;
+	_ladder[6].height = 600;
 
-	//
-	//_ladder[7].x = 100;
-	//_ladder[7].y = 100;
-	//
-	//_ladder[8].x = 100;
-	//_ladder[8].y = 100;
+	//13920, 2920 
+	_ladder[7].x = 13910;
+	_ladder[7].y = 2750;
+	_ladder[7].height = 550;
+	
+	//13920, 2190
+	_ladder[8].x = 14250;
+	_ladder[8].y = 2050;
+	_ladder[8].height = 350;
 	//
 	//_ladder[9].x = 100;
 	//_ladder[9].y = 100;
