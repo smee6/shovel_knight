@@ -32,6 +32,16 @@ HRESULT openingScene::init()
 	IMAGEMANAGER->addImage("bgm4", "image/UI/sound_4.bmp", 1280, 720, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("bgm5", "image/UI/sound_5.bmp", 1280, 720, true, RGB(255, 0, 255));
 
+
+	SOUNDMANAGER->addSound("bgm", "sounds/bgm.mp3", true, true);
+	SOUNDMANAGER->addSound("ok", "sounds/okay.mp3", false, false);
+	SOUNDMANAGER->addSound("cancle", "sounds/cancle.mp3", false, false);
+	SOUNDMANAGER->addSound("start", "sounds/start.mp3", false, false);
+	SOUNDMANAGER->addSound("cursor", "sounds/cursormove.mp3", false, false);
+	SOUNDMANAGER->addSound("select", "sounds/select.mp3", false, false);
+	SOUNDMANAGER->addSound("heal", "sounds/heal.mp3", false, false);
+	SOUNDMANAGER->addSound("laugh", "sounds/laugh.mp3", false, false);
+
 	return S_OK;
 }
 
@@ -43,17 +53,22 @@ void openingScene::update()
 {
 	if (!isOption) {
 		if (KEYMANAGER->isOnceKeyDown('S') && titleNum < 4) {
+			SOUNDMANAGER->play("cursor", soundValue);
 			titleNum += 1;
+			
 		}
 		if (KEYMANAGER->isOnceKeyDown('W') && titleNum > 1) {
+			SOUNDMANAGER->play("cursor", soundValue);
 			titleNum -= 1;
 		}
 	}
 	if (isOption) {
 		if (KEYMANAGER->isOnceKeyDown('S') && optionNum < 3) {
+			SOUNDMANAGER->play("cursor", soundValue);
 			optionNum += 1;
 		}
 		if (KEYMANAGER->isOnceKeyDown('W') && optionNum > 1) {
+			SOUNDMANAGER->play("cursor", soundValue);
 			optionNum -= 1;
 		}
 	}
@@ -63,22 +78,26 @@ void openingScene::update()
 		{
 		case 1:
 			if (KEYMANAGER->isOnceKeyDown('J')) {
-
+				SOUNDMANAGER->play("start", soundValue);
+				SOUNDMANAGER->play("bgm", 0.5f);
 				SCENEMANAGER->changeScene("ÀÎ°ÔÀÓ¾À");
+
 
 			}
 		case 2:
 			if (KEYMANAGER->isOnceKeyDown('J')) {
-
+				SOUNDMANAGER->play("cancle", soundValue);
 
 			}
 		case 3:
 			if (KEYMANAGER->isOnceKeyDown('J')) {
+				SOUNDMANAGER->play("select", soundValue);
 				isOption = true;
 
 			}
 		case 4:
 			if (KEYMANAGER->isOnceKeyDown('J')) {
+				SOUNDMANAGER->play("select", soundValue);
 				PostQuitMessage(0);
 			}
 		}
@@ -89,15 +108,18 @@ void openingScene::update()
 		{
 		case 1:
 			if (KEYMANAGER->isOnceKeyDown('J')) {
+				SOUNDMANAGER->play("select", soundValue);
 				isOption = false;
 			}
 		case 2:
 			if (KEYMANAGER->isOnceKeyDown('A') && sound > 1) {
 				sound--;
+				SOUNDMANAGER->play("ok", soundValue);
 
 			}
 			if (KEYMANAGER->isOnceKeyDown('D') && sound < 5) {
 				sound++;
+				SOUNDMANAGER->play("ok", soundValue);
 
 			}
 
@@ -105,10 +127,12 @@ void openingScene::update()
 		case 3:
 			if (KEYMANAGER->isOnceKeyDown('A') && bgm > 1) {
 				bgm--;
+				SOUNDMANAGER->play("ok", bgmValue);
 
 			}
 			if (KEYMANAGER->isOnceKeyDown('D') && bgm < 5) {
 				bgm++;
+				SOUNDMANAGER->play("ok", bgmValue);
 
 			}
 		}

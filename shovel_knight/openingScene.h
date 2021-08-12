@@ -12,6 +12,9 @@ private:
 	int sound = 3;
 	int bgm = 3;
 
+	float bgmValue = bgm * 0.3f;
+	float soundValue = sound * 0.3f;
+
 public:
 	openingScene();
 	~openingScene();
