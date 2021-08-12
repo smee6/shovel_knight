@@ -450,17 +450,16 @@ void character::rectCollision() // 캐릭터 렉트 충돌 처리
         }
     }
 
-    //// 피격 테스트용 렉트
-    //RECT temp2;
-    //if (IntersectRect(&temp2, &_collisionRect, &_attackRc))
-    //{
-    //    if (_state == JUMPBOTTOMATTACK) // 하단 공격일 때는 위로 다시 튀어오름
-    //    {
-    //        _jumpPower = JUMPPOWER;
-    //        _gravity = GRAVITY;
-    //    }
-    //    else hitDamage(1); // 아닐 땐 데미지 받음
-    //}
+    // 몬스터 피격 처리
+    for (int i = 0; i < _enemyManager->getVEnemy().size(); i++)
+    {
+        RECT temp;
+        RECT enemy = _enemyManager->getVEnemy()[i]->getRect();
+        if (IntersectRect(&temp, &_collisionRect, &enemy))
+        {
+            if(_state != HURT && _state != JUMPBOTTOMATTACK) hitDamage(1); // 아닐 땐 데미지 받음
+        }
+    }
 }
 
 void character::attackRect() // 캐릭터 공격 렉트 처리
@@ -475,31 +474,19 @@ void character::attackRect() // 캐릭터 공격 렉트 처리
     // 점프 하단 공격 렉트 생성
     if (_state == JUMPBOTTOMATTACK)
     {
-        _attackCollisionRect = RectMakeCenter(_x, _y, 56, 96);
+        _attackCollisionRect = RectMakeCenter(_x, _y + 24, 56, 48);
 
-        //// 점프 하단 공격 처리
-        //for (_enemyManager->getVIEnemy() = _enemyManager->getVEnemy().begin(); _enemyManager->getVIEnemy() != _enemyManager->getVEnemy().end(); ++_enemyManager->getVIEnemy())
-        //{
-        //    RECT temp;
-        //    RECT enemy = _enemyManager->(*getVEnemy()).
-        //        if (IntersectRect(&temp, &_attackCollisionRect, &))
-        //        {
-        //            _jumpPower = JUMPPOWER;
-        //            _gravity = GRAVITY;
-        //        }
-
-
-        //    if ((*_viMinion)->getMonsterIndex() == 1 || (*_viMinion)->getMonsterIndex() == 2)
-        //    {
-        //        _bullet->removeCollision(_mapM->getMapCollisionRc(i));
-        //    }
-        //    if ((*_viMinion)->getMonsterIndex() == 10001)
-        //    {
-        //        _bullet->reflectionCollision(_mapM->getMapCollisionRc(i));
-        //    }
-        //    
-        //}
-
+        // 점프 하단 공격 처리
+        for (int i = 0; i <_enemyManager->getVEnemy().size(); i++)
+        {
+            RECT temp;
+            RECT enemy = _enemyManager->getVEnemy()[i]->getRect();
+            if (IntersectRect(&temp, &_attackCollisionRect, &enemy))
+            {
+                _jumpPower = JUMPPOWER;
+                _gravity = GRAVITY;
+            }
+        }
     }
 
     // 공격, 점프 공격, 점프 하단 공격 상태가 아니면 공격 렉트 초기화
