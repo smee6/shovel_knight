@@ -35,6 +35,7 @@ HRESULT object::init()
 	//_mapCamera->init();
 
 	IMAGEMANAGER->addImage("ÇÃ·§Æû", "image/object/obj_platform.bmp", 190, 50, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addImage("Å«Èë´õ¹Ì", "image/object/obj_sandblock.bmp", 100, 100, true, RGB(255, 0, 255));
 
 	platformSetting();
 	potionSetting();
@@ -271,8 +272,14 @@ void object::sandBlockSetting()
 	
 
 	// Å« Èë´õ¹ÌÀÇ °¢ ÁÂÇ¥
-	_sandBlock[0].x = 1550;
-	_sandBlock[0].y = 2600;
+	_sandBlock[0].x = 6200;
+	_sandBlock[0].y = 2380;
+
+	_sandBlock[1].x = 6200;
+	_sandBlock[1].y = 2480;
+
+	_sandBlock[2].x = 6200;
+	_sandBlock[2].y = 2580;
 
 	// ÀÛÀº Èë´õ¹ÌÀÇ °¢ ÁÂÇ¥
 
@@ -506,8 +513,14 @@ void object::render()
 	for (int i = 0; i < PLATFORMMAX; i++)
 	{
 		IMAGEMANAGER->findImage("ÇÃ·§Æû")->render(getMemDC(), _platform[i].rc.left, _platform[i].rc.top);
-		//("ÇÃ·§Æû", getMemDC(), _platform[i].rc.left, _platform[i].rc.top);
 	}
+
+	for (int i = 0; i < SANDBLOCKMAX; i++)
+	{
+		if (!_sandBlock[i].isAlive) continue;
+		IMAGEMANAGER->findImage("Å«Èë´õ¹Ì")->render(getMemDC(), _sandBlock[i].rc.left, _sandBlock[i].rc.top);
+	}
+
 
 	if (KEYMANAGER->isToggleKey(VK_TAB))
 	{
@@ -516,7 +529,6 @@ void object::render()
 		for (int i = 0; i < LADDERMAX; i++) // »ç´Ù¸® 11°³
 		{
 			Rectangle(getMemDC(), _ladder[i].rc);
-			
 		}
 
 		for (int i = 0; i < PLATFORMMAX; i++) // ¿òÁ÷ÀÌ´Â ¹ßÆÇ 5°³
