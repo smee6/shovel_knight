@@ -132,7 +132,7 @@ public:
 	int getLadderMax() { return LADDERMAX; }
 	int getNPCMAX() { return NPCMAX; }
 	int getSandBlockMAX() { return SANDBLOCKMAX; }
-	int getBubbleMAx() { return BUBBLEMAX; }
+	int getBubbleMAX() { return BUBBLEMAX; }
 
 
 	tagPlatform getPlatform(int arrNum) { return _platform[arrNum]; }
