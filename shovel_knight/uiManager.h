@@ -1,6 +1,7 @@
 #pragma once
 #include "gameNode.h"
-#include "character.h"
+
+class character;
 
 class uiManager : public gameNode
 {
@@ -15,6 +16,8 @@ private:
 	bool talkOpen;
 	int	 talkCnt;
 	int	 vibcnt;
+
+	character* _character;
 	
 
 public:
@@ -41,6 +44,6 @@ public:
 	void talklingManOn();
 	void talklingManOff();
 
-
+	void setcharacterMemoryAddressLink(character* character) { _character = character; }// 캐릭터 클라스 링크 
 };
 
