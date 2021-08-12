@@ -74,7 +74,7 @@ void character::gravity() // 캐릭터 중력 처리
     if (_state == JUMP || _state == JUMPATTACK || _state == JUMPBOTTOMATTACK || _state == HURT || _state == SKILL) // 점프 상태, 피격 상태일 때
     {
         _jumpPower -= _gravity;
-        if (_jumpPower < -20.0f) _jumpPower = -20.0f;
+        if (_jumpPower < -18.0f) _jumpPower = -18.0f;
         _y -= _jumpPower;
     }
 
