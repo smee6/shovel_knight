@@ -40,7 +40,7 @@ HRESULT openingScene::init()
 	SOUNDMANAGER->addSound("cursor", "sounds/cursormove.mp3", false, false);
 	SOUNDMANAGER->addSound("select", "sounds/select.mp3", false, false);
 	SOUNDMANAGER->addSound("heal", "sounds/heal.mp3", false, false);
-	SOUNDMANAGER->addSound("laugh", "sounds/laugh.mp3", false, false);
+	SOUNDMANAGER->addSound("laugh", "sounds/laugh.mp3", false, false); 
 
 	return S_OK;
 }
@@ -79,7 +79,7 @@ void openingScene::update()
 		case 1:
 			if (KEYMANAGER->isOnceKeyDown('J')) {
 				SOUNDMANAGER->play("start", soundValue);
-				SOUNDMANAGER->play("bgm", 0.5f);
+				SOUNDMANAGER->play("bgm", 0.3f);
 				SCENEMANAGER->changeScene("¿Œ∞‘¿”æ¿");
 
 
