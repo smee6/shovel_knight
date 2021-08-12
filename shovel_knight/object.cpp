@@ -18,6 +18,11 @@ void object::setSandBlock(int arrNum, bool isAlive) // 괄호안의 있는것들은 매개�
 	_sandBlock[arrNum].isAlive = isAlive;
 }
 
+void object::setBubble(int arrNum, bool isAlive)
+{
+	_bubble[arrNum].isAlive = isAlive;
+}
+
 HRESULT object::init()
 {
 	//필요한것
@@ -470,6 +475,14 @@ void object::objectDeath()
 		if (_sandBlock[i].isAlive == false)
 		{
 			_mapCamera->MakeObject(_sandBlock[i].rc, _sandBlock[i].x, _sandBlock[i].y, 0, 0);
+		}
+	}
+
+	for (int i = 0; i < BUBBLEMAX; i++)
+	{
+		if (_bubble[i].isAlive == false)
+		{
+			_mapCamera->MakeObject(_bubble[i].rc, _bubble[i].x, _bubble[i].y, 0, 0);
 		}
 	}
 }

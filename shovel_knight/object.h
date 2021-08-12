@@ -144,6 +144,7 @@ public:
 	tagBubble getBubble(int arrNum) { return _bubble[arrNum]; }
 
 	void setSandBlock(int arrNum, bool isAlive);
+	void setBubble(int arrNum, bool isAlive);
 
 	virtual HRESULT init();
 	virtual void release();
