@@ -48,7 +48,7 @@ void enemyManager::enemySetting()
 	enemy* enemyBeeto;
 
     enemyBeeto = new beeto;
-    enemyBeeto->init("beeto", PointMake(1600, 580), E_LEFT);
+    enemyBeeto->init("steed", PointMake(1600, 580), E_LEFT);
     _vEnemy.push_back(enemyBeeto);
 
     enemyBeeto = new beeto;
@@ -95,7 +95,7 @@ void enemyManager::enemyImageStorage()
     IMAGEMANAGER->addFrameImage("beeto and die", "image/shovel knight_beeto and die.bmp", 123, 81, 2, 2, true, RGB(255, 0, 255));
     //steed
     IMAGEMANAGER->addFrameImage("steed and idle", "image/shovel knight_steed and idle.bmp", 99, 100, 1, 2, true, RGB(255, 0, 255));
-    IMAGEMANAGER->addFrameImage("steed and move", "image/shovel knight_steed and move.bmp", 396, 100, 4, 2, true, RGB(255, 0, 255));
+    IMAGEMANAGER->addFrameImage("steed and move", "image/shovel knight_steed and move.bmp", 600, 200, 4, 2, true, RGB(255, 0, 255));
     IMAGEMANAGER->addFrameImage("steed and die", "image/shovel knight_steed and die.bmp", 35, 100, 1, 2, true, RGB(255, 0, 255));
     IMAGEMANAGER->addFrameImage("steed and legacy", "image/shovel knight_steed and legacy.bmp", 80, 40, 1, 2, true, RGB(255, 0, 255));
     //wizard
