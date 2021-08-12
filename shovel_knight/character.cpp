@@ -505,10 +505,20 @@ void character::attackRect() // 캐릭터 공격 렉트 처리
         {
             RECT temp;
             RECT bubble = _object->getBubble(i).rc;
-            if (IntersectRect(&temp, &_collisionRect, &bubble))
+            if (IntersectRect(&temp, &_attackCollisionRect, &bubble))
             {
                 _jumpPower = JUMPPOWER;
                 _gravity = GRAVITY;
+            }
+        }
+
+        for (int i = 0; i < _object->getSandBlockMAX(); i++)
+        {
+            RECT temp;
+            RECT sandBlock = _object->getSandBlock(i).rc;
+            if (IntersectRect(&temp, &_attackCollisionRect, &sandBlock))
+            {
+                _object->setSandBlock(i, false);
             }
         }
     }
