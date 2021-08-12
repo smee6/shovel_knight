@@ -76,8 +76,10 @@ void enemyManager::collision()
     for (int i = 0; i < getVEnemy().size(); i++)
     {
         RECT temp;
-        if (IntersectRect(&temp, &_character->getCharacterRect(), &
-            getVEnemy()[i]->getRect()) && getVEnemy()[i]->getDefense() == false)
+        RECT enemyRC = getVEnemy()[i]->getRect();
+        RECT characterRC = _character->getAttackRect();
+
+        if (IntersectRect(&temp, &characterRC, &enemyRC) && getVEnemy()[i]->getDefense() == false)
         {
             getVEnemy()[i]->setDefense(true);
             getVEnemy()[i]->setHit(1);
