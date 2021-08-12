@@ -74,7 +74,7 @@ void character::gravity() // 캐릭터 중력 처리
     if (_state == JUMP || _state == JUMPATTACK || _state == JUMPBOTTOMATTACK || _state == HURT || _state == SKILL) // 점프 상태, 피격 상태일 때
     {
         _jumpPower -= _gravity;
-        if (_jumpPower < -20.0f) _jumpPower = -20.0f;
+        if (_jumpPower < -18.0f) _jumpPower = -18.0f;
         _y -= _jumpPower;
     }
 
@@ -460,6 +460,18 @@ void character::rectCollision() // 캐릭터 렉트 충돌 처리
             if(_state != HURT && _state != JUMPBOTTOMATTACK) hitDamage(1); // 아닐 땐 데미지 받음
         }
     }
+
+    // 버블 피격 처리
+    for (int i = 0; i < _object->getBubbleMAX(); i++)
+    {
+        RECT temp;
+        RECT bubble = _object->getBubble(i).rc;
+        if (IntersectRect(&temp, &_collisionRect, &bubble))
+        {
+            if (_state != HURT && _state != JUMPBOTTOMATTACK) hitDamage(1); // 아닐 땐 데미지 받음
+        }
+    }
+
 }
 
 void character::attackRect() // 캐릭터 공격 렉트 처리
@@ -476,12 +488,24 @@ void character::attackRect() // 캐릭터 공격 렉트 처리
     {
         _attackCollisionRect = RectMakeCenter(_x, _y + 24, 56, 48);
 
-        // 점프 하단 공격 처리
+        // 몬스터 공격 처리
         for (int i = 0; i <_enemyManager->getVEnemy().size(); i++)
         {
             RECT temp;
             RECT enemy = _enemyManager->getVEnemy()[i]->getRect();
             if (IntersectRect(&temp, &_attackCollisionRect, &enemy))
+            {
+                _jumpPower = JUMPPOWER;
+                _gravity = GRAVITY;
+            }
+        }
+
+        // 버블 공격 처리
+        for (int i = 0; i < _object->getBubbleMAX(); i++)
+        {
+            RECT temp;
+            RECT bubble = _object->getBubble(i).rc;
+            if (IntersectRect(&temp, &_collisionRect, &bubble))
             {
                 _jumpPower = JUMPPOWER;
                 _gravity = GRAVITY;

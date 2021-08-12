@@ -2,7 +2,7 @@
 #include "gameNode.h"
 
 #define GRAVITY 1.0f								// 중력 값
-#define JUMPPOWER 20.0f								// 점프 파워 값
+#define JUMPPOWER 22.0f								// 점프 파워 값
 
 // 상태 정의
 enum state
@@ -107,6 +107,7 @@ public:
 	void setState(state state) { _state = state; }								// 캐릭터의 상태 설정
 	void setJumpPower(float jumpPower) { _jumpPower = jumpPower; }				// 캐릭터의 상태 설정
 	void setSpeed(float speed) { _speed = speed; }								// 캐릭터의 상태 설정
+	void setCurrentHP(int currentHP) { _currentHP = currentHP; }				// 캐릭터의 체력 설정
 
 	void setMapCameraMemoryAddressLink(mapCamera* mapCamera) { _mapCamera = mapCamera; }			// 맵 카매라 클라스 링크 
 	void setObjectMemoryAddressLink(object* object) { _object = object; }							// 오브젝트 클라스 링크 
