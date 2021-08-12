@@ -66,6 +66,7 @@ void object::update()
 	imgFrameSetting();
 
 	objectMove();
+	objectDeath();
 }
 
 void object::collision()
