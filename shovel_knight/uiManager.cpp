@@ -103,13 +103,15 @@ void uiManager::render()
 					IMAGEMANAGER->findImage("t3")->render(getMemDC());
 					if (talkCnt >= 240)
 					{
+						SOUNDMANAGER->pause("bgm");
 						IMAGEMANAGER->findImage("t4")->render(getMemDC(),vibcnt, vibcnt/2);
-						SOUNDMANAGER->play("laugh", 0.6f);
+						SOUNDMANAGER->play("laugh", 0.3f);
 						if (talkCnt >= 360)
 						{
 							IMAGEMANAGER->findImage("t5")->render(getMemDC());
 							if (talkCnt >= 500)
 							{
+								SOUNDMANAGER->resume("bgm");
 								talkCnt = 0;
 								talklingManOff();
 							}
