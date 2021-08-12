@@ -272,6 +272,8 @@ void object::sandBlockSetting()
 	
 
 	// Å« Èë´õ¹ÌÀÇ °¢ ÁÂÇ¥
+
+	// ÃÊÀÔºÎ 3´Ü Èë´õ¹Ì
 	_sandBlock[0].x = 6200;
 	_sandBlock[0].y = 2380;
 
@@ -280,6 +282,133 @@ void object::sandBlockSetting()
 
 	_sandBlock[2].x = 6200;
 	_sandBlock[2].y = 2580;
+
+	//»ç´Ù¸®2°³ ¸Ê 1Ãþ Èë´õ¹Ì 10080, 2930
+	_sandBlock[3].x = 10500;
+	_sandBlock[3].y = 3400;
+
+	_sandBlock[4].x = 10600;
+	_sandBlock[4].y = 3450;
+
+	_sandBlock[5].x = 10700;
+	_sandBlock[5].y = 3400;
+
+	_sandBlock[6].x = 10800;
+	_sandBlock[6].y = 3450;
+
+	_sandBlock[7].x = 10900;
+	_sandBlock[7].y = 3400;
+
+	//»ç´Ù¸®2°³ ¸Ê 3Ãþ Èë´õ¹Ì 10080, 2930
+	_sandBlock[8].x = 10700;
+	_sandBlock[8].y = 3040;
+
+	_sandBlock[9].x = 10800;
+	_sandBlock[9].y = 2990;
+	
+	_sandBlock[10].x = 10900;
+	_sandBlock[10].y = 3040;
+	
+	_sandBlock[11].x = 11000;
+	_sandBlock[11].y = 2990;
+	
+	_sandBlock[12].x = 11100;
+	_sandBlock[12].y = 3040;
+
+	// ³ÐÀº ÆòÁö - Á¹¶ó¸¹ÀÌ »Ñ·Á¾ßµÈ´Ù ÀÌÆR ½Å³­´Ù 12640, 3660
+	//1Ãþ
+	_sandBlock[14].x = 12880;
+	_sandBlock[14].y = 4120;
+
+	//_sandBlock[15].x = 12980;
+	//_sandBlock[15].y = 4120;
+
+	_sandBlock[16].x = 13080;
+	_sandBlock[16].y = 4120;
+
+	_sandBlock[17].x = 13180;
+	_sandBlock[17].y = 4120;
+
+	_sandBlock[18].x = 13280;
+	_sandBlock[18].y = 4120;
+
+	_sandBlock[19].x = 13380;
+	_sandBlock[19].y = 4120;
+
+	_sandBlock[20].x = 13480;
+	_sandBlock[20].y = 4120;
+
+	_sandBlock[21].x = 13580;
+	_sandBlock[21].y = 4120;
+
+	//2Ãþ
+
+	_sandBlock[22].x = 12980;
+	_sandBlock[22].y = 4020;
+
+	//_sandBlock[23].x = 13080;
+	//_sandBlock[23].y = 4020;
+
+	_sandBlock[24].x = 13180;
+	_sandBlock[24].y = 4020;
+
+	_sandBlock[25].x = 13280;
+	_sandBlock[25].y = 4020;
+
+	//_sandBlock[26].x = 13380;
+	//_sandBlock[26].y = 4020;
+
+	_sandBlock[27].x = 13480;
+	_sandBlock[27].y = 4020;
+
+	//3Ãþ
+	_sandBlock[28].x = 13080;
+	_sandBlock[28].y = 3920;
+
+	_sandBlock[29].x = 13180;
+	_sandBlock[29].y = 3920;
+
+	_sandBlock[30].x = 13280;
+	_sandBlock[30].y = 3920;
+
+	//¿ë¾Õ 17760, 1470
+	_sandBlock[31].x = 17905;
+	_sandBlock[31].y = 1750;
+
+	_sandBlock[32].x = 18007;
+	_sandBlock[32].y = 1750;
+
+	//Èë´õ¹Ì ´ë·®»ý»ê 19040, 720
+
+	//3Ãþ
+	_sandBlock[33].x = 19755;
+	_sandBlock[33].y = 990;
+
+	_sandBlock[34].x = 19855;
+	_sandBlock[34].y = 990;
+
+	_sandBlock[35].x = 19955;
+	_sandBlock[35].y = 990;
+
+	//2Ãþ
+	_sandBlock[36].x = 19755;
+	_sandBlock[36].y = 1090;
+	
+	_sandBlock[37].x = 19855;
+	_sandBlock[37].y = 1090;
+	
+	_sandBlock[38].x = 19955;
+	_sandBlock[38].y = 1090;
+	
+	//1Ãþ
+	_sandBlock[39].x = 19755;
+	_sandBlock[39].y = 1190;
+	
+	_sandBlock[40].x = 19855;
+	_sandBlock[40].y = 1190;
+	
+	_sandBlock[41].x = 19955;
+	_sandBlock[41].y = 1190;
 
 	// ÀÛÀº Èë´õ¹ÌÀÇ °¢ ÁÂÇ¥
 
@@ -311,9 +440,26 @@ void object::bubbleSetting()
 	//_bubble[0].startY;
 	//_bubble[0].topMax;
 
-	_bubble[0].startX = 1700;
+	//7500, 2200
+	_bubble[0].startX = 8100;
 	_bubble[0].startY = 2700;
 	_bubble[0].topMax = 2300;
+
+	//13920, 3670
+	_bubble[1].startX = 14450;
+	_bubble[1].startY = 4200;
+	_bubble[1].topMax = 4000;
+
+	//19040, 1420
+	
+	_bubble[2].startX = 19900;
+	_bubble[2].startY = 2000;
+	_bubble[2].topMax = 2400;
+
+	_bubble[3].startX = 20100;
+	_bubble[3].startY = 2000;
+	_bubble[3].topMax = 2400;
+	
 
 	for (int i = 0; i < BUBBLEMAX; i++) //11°³
 	{
