@@ -29,6 +29,7 @@ HRESULT object::init()
 
 	//_mapCamera->init();
 
+	IMAGEMANAGER->addImage("ÇÃ·§Æû", "image/object/obj_platform.bmp", 190, 50, true, RGB(255, 0, 255));
 
 	platformSetting();
 	potionSetting();
@@ -489,7 +490,11 @@ void object::render()
 	sprintf_s(str, "ladder.y : %d", _ladder[0].rc.top);
 	TextOut(getMemDC(), 10, 140, str, strlen(str));
 
-
+	for (int i = 0; i < PLATFORMMAX; i++)
+	{
+		IMAGEMANAGER->findImage("ÇÃ·§Æû")->render(getMemDC(), _platform[i].rc.left, _platform[i].rc.top);
+		//("ÇÃ·§Æû", getMemDC(), _platform[i].rc.left, _platform[i].rc.top);
+	}
 
 	if (KEYMANAGER->isToggleKey(VK_TAB))
 	{
