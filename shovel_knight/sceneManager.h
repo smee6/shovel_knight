@@ -50,6 +50,7 @@ public:
 
 	// 파이어 유물을 사다.
 	void getFire();
+	void delFire();
 
 	// 파이어 유물을  보유하고 있는지 아닌지 체크해서 반환해준다;
 	bool checkFire();
