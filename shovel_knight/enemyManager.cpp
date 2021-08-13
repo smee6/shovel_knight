@@ -112,11 +112,11 @@ void enemyManager::enemySetting()
     _vEnemy.push_back(enemyBeeto);
 
     enemyBeeto = new wizard;
-    enemyBeeto->init("wizard", PointMake(7800, 480), E_LEFT);
+    enemyBeeto->init("wizard", PointMake(8300, 330), E_LEFT);
     _vEnemy.push_back(enemyBeeto);
 
-    enemyBeeto = new beeto;
-    enemyBeeto->init("beeto", PointMake(7800, 580 - WINSIZEY), E_RIGHT);
+    enemyBeeto = new steed;
+    enemyBeeto->init("steed", PointMake(7800, 585 - WINSIZEY), E_RIGHT);
     _vEnemy.push_back(enemyBeeto);
 
     enemyBeeto = new dragon;
@@ -137,6 +137,90 @@ void enemyManager::enemySetting()
 
     enemyBeeto = new beeto;
     enemyBeeto->init("beeto", PointMake(10950, 2020), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new steed;
+    enemyBeeto->init("steed", PointMake(12200, 2025), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new wizard;
+    enemyBeeto->init("wizard", PointMake(14900, 1920), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(14700, 1355), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new wizard;
+    enemyBeeto->init("wizard", PointMake(14300, 1355), E_RIGHT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(14300, 530), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(14600, 530), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(14800, 380 - WINSIZEY), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(16000, 480 - WINSIZEY), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(18200, 630 - WINSIZEY), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new wizard;
+    enemyBeeto->init("wizard", PointMake(18800, 630 - WINSIZEY), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new wizard;
+    enemyBeeto->init("wizard", PointMake(19700, 530 - WINSIZEY), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(19800, 630 - WINSIZEY * 2), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(19500, 630 - WINSIZEY * 2), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(19200, 630 - WINSIZEY * 2), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(19200, 430 - WINSIZEY * 2), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(19820, 430 - WINSIZEY * 3), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(20000, 530 - WINSIZEY * 3), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new wizard;
+    enemyBeeto->init("wizard", PointMake(20600, 580 - WINSIZEY * 3), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(20900, 380 - WINSIZEY * 3), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(21400, 580 - WINSIZEY * 3), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new dragon;
+    enemyBeeto->init("dragon", PointMake(22200, 580 - WINSIZEY * 3), E_LEFT);
     _vEnemy.push_back(enemyBeeto);
 }
 

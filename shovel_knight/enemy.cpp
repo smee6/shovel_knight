@@ -80,12 +80,6 @@ void enemy::render()
 {
 	draw();
 
-	char str[128];
-	sprintf_s(str, "_currentFrame : %d", (int)_x);
-	TextOut(getMemDC(), 0, 550, str, strlen(str));
-	sprintf_s(str, "_currentFrame : %d", (int)_y);
-	TextOut(getMemDC(), 0, 570, str, strlen(str));
-
 	//TAB키 눌렀을 때 감지렉트와 적렉트 확인
 	if (KEYMANAGER->isToggleKey(VK_TAB))
 	{
