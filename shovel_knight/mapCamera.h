@@ -1,7 +1,7 @@
 #pragma once
 #include "gameNode.h"
 
-#define SPEED 5.0f
+#define SPEED 10.0f
 #define WIDTH 55
 #define HEIGHT 96
 
@@ -63,8 +63,7 @@ public:
 
 
 	void MakeObject(RECT& rect, int left, int right, int top, int bottom);		// 그 외 오브젝트(카메라 이동)
-
-
+	
 	//void RendObject(RECT rect[], int max);
 	//void RendObject(RECT& rect);
 

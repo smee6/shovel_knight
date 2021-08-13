@@ -36,6 +36,7 @@ HRESULT object::init()
 
 	IMAGEMANAGER->addImage("플랫폼", "image/object/obj_platform.bmp", 190, 50, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("큰흙더미", "image/object/obj_sandblock.bmp", 100, 100, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addImage("물방울", "image/object/obj_bubble2.bmp", 100, 100, true, RGB(255, 0, 255));
 
 	platformSetting();
 	potionSetting();
@@ -174,11 +175,12 @@ void object::objectMove()
 
 	//버블 움직임
 
-	for (int i = 0; i < BUBBLEMAX; i++)
+	for (int i = 0; i < 4; i++)
 	{
-		if (_bubble[i].topMax < _bubble[i].y) // .y 가 .startY가 되어야되는거 아닌가..?
+		if (_bubble[i].topMax >= _bubble[i].y) 
 		{
 				_bubble[i].speed = 1;
+				_bubble[i].y = _bubble[i].topMax;
 
 				//버블의 좌우 움직임 불값 전환을 위한 문구
 				if (_bubble[i].min > _bubble[i].x)
@@ -201,13 +203,18 @@ void object::objectMove()
 				}
 				
 		}
-		else 	_bubble[i].y -= _bubble[i].speed;
+		else
+		{
+			_bubble[i].speed = 2;
+			_bubble[i].y -= _bubble[i].speed;
+		}
+		
+	
 
 		if (!_bubble[i].isAlive) // 버블이 터졌을때 초기값을 불러와야 함
 		{
 			_bubble[i].x = _bubble[i].startX;
 			_bubble[i].y = _bubble[i].startY;
-			_bubble[i].topMax;
 			_bubble[i].speed = 2;
 			_bubble[i].isAlive = true;
 		}
@@ -264,8 +271,8 @@ void object::platformSetting()
 	_platform[2].min = _platform[2].x - 200;
 	_platform[2].max = _platform[2].x + 200;
 	
-	_platform[3].min = _platform[3].y - 200;
-	_platform[3].max = _platform[3].y + 200;
+	_platform[3].min = _platform[3].y - 80;
+	_platform[3].max = _platform[3].y + 80;
 	
 	_platform[4].min = _platform[4].y - 200;
 	_platform[4].max = _platform[4].y + 200;
@@ -470,28 +477,28 @@ void object::bubbleSetting()
 {
 	//버블의 시작 좌표값
 
-	//_bubble[0].startX;
-	//_bubble[0].startY;
-	//_bubble[0].topMax;
+	//_bubble[0].startX; //시작좌표 X
+	//_bubble[0].startY; //시작좌표 Y
+	//_bubble[0].topMax; //최대상승 높이
 
 	//7500, 2200
 	_bubble[0].startX = 8100;
-	_bubble[0].startY = 2700;
-	_bubble[0].topMax = _bubble[0].startY + 300;
+	_bubble[0].startY = 2900;
+	_bubble[0].topMax = _bubble[0].startY - 300;;
 
 	//13920, 3670
 	_bubble[1].startX = 14450;
 	_bubble[1].startY = 4200;
-	_bubble[1].topMax = _bubble[1].startY - 400;
+	_bubble[1].topMax = _bubble[1].startY - 100;
 
 	//19040, 1420
 	
 	_bubble[2].startX = 19900;
-	_bubble[2].startY = 2000;
+	_bubble[2].startY = 2200;
 	_bubble[2].topMax = _bubble[2].startY - 200;
 
 	_bubble[3].startX = 20100;
-	_bubble[3].startY = 2000;
+	_bubble[3].startY = 2200;
 	_bubble[3].topMax = _bubble[3].startY - 200;
 	
 
@@ -500,10 +507,10 @@ void object::bubbleSetting()
 		_bubble[i].isAlive = true;
 		_bubble[i].type = 3;
 		_bubble[i].index = 1;
-		_bubble[i].speed = 1; // 테스트 해보면서 수정
-		_mapCamera->MakeObject(_bubble[i].rc, _bubble[i].startX, _bubble[i].startY, 70, 70);
-		
-		
+		_bubble[i].speed = 2; // 테스트 해보면서 수정
+		_mapCamera->MakeObject(_bubble[i].rc, _bubble[i].startX, _bubble[i].startY, 100, 100);
+		_bubble[i].x = _bubble[i].startX;
+		_bubble[i].y = _bubble[i].startY;
 	}
 
 	
@@ -633,7 +640,7 @@ void object::objectMakeRect()
 {
 	for (int i = 0; i < BUBBLEMAX; i++)
 	{
-		_mapCamera->MakeObject(_bubble[i].rc, _bubble[i].startX, _bubble[i].startY, 70, 70);
+		_mapCamera->MakeObject(_bubble[i].rc, _bubble[i].x, _bubble[i].y, 100, 100);
 	}
 
 	for (int i = 0; i < NPCMAX; i++)
@@ -689,6 +696,26 @@ void object::render()
 	sprintf_s(str, "ladder.y : %d", _ladder[0].rc.top);
 	TextOut(getMemDC(), 10, 140, str, strlen(str));
 
+	sprintf_s(str, "bubble.x : %d", _bubble[0].rc.left);
+	TextOut(getMemDC(), 1110, 120, str, strlen(str));
+
+	sprintf_s(str, "bubble.y : %d", _bubble[0].rc.top);
+	TextOut(getMemDC(), 1110, 140, str, strlen(str));
+
+	sprintf_s(str, "bubble.min : %f", _bubble[0].min);
+	TextOut(getMemDC(), 1110, 160, str, strlen(str));
+
+	sprintf_s(str, "bubble.max : %f", _bubble[0].max);
+	TextOut(getMemDC(), 1110, 180, str, strlen(str));
+
+	sprintf_s(str, "bubble.startX : %f", _bubble[0].startX);
+	TextOut(getMemDC(), 1110, 200, str, strlen(str));
+
+	sprintf_s(str, "bubble.startY : %f", _bubble[0].startY);
+	TextOut(getMemDC(), 1110, 220, str, strlen(str));
+
+	sprintf_s(str, "bubble.topMax : %f", _bubble[0].topMax);
+	TextOut(getMemDC(), 1110, 240, str, strlen(str));
 	for (int i = 0; i < PLATFORMMAX; i++)
 	{
 		IMAGEMANAGER->findImage("플랫폼")->render(getMemDC(), _platform[i].rc.left, _platform[i].rc.top);
@@ -699,6 +726,13 @@ void object::render()
 		if (!_sandBlock[i].isAlive) continue;
 		IMAGEMANAGER->findImage("큰흙더미")->render(getMemDC(), _sandBlock[i].rc.left, _sandBlock[i].rc.top);
 	}
+
+	for (int i = 0; i < BUBBLEMAX; i++)
+	{
+		if (!_bubble[i].isAlive) continue;
+		IMAGEMANAGER->findImage("물방울")->render(getMemDC(), _bubble[i].rc.left, _bubble[i].rc.top);
+	}
+
 
 
 	if (KEYMANAGER->isToggleKey(VK_TAB))
