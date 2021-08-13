@@ -87,6 +87,15 @@ void enemy::update(int x, int y, float characterX, float characterY)
 		
 		_proveRC = RectMake(_imageRC.left - 300, _imageRC.top - 200,
 			_imageName->getFrameWidth() + 600, _imageName->getFrameHeight() + 200);
+		
+		if (_enemyState == E_ATTACK)
+		{
+			_lazerRC = RectMake(_rc.left - _lazer->getFrameWidth(), _rc.top - 40, _lazer->getFrameWidth(), _lazer->getFrameHeight());
+		}
+		else
+		{
+			_lazerRC = RectMake(_rc.left - _lazer->getFrameWidth(), _rc.top - 40, 0, 0);
+		}
 	}
 }
 
@@ -101,6 +110,7 @@ void enemy::render()
 		Rectangle(getMemDC(), _bodyRC);
 		//Rectangle(getMemDC(), _characterRC);
 		Rectangle(getMemDC(), _rc);
+		Rectangle(getMemDC(), _lazerRC);
 	}
 }
 

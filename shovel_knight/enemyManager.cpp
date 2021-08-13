@@ -15,6 +15,7 @@ enemyManager::~enemyManager()
 HRESULT enemyManager::init()
 {
     enemyImageStorage();        //적 이미지 초기화
+    SCENEMANAGER->setBossHp(12);
 
     return S_OK;
 }
