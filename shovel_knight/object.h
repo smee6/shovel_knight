@@ -8,6 +8,7 @@
 #define NPCMAX 3
 #define BUBBLEMAX 20
 #define JEWELMAX 50
+#define FOODMAX 10
 
 class character;
 class mapCamera;
@@ -88,6 +89,18 @@ struct tagJewel //보석
 	bool isAlive;									// 보석이 있는지에 대한 여부
 };
 
+struct tagFood //음식
+{
+	image* objectImage;								//	오브젝트의 이미지
+	RECT rc;										//	오브젝트의 렉트
+	float x, y;										//	오브젝트의 중점 X, Y 값
+
+	int type;
+	int index;
+
+	bool isAlive;									// 음식이 있는지에 대한 여부
+};
+
 
 class object : public gameNode
 {
@@ -107,6 +120,8 @@ private:
 	tagBubble _bubble[BUBBLEMAX];
 
 	tagJewel _jewel[JEWELMAX];
+
+	tagFood _food[FOODMAX];
 
 	character* _character;
 
@@ -144,6 +159,7 @@ public:
 	void npcSetting();
 	void objectMakeRect();
 	void objectDeath();
+	void foodSetting();
 
 	int getPlatformrMax() { return PLATFORMMAX; }
 	int getLadderMax() { return LADDERMAX; }
@@ -151,6 +167,7 @@ public:
 	int getSandBlockMAX() { return SANDBLOCKMAX; }
 	int getBubbleMAX() { return BUBBLEMAX; }
 	int getJewelMAX() { return JEWELMAX; }
+	int getFoodMAX() { return FOODMAX; }
 
 	tagPlatform getPlatform(int arrNum) { return _platform[arrNum]; }
 	tagLadder getLadder(int arrNum) {	return _ladder[arrNum];}
@@ -158,10 +175,12 @@ public:
 	tagSandBlock getSandBlock(int arrNum) { return _sandBlock[arrNum]; }
 	tagBubble getBubble(int arrNum) { return _bubble[arrNum]; }
 	tagJewel getJewel(int arrNum) { return _jewel[arrNum]; }
+	tagFood getFood(int arrNum) { return _food[arrNum]; }
 
 	void setSandBlock(int arrNum, bool isAlive);
 	void setBubble(int arrNum, bool isAlive);
 	void setJewel(int arrNum, bool isAlive);
+	void setFood(int arrNum, bool isAlive);
 
 	virtual HRESULT init();
 	virtual void release();

@@ -28,6 +28,11 @@ void object::setJewel(int arrNum, bool isAlive)
 	_jewel[arrNum].isAlive = isAlive;
 }
 
+void object::setFood(int arrNum, bool isAlive)
+{
+	_food[arrNum].isAlive = isAlive;
+}
+
 HRESULT object::init()
 {
 	//필요한것
@@ -44,6 +49,7 @@ HRESULT object::init()
 	IMAGEMANAGER->addImage("물방울", "image/object/obj_bubble2.bmp", 100, 100, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("보석", "image/object/obj_jewel2.bmp", 80, 61, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("동전", "image/object/obj_coin.bmp", 50, 38, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addImage("치느님", "image/object/obj_chicken2.bmp", 90, 60, true, RGB(255, 0, 255));
 
 	platformSetting();
 	potionSetting();
@@ -54,6 +60,7 @@ HRESULT object::init()
 	npcSetting();
 	sandBlockSetting();
 	imgFrameSetting();
+	foodSetting();
 
 	
 
@@ -515,6 +522,16 @@ void object::jewelSetting()
 	_jewel[16].y = 3950;
 	_jewel[16].index = 13;
 
+	//흙더미 많은 곳
+
+	_jewel[17].x = 12990;
+	_jewel[17].y = 4120;
+	_jewel[17].index = 12;
+
+	_jewel[18].x = 13090;
+	_jewel[18].y = 4020;
+	_jewel[18].index = 12;
+
 	for (int i = 0; i < JEWELMAX; i++) //
 	{
 
@@ -699,6 +716,24 @@ void object::npcSetting()
 	
 }
 
+void object::foodSetting()
+{
+	_food[0].x =  13390;
+	_food[0].y =  4060;
+
+	_food[1].x = 19630;
+	_food[1].y = 1000;
+
+	for (int i = 0; i < FOODMAX; i++) //
+	{
+
+		_food[i].type = 2;
+		_food[i].index = 2;
+		_food[i].isAlive = true;
+		_mapCamera->MakeObject(_food[i].rc, _food[i].x, _food[i].y, 90, 60);
+	}
+}
+
 void object::objectMakeRect()
 {
 	for (int i = 0; i < BUBBLEMAX; i++)
@@ -733,6 +768,10 @@ void object::objectMakeRect()
 		_mapCamera->MakeObject(_jewel[i].rc, _jewel[i].x, _jewel[i].y, 80, 61);
 	}
 
+	for (int i = 0; i < FOODMAX; i++)
+	{
+		_mapCamera->MakeObject(_food[i].rc, _food[i].x, _food[i].y, 90, 60);
+	}
 }
 
 void object::objectDeath()
@@ -762,7 +801,19 @@ void object::objectDeath()
 
 		}
 	}
+
+	for (int i = 0; i < FOODMAX; i++)
+	{
+		if (_food[i].isAlive == false)
+		{
+
+			_mapCamera->MakeObject(_food[i].rc, _food[i].x, _food[i].y, 0, 0);
+
+		}
+	}
 }
+
+
 
 void object::render()
 {
@@ -806,6 +857,12 @@ void object::render()
 		}
 	}
 
+	for (int i = 0; i < FOODMAX; i++)
+	{
+		if (!_food[i].isAlive) continue;
+		IMAGEMANAGER->findImage("치느님")->render(getMemDC(), _food[i].rc.left, _food[i].rc.top);
+	}
+
 	if (KEYMANAGER->isToggleKey(VK_TAB))
 	{
 
@@ -839,6 +896,10 @@ void object::render()
 		{
 			Rectangle(getMemDC(), _jewel[i].rc);
 		}
-	
+
+		for (int i = 0; i < FOODMAX; i++) // 물방울
+		{
+			Rectangle(getMemDC(), _food[i].rc);
+		}
 	}	
 }
