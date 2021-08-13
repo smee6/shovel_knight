@@ -28,6 +28,8 @@ protected:
 	image*			_imageName;			//적이 사용할 이미지 이름
 	RECT			_rc;				//적 렉트
 	RECT			_proveRC;			//적이 플레이어를 감지하는 렉트
+	RECT			_bodyRC;			//드레곤 몸통 렉트
+	RECT			_imageRC;			//드레곤 이미지 렉트
 
 	//이미지 프레임 번호로 사용할 변수
 	int				_currentFrameX;
@@ -62,6 +64,7 @@ protected:
 	bool _isDefense;	//플레이어에게 맞은 상태일 때 피격되지 않게 하는 변수
 	int _defenseCount;	//카운트가 지나면 다시 _is_isDefense를 false로 바꿀 변수
 	int _smokeCount;
+	int _dieCount;
 
 	//적 죽었을 때 모션에 필요한 변수
 	float _jumpPower;
@@ -99,6 +102,7 @@ public:
 	
 	inline RECT getRect() { return _rc; }					//적 렉트에 대한 접근자
 	inline RECT getproveRect() { return _proveRC; }			//적 감지렉트에 대한 접근자
+	inline RECT getbodyRect() { return _bodyRC; }			//적 바디렉트에 대한 접근자
 	inline string getEnemyName() { return _enemyName; }		//적 이름에 대한 접근자 (혹시 몰라서 만들어둠)
 	
 	inline bool getDefense() { return _isDefense; }			// true일 때 플레이어와 충돌 되지 않게 하는 접근자

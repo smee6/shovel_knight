@@ -35,6 +35,7 @@ HRESULT enemy::init(const char* imageName, POINT position, ENEMYDIRECTION enemyD
 	_attackCount = 0;
 	_hitCount = 0;
 	_smokeCount = 0;
+	_dieCount = 0;
 
 	_jumpPower = 5.0f;
 	_gravity = 0.25f;
@@ -61,9 +62,12 @@ void enemy::update(int x, int y, float characterX, float characterY)
 
 	_characterRC = RectMakeCenter(characterX, characterY, 100, 100);
 
-	_rc = RectMake(x + _x, 2200  + y +_y - _imageName->getFrameHeight(),
-		_imageName->getFrameWidth(), _imageName->getFrameHeight());
-	
+	if (_enemyName != "dragon")
+	{
+		_rc = RectMake(x + _x, 2200 + y + _y - _imageName->getFrameHeight(),
+			_imageName->getFrameWidth(), _imageName->getFrameHeight());
+	}
+
 	if (_enemyName == "steed")
 	{
 		_proveRC = RectMake(_rc.left - 100, _rc.top,
@@ -71,7 +75,16 @@ void enemy::update(int x, int y, float characterX, float characterY)
 	}
 	if (_enemyName == "dragon")
 	{
-		_proveRC = RectMake(_rc.left - 300, _rc.top - 200,
+		_rc = RectMake(x + _x + 100, 2200 + y + _y - 100,
+			120, 90);
+		
+		_bodyRC = RectMake(x + _x + 220, 2200 + y + _y - _imageName->getFrameHeight() + 50,
+			_imageName->getFrameWidth() -220, _imageName->getFrameHeight() - 50);
+
+		_imageRC = RectMake(x + _x, 2200 + y + _y - _imageName->getFrameHeight(),
+			_imageName->getFrameWidth(), _imageName->getFrameHeight());
+		
+		_proveRC = RectMake(_imageRC.left - 300, _imageRC.top - 200,
 			_imageName->getFrameWidth() + 600, _imageName->getFrameHeight() + 200);
 	}
 }
@@ -80,10 +93,11 @@ void enemy::render()
 {
 	draw();
 
-	//TAB키 눌렀을 때 감지렉트와 적렉트 확인
+	//TAB키 눌렀을 때 적렉트 확인
 	if (KEYMANAGER->isToggleKey(VK_TAB))
 	{
 		Rectangle(getMemDC(), _proveRC);
+		Rectangle(getMemDC(), _bodyRC);
 		//Rectangle(getMemDC(), _characterRC);
 		Rectangle(getMemDC(), _rc);
 	}
@@ -91,7 +105,14 @@ void enemy::render()
 
 void enemy::draw()
 {
-	_imageName->frameRender(getMemDC(), _rc.left, _rc.top, _currentFrameX, _currentFrameY);
+	if (_enemyName != "dragon")
+	{
+		_imageName->frameRender(getMemDC(), _rc.left, _rc.top, _currentFrameX, _currentFrameY);
+	}
+	if (_enemyName == "dragon")
+	{
+		_imageName->frameRender(getMemDC(), _imageRC.left, _imageRC.top, _currentFrameX, _currentFrameY);
+	}
 }
 
 void enemy::enemyFrame()
@@ -215,21 +236,29 @@ void enemy::attack()
 
 void enemy::die()
 {
-
-	if (_characterX > _rc.left)
+	if (_enemyName != "dragon")
 	{
-		_enemyDirection = E_RIGHT;
-		_x -= 5;
-		_y -= _jumpPower;
-		_jumpPower -= _gravity;
+		if (_characterX > _rc.left)
+		{
+			_enemyDirection = E_RIGHT;
+			_x -= 5;
+			_y -= _jumpPower;
+			_jumpPower -= _gravity;
+		}
+
+		if (_characterX < _rc.left)
+		{
+			_enemyDirection = E_LEFT;
+			_x += 5;
+			_y -= _jumpPower;
+			_jumpPower -= _gravity;
+		}
 	}
-
-	if (_characterX < _rc.left)
+	if (_enemyName == "dragon")
 	{
-		_enemyDirection = E_LEFT;
-		_x += 5;
-		_y -= _jumpPower;
-		_jumpPower -= _gravity;
+		_dieCount++;
+
+		if (_dieCount >= 100)	_isDelete = true;
 	}
 }
 

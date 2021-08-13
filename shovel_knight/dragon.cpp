@@ -36,14 +36,21 @@ void dragon::attack()
 
 void dragon::enemyAI()
 {
+	enemy::enemyAI();
+	
 	RECT temp;
 	if (IntersectRect(&temp, &_characterRC, &_proveRC))
 	{
 		_attackCount++;
 
-		if (_attackCount < 100)
+		if (_attackCount < 50)
 		{
 			_enemyState = E_MOVE;
 		}
+	}
+
+	if (_hitCount >= 7)
+	{
+		_enemyState = E_DIE;
 	}
 }
