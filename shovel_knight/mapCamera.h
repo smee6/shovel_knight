@@ -1,7 +1,7 @@
 #pragma once
 #include "gameNode.h"
 
-#define SPEED 10.0f
+#define SPEED 5.0f
 #define WIDTH 55
 #define HEIGHT 96
 
