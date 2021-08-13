@@ -26,7 +26,7 @@ void hellFire::fire(float x, float y, float angle)
 	tagBullet bullet;
 	ZeroMemory(&bullet, sizeof(tagBullet));
 	bullet.bulletImage = new image;
-	bullet.bulletImage->init("image/object/bullet.bmp", 0, 0, 21, 21, 1, 1, true, RGB(255, 0, 255));
+	bullet.bulletImage->init("image/object/shovel_fireball.bmp", 0, 0, 156, 52, 6, 2, true, RGB(255, 0, 255));
 	bullet.speed = 10.0f;
 	bullet.angle = angle;
 	bullet.x = bullet.fireX = x;
