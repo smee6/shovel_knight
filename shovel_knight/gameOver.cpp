@@ -11,6 +11,7 @@ gameOver::~gameOver()
 
 HRESULT gameOver::init()
 {
+	cnt = 0;
 	IMAGEMANAGER->addImage("gameover", "image/UI/gameover.bmp", 1280, 720, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("gameover1", "image/UI/gameover1.bmp", 1280, 720, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("gameover2", "image/UI/gameover2.bmp", 1280, 720, true, RGB(255, 0, 255));
@@ -47,5 +48,8 @@ void gameOver::render()
 	if (cnt >= 45) IMAGEMANAGER->findImage("gameover7")->render(getMemDC());
 	if (cnt >= 50) IMAGEMANAGER->findImage("gameover8")->render(getMemDC());
 
-	if (cnt >250) SCENEMANAGER->changeScene("title");
+	if (cnt > 250) {
+		SCENEMANAGER->changeScene("title");
+	} 
+	
 }
