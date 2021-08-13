@@ -443,8 +443,8 @@ void object::potionSetting()
 
 void object::jewelSetting()
 {
-	_jewel[0].x;
-	_jewel[0].y;
+	_jewel[0].x = 1000;
+	_jewel[0].y = 2700;
 
 
 	for (int i = 0; i < JEWELMAX; i++) //
@@ -452,7 +452,7 @@ void object::jewelSetting()
 
 		_jewel[i].type = 2;
 		_jewel[i].index = 12;
-				
+		_jewel[i].isAlive = true;
 		_mapCamera->MakeObject(_jewel[i].rc, _jewel[i].x, _jewel[i].y, 50, 50);
 				
 		// void MakeObject(RECT& rect, int left, int right, int top, int bottom); 복붙해온거
@@ -683,7 +683,7 @@ void object::objectDeath()
 	{
 		if (_jewel[i].isAlive == false)
 		{
-			_mapCamera->MakeObject(_jewel[i].rc, _jewel[i].x, _jewel[i].y, 50, 50);
+			_mapCamera->MakeObject(_jewel[i].rc, _jewel[i].x, _jewel[i].y, 0, 0);
 		}
 	}
 }
@@ -746,5 +746,11 @@ void object::render()
 		{
 			Rectangle(getMemDC(), _bubble[i].rc);
 		}
+
+		for (int i = 0; i < JEWELMAX; i++) // 물방울
+		{
+			Rectangle(getMemDC(), _jewel[i].rc);
+		}
+	
 	}	
 }
