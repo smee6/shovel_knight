@@ -54,7 +54,6 @@ protected:
 	//캐릭터 감지렉트
 	RECT _characterRC;
 
-	int _initCount;		//연기 현재프레임X 0으로 초기화할 변수
 
 	int				_imageCount;				//적 이미지 프레임 카운트 용
 	
@@ -83,6 +82,7 @@ protected:
 	bool _isDelete;		//true면 삭제
 	bool _isSmoke;		//ture면 적 상태가 E_SMOKE로 변함
 
+	 int _initCount;
 public:
 	enemy();
 	~enemy();
@@ -118,6 +118,9 @@ public:
 	inline bool getDefense() { return _isDefense; }			// true일 때 플레이어와 충돌 되지 않게 하는 접근자
 	inline void setDefense(bool x) { _isDefense = x; }		// _isDefense에 대한 설정자
 	
+	inline int getAttackCount() { return _attackCount; }
+	inline void setAttackCount(int count) { _attackCount = count; }
+
 	inline ENEMYSTATE getEnemyState() { return _enemyState; }	//적 상태에 대한 접근자
 	inline ENEMYDIRECTION getEnemyDirction() { return _enemyDirection; }	//적 방향에 대한 접근자
 	inline void setEnemyState(ENEMYSTATE x) { _enemyState = x; }

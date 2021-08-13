@@ -35,10 +35,10 @@ HRESULT character::init() // 인잇
     _isPixelCollision = true;
     _isPlatformCollision = false;
     _isSandBlockCollision = false;
-    _isDeath = false;
+    _isDeath = _isGod = _bossAttack = false;
     _speed = _gravity = _jumpPower = 0;
     _currentHP = _maxHP = 8;
-    _currentFrame = _count = 0;
+    _currentFrame = _count = _noHitCount = 0;
     _damage = 1;
     _hangFrameCount = _platformNum = _sandBlockNum = _deathFrameCount = 0;
 
@@ -668,23 +668,55 @@ void character::bubbleCollision() // 캐릭터 버블 충돌 처리
 
 void character::enemyCollision() // 캐릭터 몬스터 충돌 처리
 {
-    for (int i = 0; i < _enemyManager->getVEnemy().size(); i++)
+    if (_state != DEATH)
     {
-        RECT temp;
-        RECT enemy = _enemyManager->getVEnemy()[i]->getRect();
-
-        if (IntersectRect(&temp, &_attackCollisionRect, &enemy)) // 몬스터에게 공격 처리
+        for (int i = 0; i < _enemyManager->getVEnemy().size(); i++)
         {
-            if (_state == JUMPBOTTOMATTACK) // 점프 하단 공격이면 위로 다시 튀어 오름
+            RECT temp;
+            RECT enemy = _enemyManager->getVEnemy()[i]->getRect();
+            RECT enemyBody = _enemyManager->getVEnemy()[i]->getbodyRect();
+            RECT beam = _enemyManager->getVEnemy()[i]->getLazerRect();
+
+            // 몬스터에게 공격했을 때~
+            if (IntersectRect(&temp, &_attackCollisionRect, &enemy) || IntersectRect(&temp, &_attackCollisionRect, &enemyBody))
             {
-                _jumpPower = JUMPPOWER;
-                _gravity = GRAVITY;
+                if (_state == JUMPBOTTOMATTACK) // 점프 하단 공격이면 위로 다시 튀어 오름
+                {
+                    _jumpPower = JUMPPOWER;
+                    _gravity = GRAVITY;
+                }
             }
-        }
 
-        if (IntersectRect(&temp, &_collisionRect, &enemy))  // 몬스터에게 피격 처리
-        {
-            if (_state != HURT && _state != JUMPBOTTOMATTACK) hitDamage(1);
+            // 보스 몬스터 공격했을 때 피 깍임
+            if (IntersectRect(&temp, &_attackCollisionRect, &enemy))
+            {
+                if (_enemyManager->getVEnemy()[i]->getEnemyName() == "bugDragon")
+                {
+                    if (_bossAttack == false || _state == JUMPBOTTOMATTACK)
+                    {
+                        SCENEMANAGER->setBossHp(SCENEMANAGER->getBossHp() - 1);
+                        _bossAttack = true;
+                    }
+                }
+            }
+
+            // 보스 몬스터 빔 쏜 공격 피격 처리
+            if (IntersectRect(&temp, &_collisionRect, &beam))
+            {
+                if (_state != HURT && _state != DEATH) hitDamage(1);
+            }
+
+            // 몬스터 몸통 피격 처리
+            if (IntersectRect(&temp, &_collisionRect, &enemy))
+            {
+                if (_state != HURT && _state != JUMPBOTTOMATTACK && _state != DEATH) hitDamage(1);
+            }
+
+            // 용 몸통에 피격 처리
+            if (IntersectRect(&temp, &_collisionRect, &enemyBody))
+            {
+                if (_state != HURT && _state != JUMPBOTTOMATTACK && _state != DEATH) hitDamage(1);
+            }
         }
     }
 }
@@ -716,7 +748,10 @@ void character::foodCollision() // 캐릭터 음식 충돌 처리
             if (_object->getFood(i).index == 2)
             {
                 _currentHP += 4;                                       // 체력 4 회복
+                if (_currentHP > 8) _currentHP = 8;
+
                 SCENEMANAGER->setMana(SCENEMANAGER->getMana() + 50);   // 마나 50 회복
+                if (SCENEMANAGER->getMana() > 100) SCENEMANAGER->setMana(100);
             }
 
             _object->setFood(i, false); // 음식 제거
@@ -733,12 +768,26 @@ void character::bulletCollision() // 파이어볼 충돌 처리
             RECT temp;
             RECT bulletRect = _bullet->getVBullet()[i].rc;
             RECT enemyRect = _enemyManager->getVEnemy()[j]->getRect();
+
+            if (IntersectRect(&temp, &bulletRect, &enemyRect) && _enemyManager->getVEnemy()[j]->getEnemyName() == "bugDragon")
+            {
+                _bullet->removeMissile(i);
+                SCENEMANAGER->setBossHp(SCENEMANAGER->getBossHp() - 1);
+                _enemyManager->getVEnemy()[j]->setHit(1);
+                _enemyManager->getVEnemy()[j]->setHead(true);
+                _enemyManager->getVEnemy()[j]->setDefense(true);
+                _bossAttack = true;
+
+                break;
+            }
+            
             if (IntersectRect(&temp, &bulletRect, &enemyRect))
             {
                 _bullet->removeMissile(i);
                 _enemyManager->getVEnemy()[j]->setHit(1);
                 _enemyManager->getVEnemy()[j]->setHead(true);
                 _enemyManager->getVEnemy()[j]->setDefense(true);
+
                 break;
             }
         }
@@ -766,6 +815,17 @@ void character::npcCollisionOut() // NPC와 거리가 멀어지면 UI 죵료 처리
 
 void character::imgFrameSetting() // 캐릭터 이미지 프레임 처리
 {
+    // 무적 프레임
+    if (_isGod == true)
+    {
+        _noHitCount++;
+        if (_noHitCount >= 100)
+        {
+            _noHitCount = 0;
+            _isGod = false;
+        }
+    }
+
     // 캐릭터 데스 처리 체크
     if (_currentHP <= 0)
     {
@@ -954,6 +1014,8 @@ void character::jump() // 캐릭터 점프 처리
 
 void character::attack() // 캐릭터 공격 처리
 {
+    _bossAttack = false;
+
     if (_state != JUMPATTACK)
     {
         if (_state == JUMP || _state == JUMPBOTTOMATTACK) // 점프 상태
@@ -999,7 +1061,7 @@ void character::skill() // 캐릭터 스킬 처리
             SCENEMANAGER->setMana(SCENEMANAGER->getMana() - 5);
             _state = SKILL;
             imgSetting();
-
+            _bossAttack = false;
             if (_direction == 0) _bullet->fire(_x, _y, 0);
             else _bullet->fire(_x, _y, PI);
         }
@@ -1008,17 +1070,24 @@ void character::skill() // 캐릭터 스킬 처리
 
 void character::hitDamage(float damage) // 캐릭터 피격 시 처리
 {
-    _currentHP -= damage;
-    _state = HURT;
-    imgSetting();
+    if (_state != DEATH) // 죽음 상태가 아닐 때
+    {
+        if (_isGod == false) // 무적 상태에서는 노히트
+        {
+            _currentHP -= damage;
+            _state = HURT;
+            imgSetting();
 
-    _isPlatformCollision = false;
-    _isSandBlockCollision = false;
-    _isPixelCollision = false;
+            _isPlatformCollision = false;
+            _isSandBlockCollision = false;
+            _isPixelCollision = false;
+            _isGod = true;
 
-    // 피격 당하면 뒤로 밀리는 처리를 위해
-    _jumpPower = JUMPPOWER / 1.3;
-    _gravity = GRAVITY;
+            // 피격 당하면 뒤로 밀리는 처리를 위해
+            _jumpPower = JUMPPOWER / 1.3;
+            _gravity = GRAVITY;
+        }
+    }
 }
 
 void character::death() // 캐릭터 죽음 처리
