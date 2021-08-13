@@ -57,13 +57,14 @@ void character::release()
 
 void character::update() // 업데이트
 {
+    _bullet->update();
+
     gravity();
     controll();
     attackRectMake();
     collision();
     imgFrameSetting();
-
-    _bullet->update();
+    
     // 렉트 갱신
     _imgRect = RectMakeCenter(_x, _y, _characterImg->getFrameWidth(), _characterImg->getFrameHeight());
     _collisionRect = RectMakeCenter(_x, _y, 56, 96);
@@ -237,6 +238,7 @@ void character::attackRectMake() // 캐릭터 공격 렉트 처리
 
 void character::collision() // 충돌 처리 묶음
 {
+    bulletCollision();
     pixelCollision();
     platformCollision();
     sandBlockCollision();
@@ -691,8 +693,30 @@ void character::jewelCollision() // 캐릭터 쥬얼 충돌 처리
         RECT jewel = _object->getJewel(i).rc;
         if (IntersectRect(&temp, &_collisionRect, &jewel))
         {
-            SCENEMANAGER->setGold(SCENEMANAGER->getGold() + 100);
+            if (_object->getJewel(i).index == 12) SCENEMANAGER->setGold(SCENEMANAGER->getGold() + 500); // 500원 보석
+            if (_object->getJewel(i).index == 13) SCENEMANAGER->setGold(SCENEMANAGER->getGold() + 100); // 100원 동전
             _object->setJewel(i, false); // 쥬얼 제거 신호
+        }
+    }
+}
+
+void character::bulletCollision() // 파이어볼 충돌 처리
+{
+    for (int i = 0; i < _bullet->getVBullet().size(); i++)
+    {
+        for (int j = 0; j < _enemyManager->getVEnemy().size(); j++)
+        {
+            RECT temp;
+            RECT bulletRect = _bullet->getVBullet()[i].rc;
+            RECT enemyRect = _enemyManager->getVEnemy()[j]->getRect();
+            if (IntersectRect(&temp, &bulletRect, &enemyRect))
+            {
+                _bullet->removeMissile(i);
+                _enemyManager->getVEnemy()[j]->setHit(1);
+                _enemyManager->getVEnemy()[j]->setHead(false);
+                _enemyManager->getVEnemy()[j]->setDefense(true);
+                break;
+            }
         }
     }
 }
@@ -994,6 +1018,8 @@ void character::shop(int arrNum) // 캐릭터 상점 이용 처리
 
 void character::render() // 캐릭터 렌더
 {
+    _bullet->render();
+
     // 캐릭터 이미지 렌더
     _characterImg->frameRender(getMemDC(), _imgRect.left, _imgRect.top);
 
@@ -1012,8 +1038,6 @@ void character::render() // 캐릭터 렌더
         SelectObject(getMemDC(), oldbrush2);
         DeleteObject(brush2);
     }
-
-    _bullet->render();
 
     //// 현재 프레임
     char str[128];

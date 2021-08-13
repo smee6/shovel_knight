@@ -39,7 +39,7 @@ private:
 	mapCamera* _mapCamera;							// 맵 카메라 클래스
 	object* _object;								// 오브젝트 클래스
 	enemyManager* _enemyManager;					// 이너미 매니저 클래스
-	hellFire* _bullet;
+	hellFire* _bullet;								// 파이어볼 클래스
 
 	float _x, _y;									// 캐릭터의 중점 X, Y 값
 	float _speed;									// 캐릭터 이동속도 값
@@ -84,6 +84,7 @@ public:
 	void bubbleCollision();														// 캐릭터 버블 충돌 처리
 	void enemyCollision();														// 캐릭터 몬스터 충돌 처리
 	void jewelCollision();														// 캐릭터 쥬얼 충돌 처리
+	void bulletCollision();														// 파이어볼 충돌 처리
 	void imgFrameSetting();														// 캐릭터 이미지 프레임 처리
 
 	void imgSetting();															// 상태에 따라 이미지 처리

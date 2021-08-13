@@ -44,3 +44,33 @@ public:
 	vector<tagBullet>::iterator getVIBullet() { return _viBullet; }
 
 };
+
+//쏠때 생성하는 방식
+class mHellFire : public gameNode
+{
+private:
+	vector<tagBullet> _vBullet;
+	vector<tagBullet>::iterator _viBullet;
+
+	float _range;
+	int _bulletMax;
+
+public:
+	mHellFire() {};
+	~mHellFire() {};
+
+
+	virtual HRESULT init(int bulletMax, float range);
+	virtual void release();
+	virtual void update();
+	virtual void render();
+
+	void fire(float x, float y, float angle);
+	void move();
+
+	void removeMissile(int arrNum);
+
+	vector<tagBullet> getVBullet() { return _vBullet; }
+	vector<tagBullet>::iterator getVIBullet() { return _viBullet; }
+
+};
