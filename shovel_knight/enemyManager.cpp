@@ -55,6 +55,7 @@ void enemyManager::enemySetting()
     
 	enemy* enemyBeeto;
 
+
     enemyBeeto = new bugDragon;
     enemyBeeto->init("dragon", PointMake(1600, 580), E_LEFT);
     _vEnemy.push_back(enemyBeeto);
@@ -226,6 +227,7 @@ void enemyManager::enemySetting()
     enemyBeeto = new dragon;
     enemyBeeto->init("dragon", PointMake(22200, 580 - WINSIZEY * 3), E_LEFT);
     _vEnemy.push_back(enemyBeeto);
+
 }
 
 

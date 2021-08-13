@@ -26,6 +26,7 @@ private:
 
 	mapCamera* _mapCamera;
 	character* _character;
+
 public:
 	enemyManager();
 	~enemyManager();
