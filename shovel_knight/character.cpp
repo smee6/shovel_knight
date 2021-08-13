@@ -284,7 +284,7 @@ void character::pixelCollision() // 캐릭터 픽셀 충돌 처리
         for (int i = proveYBottom; i < proveYBottom + 10; i++)
         {
             if (_jumpPower > 0) continue;
-            // 캐릭터 충돌 렉트의 오른쪽 값, proveYBottom 좌표 값에 마젠타가 있으면 충돌 처리
+            // 캐릭터 충돌 렉트의 왼쪽 값, proveYBottom 좌표 값에 마젠타가 있으면 충돌 처리
             if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), _collisionRect.left - _mapCamera->getCamX(), i) == RGB(255, 0, 255))
             {
                 _y = i - (_collisionRect.bottom - _collisionRect.top) / 2 + _mapCamera->getCamY();
@@ -384,12 +384,50 @@ void character::pixelCollision() // 캐릭터 픽셀 충돌 처리
     }
 }
 
-void character::platformCollision() // 캐릭터 렉트 충돌 처리
+void character::platformCollision() // 캐릭터 발판 충돌 처리
 {
+    // 밑에 장애물이 없다면 중력받아 떨어지는 처리
+    if (_isPixelCollision == false && _isSandBlockCollision == false) // 픽셀, 샌드블록 충돌 아닐 때
+    {
+        int collisionCount = 0;
+        RECT platform = _object->getPlatform(_platformNum).rc;
+        POINT check, check2, check3;
+        check.x = _collisionRect.left;
+        check2.x = _collisionRect.right;
+        check.y = check2.y = _collisionRect.bottom;
+        check3.x = _x;
+        check3.y = _collisionRect.bottom + 15;
+        if (PtInRect(&platform, check3)) // 만약 밑에 발판이 있다면 떨어지지 않음(움직이는 발판때문에 처리)
+        {
+            if (KEYMANAGER->isStayKeyDown('D') || KEYMANAGER->isStayKeyDown('A')) _state = RUN;
+            else _state = IDLE;
+            imgSetting();
+            _y += _mapCamera->getSpeed();
+        }
+        else
+        {
+            if (!PtInRect(&platform, check) && (_state == RUN || _state == IDLE)) // 좌측 체크
+            {
+                collisionCount++;
+            }
+            if (!PtInRect(&platform, check2) && (_state == RUN || _state == IDLE)) // 우측 체크
+            {
+                collisionCount++;
+            }
+            if (collisionCount >= 2) // 양쪽 모두 체크되면 떨어져라
+            {
+                _gravity = GRAVITY;
+                _state = JUMP;
+                imgSetting();
+                _isPlatformCollision = false;
+            }
+        }
+    }
+
     // 발판과 렉트 충돌 처리
     for (int i = 0; i < _object->getPlatformrMax(); i++)
     {
-        if (_isSandBlockCollision == true) break;
+        if (_isSandBlockCollision == true) break; // 샌드 블록에 닿아있을 땐 브레이크
 
         RECT temp;
         RECT platform = _object->getPlatform(i).rc;
@@ -406,9 +444,20 @@ void character::platformCollision() // 캐릭터 렉트 충돌 처리
                 {
                     _y -= height;
                     _gravity = _jumpPower = 0; // 중력, 점프파워 초기화
-                    _state = IDLE;
+                    if (KEYMANAGER->isStayKeyDown('D') || KEYMANAGER->isStayKeyDown('A')) _state = RUN;
+                    else _state = IDLE;
                     imgSetting();
                     _isPlatformCollision = true;
+
+                    if (_object->getPlatform(i).index == 1 && _object->getPlatform(i).isDirection == true) _x += _mapCamera->getSpeed();
+                    if (_object->getPlatform(i).index == 1 && _object->getPlatform(i).isDirection == false) _x -= _mapCamera->getSpeed();
+                    if (_object->getPlatform(i).index == 2 && _object->getPlatform(i).isDirection == true) _y -= _mapCamera->getSpeed();
+                    if (_object->getPlatform(i).index == 2 && _object->getPlatform(i).isDirection == false) _y -= _mapCamera->getSpeed();
+
+                    if (KEYMANAGER->isStayKeyDown('K') || KEYMANAGER->isStayKeyDown(VK_SPACE)) // 점프 실행
+                    {
+                        jump();
+                    }
                 }
                 else // 위에서 충돌
                 {
@@ -430,36 +479,9 @@ void character::platformCollision() // 캐릭터 렉트 충돌 처리
             }
         }
     }
-
-    // 밑에 장애물이 없다면 중력받아 떨어지는 처리
-    if (_isPixelCollision == false && _isSandBlockCollision == false)
-    {
-        int collisionCount = 0;
-        RECT platform = _object->getPlatform(_platformNum).rc;
-        POINT check, check2;
-        check.x = _collisionRect.left;
-        check2.x = _collisionRect.right;
-        check.y = check2.y = _collisionRect.bottom + 1;
-
-        if (!PtInRect(&platform, check) && _state == RUN)
-        {
-            collisionCount++;
-        }
-        if (!PtInRect(&platform, check2) && _state == RUN)
-        {
-            collisionCount++;
-        }
-        if (collisionCount >= 2)
-        {
-            _gravity = GRAVITY;
-            _state = JUMP;
-            imgSetting();
-            _isPlatformCollision = false;
-        }
-    }
 }
 
-void character::sandBlockCollision()
+void character::sandBlockCollision() // 캐릭터 샌드블록 충돌 처리
 {
     // 샌드 블록 공격 처리
     for (int i = 0; i < _object->getSandBlockMAX(); i++)
@@ -481,7 +503,7 @@ void character::sandBlockCollision()
     // 샌드블록과 렉트 충돌 처리
     for (int i = 0; i < _object->getSandBlockMAX(); i++)
     {
-        if (_isPlatformCollision == true) break;
+        if (_isPlatformCollision == true) break; // 발판에 닿아있을 땐 브레이크
 
         RECT temp;
         RECT sandBlock = _object->getSandBlock(i).rc;
@@ -524,7 +546,7 @@ void character::sandBlockCollision()
     }
 
     // 밑에 장애물이 없다면 중력받아 떨어지는 처리
-    if (_isPixelCollision == false && _isPlatformCollision == false)
+    if (_isPixelCollision == false && _isPlatformCollision == false) // 픽셀, 발판 충돌 아닐 때
     {
         int collisionCount = 0;
         RECT sandBlock = _object->getSandBlock(_sandBlockNum).rc;
@@ -533,15 +555,15 @@ void character::sandBlockCollision()
         check2.x = _collisionRect.right;
         check.y = check2.y = _collisionRect.bottom + 1;
 
-        if (!PtInRect(&sandBlock, check) && _state == RUN)
+        if (!PtInRect(&sandBlock, check) && _state == RUN) // 좌측 체크
         {
             collisionCount++;
         }
-        if (!PtInRect(&sandBlock, check2) && _state == RUN)
+        if (!PtInRect(&sandBlock, check2) && _state == RUN) // 우측 체크
         {
             collisionCount++;
         }
-        if (collisionCount >= 2)
+        if (collisionCount >= 2) // 양쪽 모두 체크되면 떨어져라
         {
             _gravity = GRAVITY;
             _state = JUMP;
@@ -654,7 +676,7 @@ void character::jewelCollision() // 캐릭터 쥬얼 충돌 처리
     //    RECT jewel = _object->getJewel(i).rc;
     //    if (IntersectRect(&temp, &_collisionRect, &jewel))
     //    {
-    //        _
+    //        _object->setJewel(i, false); // 쥬얼 제거 신호
     //    }
     //}
 }
