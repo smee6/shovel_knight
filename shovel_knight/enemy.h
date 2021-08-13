@@ -73,6 +73,7 @@ protected:
 	bool _isDelete;		//true면 삭제
 	bool _isSmoke;		//ture면 적 상태가 E_SMOKE로 변함
 
+	bool _isBug;		//보스용이 벌레를 뿜게 하는 변수
 
 public:
 	enemy();
@@ -111,6 +112,7 @@ public:
 	inline ENEMYSTATE getEnemyState() { return _enemyState; }	//적 상태에 대한 접근자
 	inline void setEnemyState(ENEMYSTATE x) { _enemyState = x; }
 	
+	inline int getHit()	{ return _hitCount; }
 	inline void setHit(int i) { _hitCount += i; }			//플레이어와 충돌 시 카운트 증가 시킬 설정자
 
 	inline bool getDelete() { return _isDelete; }		// _isDelete에 대한 설정자
@@ -119,5 +121,7 @@ public:
 	inline void setHead(bool x) { _isSmoke = x; }
 
 	inline void setFrameX(int x) { _currentFrameX = x; }
+
+	inline bool getBug() { return _isBug; }
 };
 

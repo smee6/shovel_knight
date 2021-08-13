@@ -192,6 +192,9 @@
     <ClInclude Include="gameOver.h">
       <Filter>playGround\loadingScene</Filter>
     </ClInclude>
+    <ClInclude Include="bugDragon.h">
+      <Filter>playGround\enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WindowsAPI.cpp">
@@ -301,6 +304,9 @@
     </ClCompile>
     <ClCompile Include="gameOver.cpp">
       <Filter>playGround\loadingScene</Filter>
+    </ClCompile>
+    <ClCompile Include="bugDragon.cpp">
+      <Filter>playGround\enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

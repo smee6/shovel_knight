@@ -4,6 +4,7 @@
 #include "wizard.h"
 #include "steed.h"
 #include "dragon.h"
+#include "bugDragon.h"
 #include <vector>
 #include "bullets.h"
 
