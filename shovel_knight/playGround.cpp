@@ -17,7 +17,7 @@ HRESULT playGround::init()
 	gameNode::init(true);
 
 	SCENEMANAGER->addScene("ÀÎ°ÔÀÓ¾À", new inGameScene);
-
+	SCENEMANAGER->addScene("gameover", new gameOver);
 	SCENEMANAGER->addScene("title", new openingScene);
 
 	SCENEMANAGER->changeScene("title");

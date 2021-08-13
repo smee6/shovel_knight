@@ -189,6 +189,9 @@
     <ClInclude Include="mapCamera.h">
       <Filter>playGround\mapCamera</Filter>
     </ClInclude>
+    <ClInclude Include="gameOver.h">
+      <Filter>playGround\loadingScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WindowsAPI.cpp">
@@ -295,6 +298,9 @@
     </ClCompile>
     <ClCompile Include="mapCamera.cpp">
       <Filter>playGround\mapCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="gameOver.cpp">
+      <Filter>playGround\loadingScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
