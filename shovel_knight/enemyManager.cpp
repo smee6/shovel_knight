@@ -114,6 +114,10 @@ void enemyManager::enemySetting()
     enemyBeeto = new wizard;
     enemyBeeto->init("wizard", PointMake(7800, 480), E_LEFT);
     _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(7800, 580 - WINSIZEY), E_RIGHT);
+    _vEnemy.push_back(enemyBeeto);
 }
 
 
@@ -163,13 +167,13 @@ void enemyManager::collision()
     {
         if (getVEnemy()[i]->getEnemyState() == E_DIE)
         {
-            int proveYBottom = getVEnemy()[i]->getY() - _mapCamera->getCamY() - 15;
+            int proveYBottom = getVEnemy()[i]->getY() - 15;
             int proveXRight = getVEnemy()[i]->getX() + (getVEnemy()[i]->getRect().right  -getVEnemy()[i]->getRect().left);
             int proveXLeft = getVEnemy()[i]->getX();
 
             for (int j = proveYBottom; j < proveYBottom + 3; j++)
             {
-                if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(),  getVEnemy()[i]->getX(), j) == RGB(255, 0, 255))
+                if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(),  getVEnemy()[i]->getX(), j - _mapCamera->getCamY()) == RGB(255, 0, 255))
                 {
                     getVEnemy()[i]->setHead(true);
                 }
@@ -194,6 +198,15 @@ void enemyManager::collision()
             for (int j = proveXLeft; j < proveXLeft + 3; j++)
             {
                 if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), j , getVEnemy()[i]->getY() - _mapCamera->getCamY() - 15) == RGB(255, 0, 255))
+                {
+                    getVEnemy()[i]->setHit(1);
+                    getVEnemy()[i]->setHead(true);
+                    break;
+                }
+            }
+            for (int j = proveXRight; j < proveXRight + 3; j++)
+            {
+                if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), j, getVEnemy()[i]->getY() - _mapCamera->getCamY() - 15) == RGB(255, 0, 255))
                 {
                     getVEnemy()[i]->setHit(1);
                     getVEnemy()[i]->setHead(true);
