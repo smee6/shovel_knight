@@ -27,9 +27,17 @@ void enemyManager::update()
 {
     for (_viEnemy = _vEnemy.begin(); _viEnemy != _vEnemy.end(); ++_viEnemy)
     {
-        (*_viEnemy)->update(_mapCamera->getCamX(), _mapCamera->getCamY(), _character->getCharacterX());
+        (*_viEnemy)->update(_mapCamera->getCamX(), _mapCamera->getCamY(), _character->getCharacterX(), _character->getCharacterY());
     }
 
+    //_isDelet가 true면 벡터에서 지움
+    for (int i = 0; i < getVEnemy().size(); i++)
+    {
+        if (getVEnemy()[i]->getDelete() == true)
+        {
+            _vEnemy.erase(_vEnemy.begin() + i);
+        }
+    }
     enemyBulletFire();
     collision();
 }
@@ -77,14 +85,68 @@ void enemyManager::collision()
     {
         RECT temp;
         RECT enemyRC = getVEnemy()[i]->getRect();
-        RECT characterRC = _character->getAttackRect();
+        RECT characterAttackRC = _character->getAttackRect();
 
-        if (IntersectRect(&temp, &characterRC, &enemyRC) && getVEnemy()[i]->getDefense() == false)
+        if(_character->getState() == JUMPBOTTOMATTACK)
         {
-            getVEnemy()[i]->setDefense(true);
-            getVEnemy()[i]->setHit(1);
+            if (IntersectRect(&temp, &characterAttackRC, &enemyRC) && getVEnemy()[i]->getDefense() == false)
+            {
+                getVEnemy()[i]->setHead(true);
+                //getVEnemy()[i]->setEnemyState(E_SMOKE);
+
+                getVEnemy()[i]->setDefense(true);
+                getVEnemy()[i]->setHit(1);
+            }
+        }
+        if (_character->getState() == ATTACK || _character->getState() == JUMPATTACK)
+        {
+            if (IntersectRect(&temp, &characterAttackRC, &enemyRC) && getVEnemy()[i]->getDefense() == false)
+            {
+                getVEnemy()[i]->setHead(false);
+                //getVEnemy()[i]->setEnemyState(E_SMOKE);
+
+                getVEnemy()[i]->setDefense(true);
+                getVEnemy()[i]->setHit(1);
+            }
         }
     }
+    
+    for (int i = 0; i < getVEnemy().size(); i++)
+    {
+        if (getVEnemy()[i]->getEnemyState() == E_DIE)
+        {
+            int proveYBottom = getVEnemy()[i]->getRect().bottom - _mapCamera->getCamY();
+            int proveXRight = getVEnemy()[i]->getRect().right;
+            int proveXLeft = getVEnemy()[i]->getRect().left;
+
+            for (int j = proveYBottom; j < proveYBottom + 5; j++)
+            {
+                if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), (getVEnemy()[i]->getRect().right - getVEnemy()[i]->getRect().left) / 2, j) == RGB(255, 0, 255))
+                {
+                    getVEnemy()[i]->setHead(true);
+                }
+                
+            }
+            //for (int j = proveXRight; j < proveXRight + 3; j++)
+            //{
+            //    if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), j, getVEnemy()[i]->getRect().top - _mapCamera->getCamY()) == RGB(255, 0, 255))
+            //    {
+            //        getVEnemy()[i]->setHead(true);
+            //    }
+            //
+            //}
+            //for (int j = proveXLeft; j > proveXLeft - 3; j--)
+            //{
+            //    if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), j, getVEnemy()[i]->getRect().top - _mapCamera->getCamY()) == RGB(255, 0, 255))
+            //    {
+            //        getVEnemy()[i]->setHead(true);
+            //    }
+            //
+            //}
+
+        }
+    }
+    
 }
 
 void enemyManager::enemyImageStorage()
@@ -107,4 +169,6 @@ void enemyManager::enemyImageStorage()
     IMAGEMANAGER->addFrameImage("dragon and attack", "image/shovel knight_dragon and attack.bmp", 3000, 300, 6, 1, true, RGB(255, 0, 255));
     IMAGEMANAGER->addFrameImage("dragon and die", "image/shovel knight_dragon and die.bmp", 500, 300, 1, 1, true, RGB(255, 0, 255));
     //boss
+    //죽었을 때 연기
+    IMAGEMANAGER->addFrameImage("smoke", "image/shovel knight_smoke.bmp", 300, 40, 5, 1, true, RGB(255, 0, 255));
 }

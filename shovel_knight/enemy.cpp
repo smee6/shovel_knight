@@ -33,7 +33,6 @@ HRESULT enemy::init(const char* imageName, POINT position, ENEMYDIRECTION enemyD
 	_randCount = RND->getFromIntTo(0, 200);
 	_moveCount = 0;
 	_attackCount = 0;
-	_dieCount = 0;
 	_hitCount = 0;
 
 	_jumpPower = 5.0f;
@@ -51,24 +50,27 @@ void enemy::update()
 }
 
 
-void enemy::update(int x, int y, float z)
+void enemy::update(int x, int y, float characterX, float characterY)
 {
 	enemyAI();
 	enemyFrame();
 	
-	_characterX = z;
+	_characterX = characterX;
+	_characterY = characterY;
+
+	_characterRC = RectMakeCenter(characterX, characterY, 100, 100);
 
 	_rc = RectMake(x + _x, 2200  + y +_y - _imageName->getFrameHeight(),
 		_imageName->getFrameWidth(), _imageName->getFrameHeight());
 	
 	if (_enemyName == "steed")
 	{
-		_proveRC = RectMake(_x - 300, _y - 50,
-			_imageName->getFrameWidth() + 600, _imageName->getFrameHeight() + 100);
+		_proveRC = RectMake(_rc.left - 300, _rc.top - 180,
+			_imageName->getFrameWidth() + 600, _imageName->getFrameHeight() + 130);
 	}
 	if (_enemyName == "dragon")
 	{
-		_proveRC = RectMake(_x - 300, _y - 200,
+		_proveRC = RectMake(_rc.left - 300, _rc.top - 200,
 			_imageName->getFrameWidth() + 600, _imageName->getFrameHeight() + 200);
 	}
 }
@@ -77,9 +79,15 @@ void enemy::render()
 {
 	draw();
 
+	char str[128];
+	sprintf_s(str, "_currentFrame : %d", _rc.bottom);
+	TextOut(getMemDC(), 0, 550, str, strlen(str));
+
+	//TAB키 눌렀을 때 감지렉트와 적렉트 확인
 	if (KEYMANAGER->isToggleKey(VK_TAB))
 	{
 		Rectangle(getMemDC(), _proveRC);
+		//Rectangle(getMemDC(), _characterRC);
 		Rectangle(getMemDC(), _rc);
 	}
 }
@@ -93,65 +101,77 @@ void enemy::enemyFrame()
 {
 	_imageCount++;
 
-	if (_imageCount % 10 == 0)
+	//연기 상태일 때
+	if (_enemyState == E_SMOKE)
 	{
-		if (_enemyDirection == E_RIGHT)
+		if (_imageCount % 5 == 0)
 		{
-			if (_imageName->getMaxFrameX() > 2)
-			{
-				if (_currentFrameX >= _imageName->getMaxFrameX()) _currentFrameX = 0;
-
-				//_imageName->setFrameX(_currentFrameX);
-				_currentFrameX++;
-				_currentFrameY = 0;
-			}
-			if (_imageName->getMaxFrameX() == 1)
-			{
-				//_imageName->setFrameX(_currentFrameX);
-				_currentFrameY = 0;
-
-				_currentFrameX == 0 ? _currentFrameX = 1 : _currentFrameX = 0;
-			}
-			if(_imageName->getMaxFrameX() == 0)
-			{
-				_currentFrameX = 0;
-				_currentFrameY = 0;
-			}
+			if (_currentFrameX >= _imageName->getMaxFrameX()) _isDelete = true;
+			
+			_currentFrameX++;
+			_currentFrameY = 0;
 		}
-		if (_enemyDirection == E_LEFT)
+	}
+	else
+	{
+		if (_imageCount % 10 == 0)
 		{
-			if (_imageName->getMaxFrameX() > 2 || _imageName->getMaxFrameX() == 0)
+			if (_enemyDirection == E_RIGHT)
 			{
-				if (_currentFrameX <= 0) _currentFrameX = _imageName->getMaxFrameX();
-
-				//_imageName->setFrameX(_currentFrameX);
-				_currentFrameX--;
-				_currentFrameY = 1;
-				if (_enemyName == "dragon")
+				if (_imageName->getMaxFrameX() > 2)
 				{
+					if (_currentFrameX >= _imageName->getMaxFrameX()) _currentFrameX = 0;
+
+					//_imageName->setFrameX(_currentFrameX);
+					_currentFrameX++;
 					_currentFrameY = 0;
 				}
-				else
+				if (_imageName->getMaxFrameX() == 1)
 				{
+					//_imageName->setFrameX(_currentFrameX);
+					_currentFrameY = 0;
+
+					_currentFrameX == 0 ? _currentFrameX = 1 : _currentFrameX = 0;
+				}
+				if (_imageName->getMaxFrameX() == 0)
+				{
+					_currentFrameX = 0;
+					_currentFrameY = 0;
+				}
+			}
+			if (_enemyDirection == E_LEFT)
+			{
+				if (_imageName->getMaxFrameX() > 2 || _imageName->getMaxFrameX() == 0)
+				{
+					if (_currentFrameX <= 0) _currentFrameX = _imageName->getMaxFrameX();
+
+					//_imageName->setFrameX(_currentFrameX);
+					_currentFrameX--;
+					_currentFrameY = 1;
+					if (_enemyName == "dragon")
+					{
+						_currentFrameY = 0;
+					}
+					else
+					{
+						_currentFrameY = 1;
+					}
+				}
+				if (_imageName->getMaxFrameX() == 1)
+				{
+					//_imageName->setFrameX(_currentFrameX);
+					_currentFrameY = 1;
+
+					_currentFrameX == 0 ? _currentFrameX = 1 : _currentFrameX = 0;
+
+				}
+				if (_imageName->getMaxFrameX() == 0)
+				{
+					_currentFrameX = 0;
 					_currentFrameY = 1;
 				}
 			}
-			if (_imageName->getMaxFrameX() == 1)
-			{
-				//_imageName->setFrameX(_currentFrameX);
-				_currentFrameY = 1;
-				
-				_currentFrameX == 0 ? _currentFrameX = 1 : _currentFrameX = 0;
-				
-			}
-			if (_imageName->getMaxFrameX() == 0)
-			{
-				_currentFrameX = 0;
-				_currentFrameY = 1;
-			}
 		}
-
-		_imageCount = 0;
 	}
 
 	switch (_enemyState)
@@ -179,6 +199,10 @@ void enemy::enemyFrame()
 		_strSum = _enemyName + _str;
 		_imageName = IMAGEMANAGER->findImage(_strSum);
 		die();
+		break;
+	case E_SMOKE:
+		_imageName = IMAGEMANAGER->findImage("smoke");
+
 		break;
 	}
 }

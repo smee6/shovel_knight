@@ -19,5 +19,9 @@ void wizard::die()
 
 void wizard::enemyAI()
 {
-	if (_hitCount == 2) _enemyState = E_DIE;
+	if (_hitCount == 2)
+	{
+		if (_isSmoke == true) _enemyState = E_SMOKE;
+		if (_isSmoke == false) _enemyState = E_DIE;
+	}
 }
