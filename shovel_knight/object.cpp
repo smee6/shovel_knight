@@ -23,6 +23,11 @@ void object::setBubble(int arrNum, bool isAlive)
 	_bubble[arrNum].isAlive = isAlive;
 }
 
+void object::setJewel(int arrNum, bool isAlive)
+{
+	_jewel[arrNum].isAlive = isAlive;
+}
+
 HRESULT object::init()
 {
 	//필요한것
@@ -61,11 +66,6 @@ void object::release()
 
 void object::update()
 {
-	//platformSetting();
-	//ladderSetting();
-	//npcSetting();
-	//sandBlockSetting();
-	//bubbleSetting();
 	objectMakeRect();
 
 	gravity();
@@ -97,22 +97,6 @@ void object::imgFrameSetting()
 void object::objectMove()
 {
 
-	//플랫폼 움직임을 구현하기 위한 구문
-	//_platform[0].min = _platform[0].x - 200;
-	//_platform[0].max = _platform[0].x + 200;
-	//
-	//_platform[1].min = _platform[1].x - 200;
-	//_platform[1].max = _platform[1].x + 200;
-	//
-	//_platform[2].min = _platform[2].x - 200;
-	//_platform[2].max = _platform[2].x + 200;
-	//
-	//_platform[3].min = _platform[3].y - 200;
-	//_platform[3].max = _platform[3].y + 200;
-	//
-	//_platform[4].min = _platform[4].y - 200;
-	//_platform[4].max = _platform[4].y + 200;
-	//
 	////발판의 불값을 처리해주는 for문
 	for (int i = 0; i < PLATFORMMAX; i++)
 	{
@@ -241,41 +225,31 @@ void object::platformSetting()
 	//-8800, -1470
 	_platform[1].x = 9400;
 	_platform[1].y = 2050;
-	//_platform[1].min = 50;
-	//_platform[1].max = 150;
+	_platform[1].min = _platform[1].x - 200;
+	_platform[1].max = _platform[1].x + 200;
 	//
 	// 13920, 2920 
 	_platform[2].x = 14550;
 	_platform[2].y = 3300;
-	//_platform[2].min = 50;
-	//_platform[2].max = 150;
+	_platform[2].min = _platform[2].x - 200;
+	_platform[2].max = _platform[2].x + 200;
 	//
 	////상하
 	// 13920, 2920 
 	_platform[3].x = 14050;
 	_platform[3].y = 3350;
-	//_platform[3].min = 50; 
-	//_platform[3].max = 150;
+	_platform[3].min = _platform[3].y - 80;
+	_platform[3].max = _platform[3].y + 80;
 	
 	// 16480, 1460 
 	_platform[4].x = 17060;
 	_platform[4].y = 1870;
-	//_platform[4].min = 50;
-	//_platform[4].max = 150;
-
-	
-
-	_platform[1].min = _platform[1].x - 200;
-	_platform[1].max = _platform[1].x + 200;
-	
-	_platform[2].min = _platform[2].x - 200;
-	_platform[2].max = _platform[2].x + 200;
-	
-	_platform[3].min = _platform[3].y - 80;
-	_platform[3].max = _platform[3].y + 80;
-	
 	_platform[4].min = _platform[4].y - 200;
 	_platform[4].max = _platform[4].y + 200;
+	
+
+	
+		
 
 	//움직이는 발판 좌우 3개 - 0, 1, 2
 
@@ -289,8 +263,7 @@ void object::platformSetting()
 		_platform[i].index = 1;
 		_platform[i].speed = SPEED;
 		_mapCamera->MakeObject(_platform[i].rc, _platform[i].x, _platform[i].y, 190, 50);
-		//_platform[i].rc = RectMakeCenter(_platform[i].x, _platform[i].y, 100, 50);
-		//_platform[i].objectImage = IMAGEMANAGER->addImage("목숨", "image/life.bmp", 50, 50, true, RGB(255, 0, 255));
+		
 	}
 
 	//움직이는 발판 상하 2개 - 3, 4
@@ -301,8 +274,7 @@ void object::platformSetting()
 		_platform[i].index = 2;
 		_platform[i].speed = SPEED;
 		_mapCamera->MakeObject(_platform[i].rc, _platform[i].x, _platform[i].y, 190, 50);
-		//_platform[i].rc = RectMakeCenter(_platform[i].x, _platform[i].y, 100, 50);
-		//_platform[i].objectImage = IMAGEMANAGER->addImage("목숨", "image/life.bmp", 50, 50, true, RGB(255, 0, 255));
+		
 	}
 
 }
@@ -471,6 +443,23 @@ void object::potionSetting()
 
 void object::jewelSetting()
 {
+	_jewel[0].x;
+	_jewel[0].y;
+
+
+	for (int i = 0; i < JEWELMAX; i++) //
+	{
+
+		_jewel[i].type = 2;
+		_jewel[i].index = 12;
+				
+		_mapCamera->MakeObject(_jewel[i].rc, _jewel[i].x, _jewel[i].y, 50, 50);
+				
+		// void MakeObject(RECT& rect, int left, int right, int top, int bottom); 복붙해온거
+		//                (생성할 렉트,    중점,     중점,     가로,    세로   )
+	}
+
+
 }
 
 void object::bubbleSetting()
@@ -665,6 +654,11 @@ void object::objectMakeRect()
 		_mapCamera->MakeObject(_platform[i].rc, _platform[i].x, _platform[i].y, 190, 50);
 	}
 
+	for (int i = 0; i < JEWELMAX; i++)
+	{
+		_mapCamera->MakeObject(_jewel[i].rc, _jewel[i].x, _jewel[i].y, 50, 50);
+	}
+
 }
 
 void object::objectDeath()
@@ -684,6 +678,14 @@ void object::objectDeath()
 			_mapCamera->MakeObject(_bubble[i].rc, _bubble[i].x, _bubble[i].y, 0, 0);
 		}
 	}
+
+	for (int i = 0; i < JEWELMAX; i++)
+	{
+		if (_jewel[i].isAlive == false)
+		{
+			_mapCamera->MakeObject(_jewel[i].rc, _jewel[i].x, _jewel[i].y, 50, 50);
+		}
+	}
 }
 
 void object::render()
@@ -696,26 +698,7 @@ void object::render()
 	sprintf_s(str, "ladder.y : %d", _ladder[0].rc.top);
 	TextOut(getMemDC(), 10, 140, str, strlen(str));
 
-	sprintf_s(str, "bubble.x : %d", _bubble[0].rc.left);
-	TextOut(getMemDC(), 1110, 120, str, strlen(str));
-
-	sprintf_s(str, "bubble.y : %d", _bubble[0].rc.top);
-	TextOut(getMemDC(), 1110, 140, str, strlen(str));
-
-	sprintf_s(str, "bubble.min : %f", _bubble[0].min);
-	TextOut(getMemDC(), 1110, 160, str, strlen(str));
-
-	sprintf_s(str, "bubble.max : %f", _bubble[0].max);
-	TextOut(getMemDC(), 1110, 180, str, strlen(str));
-
-	sprintf_s(str, "bubble.startX : %f", _bubble[0].startX);
-	TextOut(getMemDC(), 1110, 200, str, strlen(str));
-
-	sprintf_s(str, "bubble.startY : %f", _bubble[0].startY);
-	TextOut(getMemDC(), 1110, 220, str, strlen(str));
-
-	sprintf_s(str, "bubble.topMax : %f", _bubble[0].topMax);
-	TextOut(getMemDC(), 1110, 240, str, strlen(str));
+	
 	for (int i = 0; i < PLATFORMMAX; i++)
 	{
 		IMAGEMANAGER->findImage("플랫폼")->render(getMemDC(), _platform[i].rc.left, _platform[i].rc.top);
@@ -759,7 +742,7 @@ void object::render()
 			Rectangle(getMemDC(), _npc[i].rc);
 		}
 
-		for (int i = 0; i < BUBBLEMAX; i++) // 흙더미
+		for (int i = 0; i < BUBBLEMAX; i++) // 물방울
 		{
 			Rectangle(getMemDC(), _bubble[i].rc);
 		}
