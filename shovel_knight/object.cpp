@@ -60,7 +60,7 @@ void object::release()
 
 void object::update()
 {
-	platformSetting();
+	//platformSetting();
 	//ladderSetting();
 	//npcSetting();
 	//sandBlockSetting();
@@ -96,7 +96,23 @@ void object::imgFrameSetting()
 void object::objectMove()
 {
 
-	//발판의 불값을 처리해주는 for문
+	//플랫폼 움직임을 구현하기 위한 구문
+	//_platform[0].min = _platform[0].x - 200;
+	//_platform[0].max = _platform[0].x + 200;
+	//
+	//_platform[1].min = _platform[1].x - 200;
+	//_platform[1].max = _platform[1].x + 200;
+	//
+	//_platform[2].min = _platform[2].x - 200;
+	//_platform[2].max = _platform[2].x + 200;
+	//
+	//_platform[3].min = _platform[3].y - 200;
+	//_platform[3].max = _platform[3].y + 200;
+	//
+	//_platform[4].min = _platform[4].y - 200;
+	//_platform[4].max = _platform[4].y + 200;
+	//
+	////발판의 불값을 처리해주는 for문
 	for (int i = 0; i < PLATFORMMAX; i++)
 	{
 		if (_platform[i].index == 1)
@@ -160,14 +176,14 @@ void object::objectMove()
 
 	for (int i = 0; i < BUBBLEMAX; i++)
 	{
-		if (_bubble[i].topMax < _bubble[i].y)
+		if (_bubble[i].topMax < _bubble[i].y) // .y 가 .startY가 되어야되는거 아닌가..?
 		{
 				_bubble[i].speed = 1;
 
 				//버블의 좌우 움직임 불값 전환을 위한 문구
 				if (_bubble[i].min > _bubble[i].x)
 				{
-					_platform[i].isDirection = true;
+					_bubble[i].isDirection = true;
 				}
 				else if (_bubble[i].max < _bubble[i].x)
 				{
@@ -197,7 +213,11 @@ void object::objectMove()
 		}
 	}
 
-
+	for (int i = 0; i < BUBBLEMAX; i++)
+	{
+		_bubble[i].min = _bubble[i].startX - 5;
+		_bubble[i].max = _bubble[i].startX + 5;
+	}
 
 }
 
@@ -208,33 +228,47 @@ void object::platformSetting()
 	//-7650, -1470
 	_platform[0].x = 8050;
 	_platform[0].y = 1750;
-	_platform[0].min = 50;     //수치 수정은 추후에 체크하면서
-	_platform[0].max = 150;
+	_platform[0].min = _platform[0].x - 200;
+	_platform[0].max = _platform[0].x + 200;
 	
 	//-8800, -1470
 	_platform[1].x = 9400;
 	_platform[1].y = 2050;
-	_platform[1].min = 50;
-	_platform[1].max = 150;
+	//_platform[1].min = 50;
+	//_platform[1].max = 150;
 	//
 	// 13920, 2920 
 	_platform[2].x = 14550;
 	_platform[2].y = 3300;
-	_platform[2].min = 50;
-	_platform[2].max = 150;
+	//_platform[2].min = 50;
+	//_platform[2].max = 150;
 	//
 	////상하
 	// 13920, 2920 
 	_platform[3].x = 14050;
 	_platform[3].y = 3350;
-	_platform[3].min = 50; 
-	_platform[3].max = 150;
+	//_platform[3].min = 50; 
+	//_platform[3].max = 150;
 	
 	// 16480, 1460 
 	_platform[4].x = 17060;
 	_platform[4].y = 1870;
-	_platform[4].min = 50;
-	_platform[4].max = 150;
+	//_platform[4].min = 50;
+	//_platform[4].max = 150;
+
+	
+
+	_platform[1].min = _platform[1].x - 200;
+	_platform[1].max = _platform[1].x + 200;
+	
+	_platform[2].min = _platform[2].x - 200;
+	_platform[2].max = _platform[2].x + 200;
+	
+	_platform[3].min = _platform[3].y - 200;
+	_platform[3].max = _platform[3].y + 200;
+	
+	_platform[4].min = _platform[4].y - 200;
+	_platform[4].max = _platform[4].y + 200;
 
 	//움직이는 발판 좌우 3개 - 0, 1, 2
 
@@ -443,22 +477,22 @@ void object::bubbleSetting()
 	//7500, 2200
 	_bubble[0].startX = 8100;
 	_bubble[0].startY = 2700;
-	_bubble[0].topMax = 2300;
+	_bubble[0].topMax = _bubble[0].startY + 300;
 
 	//13920, 3670
 	_bubble[1].startX = 14450;
 	_bubble[1].startY = 4200;
-	_bubble[1].topMax = 4000;
+	_bubble[1].topMax = _bubble[1].startY - 400;
 
 	//19040, 1420
 	
 	_bubble[2].startX = 19900;
 	_bubble[2].startY = 2000;
-	_bubble[2].topMax = 2400;
+	_bubble[2].topMax = _bubble[2].startY - 200;
 
 	_bubble[3].startX = 20100;
 	_bubble[3].startY = 2000;
-	_bubble[3].topMax = 2400;
+	_bubble[3].topMax = _bubble[3].startY - 200;
 	
 
 	for (int i = 0; i < BUBBLEMAX; i++) //11개
@@ -468,8 +502,7 @@ void object::bubbleSetting()
 		_bubble[i].index = 1;
 		_bubble[i].speed = 1; // 테스트 해보면서 수정
 		_mapCamera->MakeObject(_bubble[i].rc, _bubble[i].startX, _bubble[i].startY, 70, 70);
-		_bubble[i].min = _bubble[i].startX - 5;
-		_bubble[i].max = _bubble[i].startX + 5;
+		
 		
 	}
 
