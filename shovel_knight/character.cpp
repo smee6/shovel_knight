@@ -45,6 +45,9 @@ HRESULT character::init() // 인잇
     _imgRect = RectMakeCenter(_x, _y, _characterImg->getFrameWidth(), _characterImg->getFrameHeight());
     _collisionRect = RectMakeCenter(_x, _y, 56, 96);
 
+    _bullet = new hellFire;
+    _bullet->init(100, 1000);
+
     return S_OK;
 }
 
@@ -60,6 +63,7 @@ void character::update() // 업데이트
     collision();
     imgFrameSetting();
 
+    _bullet->update();
     // 렉트 갱신
     _imgRect = RectMakeCenter(_x, _y, _characterImg->getFrameWidth(), _characterImg->getFrameHeight());
     _collisionRect = RectMakeCenter(_x, _y, 56, 96);
@@ -245,7 +249,7 @@ void character::collision() // 충돌 처리 묶음
 void character::pixelCollision() // 캐릭터 픽셀 충돌 처리
 {
     // 걸어다닐 때 바닥에 픽셀 충돌 안 되면 바닥으로 떨어진다
-    if (_state == IDLE || _state == RUN)
+    if (_state == IDLE || _state == RUN || _state == SKILL)
     {
         int proveYBottom = _collisionRect.bottom - _mapCamera->getCamY(); // 캐릭터 바닥을 검사하기 위한 변수
         int collisionCount = 0;                                           // 캐릭터 충돌 렉트의 좌우측이 모두 충돌되지 않는지 체크
@@ -417,11 +421,11 @@ void character::platformCollision() // 캐릭터 발판 충돌 처리
         }
         else
         {
-            if (!PtInRect(&platform, check) && (_state == RUN || _state == IDLE)) // 좌측 체크
+            if (!PtInRect(&platform, check) && (_state == RUN || _state == IDLE || _state == SKILL)) // 좌측 체크
             {
                 collisionCount++;
             }
-            if (!PtInRect(&platform, check2) && (_state == RUN || _state == IDLE)) // 우측 체크
+            if (!PtInRect(&platform, check2) && (_state == RUN || _state == IDLE || _state == SKILL)) // 우측 체크
             {
                 collisionCount++;
             }
@@ -681,15 +685,16 @@ void character::enemyCollision() // 캐릭터 몬스터 충돌 처리
 
 void character::jewelCollision() // 캐릭터 쥬얼 충돌 처리
 {
-    //for (int i = 0; i < _object->getJewelMax(); i++)
-    //{
-    //    RECT temp;
-    //    RECT jewel = _object->getJewel(i).rc;
-    //    if (IntersectRect(&temp, &_collisionRect, &jewel))
-    //    {
-    //        _object->setJewel(i, false); // 쥬얼 제거 신호
-    //    }
-    //}
+    for (int i = 0; i < _object->getJewelMax(); i++)
+    {
+        RECT temp;
+        RECT jewel = _object->getJewel(i).rc;
+        if (IntersectRect(&temp, &_collisionRect, &jewel))
+        {
+            SCENEMANAGER->setGold(SCENEMANAGER->getGold() + 100);
+            _object->setJewel(i, false); // 쥬얼 제거 신호
+        }
+    }
 }
 
 void character::imgFrameSetting() // 캐릭터 이미지 프레임 처리
@@ -928,7 +933,8 @@ void character::skill() // 캐릭터 스킬 처리
             _state = SKILL;
             imgSetting();
 
-            // fireball() 발사!!!
+            if(_direction == 0) _bullet->fire(_x, _y, 0);
+            else _bullet->fire(_x, _y, PI);
         }
     }
 }
@@ -1006,6 +1012,8 @@ void character::render() // 캐릭터 렌더
         SelectObject(getMemDC(), oldbrush2);
         DeleteObject(brush2);
     }
+
+    _bullet->render();
 
     //// 현재 프레임
     char str[128];

@@ -1,5 +1,6 @@
 #pragma once
 #include "gameNode.h"
+#include "bullets.h"
 
 #define GRAVITY 1.0f								// 중력 값
 #define JUMPPOWER 22.0f								// 점프 파워 값
@@ -38,6 +39,7 @@ private:
 	mapCamera* _mapCamera;							// 맵 카메라 클래스
 	object* _object;								// 오브젝트 클래스
 	enemyManager* _enemyManager;					// 이너미 매니저 클래스
+	hellFire* _bullet;
 
 	float _x, _y;									// 캐릭터의 중점 X, Y 값
 	float _speed;									// 캐릭터 이동속도 값
