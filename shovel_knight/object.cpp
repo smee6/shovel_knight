@@ -42,6 +42,8 @@ HRESULT object::init()
 	IMAGEMANAGER->addImage("플랫폼", "image/object/obj_platform.bmp", 190, 50, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("큰흙더미", "image/object/obj_sandblock.bmp", 100, 100, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("물방울", "image/object/obj_bubble2.bmp", 100, 100, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addImage("보석", "image/object/obj_jewel2.bmp", 80, 61, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addImage("동전", "image/object/obj_coin.bmp", 50, 38, true, RGB(255, 0, 255));
 
 	platformSetting();
 	potionSetting();
@@ -443,18 +445,90 @@ void object::potionSetting()
 
 void object::jewelSetting()
 {
-	_jewel[0].x = 1000;
-	_jewel[0].y = 2700;
+	_jewel[0].x = 1500;
+	_jewel[0].y = 2400;
+	_jewel[0].index = 12;
 
+	_jewel[1].x = 2000;
+	_jewel[1].y = 2700;
+	_jewel[1].index = 13;
+
+	_jewel[2].x = 2200;
+	_jewel[2].y = 2700;
+	_jewel[2].index = 13;
+
+	_jewel[3].x = 3100;
+	_jewel[3].y = 2600;
+	_jewel[3].index = 13;
+
+	_jewel[4].x = 3200;
+	_jewel[4].y = 2600;
+	_jewel[4].index = 13;
+
+	_jewel[5].x = 3325;
+	_jewel[5].y = 2400;
+	_jewel[5].index = 12;
+
+	_jewel[6].x = 3500;
+	_jewel[6].y = 2600;
+	_jewel[6].index = 13;
+
+	_jewel[7].x = 3600;
+	_jewel[7].y = 2600;
+	_jewel[7].index = 13;
+
+	//첫 방울 위
+	_jewel[8].x = 8100;
+	_jewel[8].y = 2400;
+	_jewel[8].index = 12;
+
+	_jewel[9].x = 10700;
+	_jewel[9].y = 3200;
+	_jewel[9].index = 12;
+
+	_jewel[10].x = 10800;
+	_jewel[10].y = 3200;
+	_jewel[10].index = 12;
+
+	_jewel[11].x = 10900;
+	_jewel[11].y = 3200;
+	_jewel[11].index = 12;
+
+	//8800, 3670 좌측 방
+	_jewel[12].x = 9000;
+	_jewel[12].y = 4100;
+	_jewel[12].index = 12;
+
+	_jewel[13].x = 9300;
+	_jewel[13].y = 4100;
+	_jewel[13].index = 12;
+
+	_jewel[14].x = 8900;
+	_jewel[14].y = 4150;
+	_jewel[14].index = 13;
+
+	_jewel[15].x = 8900;
+	_jewel[15].y = 4050;
+	_jewel[15].index = 13;
+
+	_jewel[16].x = 8900;
+	_jewel[16].y = 3950;
+	_jewel[16].index = 13;
 
 	for (int i = 0; i < JEWELMAX; i++) //
 	{
 
 		_jewel[i].type = 2;
-		_jewel[i].index = 12;
 		_jewel[i].isAlive = true;
-		_mapCamera->MakeObject(_jewel[i].rc, _jewel[i].x, _jewel[i].y, 50, 50);
-				
+		if (_jewel[i].index == 12) // 빨간 다이아
+		{
+			_mapCamera->MakeObject(_jewel[i].rc, _jewel[i].x, _jewel[i].y, 80, 61);
+		}
+
+		if (_jewel[i].index == 13) // 동전
+		{
+			_mapCamera->MakeObject(_jewel[i].rc, _jewel[i].x, _jewel[i].y, 50, 38);
+		}
 		// void MakeObject(RECT& rect, int left, int right, int top, int bottom); 복붙해온거
 		//                (생성할 렉트,    중점,     중점,     가로,    세로   )
 	}
@@ -656,7 +730,7 @@ void object::objectMakeRect()
 
 	for (int i = 0; i < JEWELMAX; i++)
 	{
-		_mapCamera->MakeObject(_jewel[i].rc, _jewel[i].x, _jewel[i].y, 50, 50);
+		_mapCamera->MakeObject(_jewel[i].rc, _jewel[i].x, _jewel[i].y, 80, 61);
 	}
 
 }
@@ -683,7 +757,9 @@ void object::objectDeath()
 	{
 		if (_jewel[i].isAlive == false)
 		{
+
 			_mapCamera->MakeObject(_jewel[i].rc, _jewel[i].x, _jewel[i].y, 0, 0);
+
 		}
 	}
 }
@@ -717,6 +793,18 @@ void object::render()
 	}
 
 
+	for (int i = 0; i < JEWELMAX; i++)
+	{
+		if (!_jewel[i].isAlive) continue;
+		if (_jewel[i].index == 12)
+		{
+			IMAGEMANAGER->findImage("보석")->render(getMemDC(), _jewel[i].rc.left, _jewel[i].rc.top);
+		}
+		if (_jewel[i].index == 13)
+		{
+			IMAGEMANAGER->findImage("동전")->render(getMemDC(), _jewel[i].rc.left, _jewel[i].rc.top);
+		}
+	}
 
 	if (KEYMANAGER->isToggleKey(VK_TAB))
 	{
