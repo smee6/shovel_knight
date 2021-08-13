@@ -127,6 +127,11 @@ void sceneManager::getFire()
 	hasFire = true;
 }
 
+void sceneManager::delFire()
+{
+	hasFire = false;
+}
+
 bool sceneManager::checkFire()
 {
 	return hasFire;
