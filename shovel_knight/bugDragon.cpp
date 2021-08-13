@@ -40,7 +40,7 @@ void bugDragon::enemyAI()
 
 	RECT temp;
 	
-	if (_hitCount != 12)
+	if (_hitCount < 12)
 	{
 		if (IntersectRect(&temp, &_characterRC, &_proveRC))
 		{
