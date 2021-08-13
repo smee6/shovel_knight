@@ -161,7 +161,7 @@ void enemy::enemyFrame()
 			}
 			if (_enemyDirection == E_LEFT)
 			{
-				if (_imageName->getMaxFrameX() > 2 || _imageName->getMaxFrameX() == 0)
+				if (_imageName->getMaxFrameX() > 2)
 				{
 					if (_currentFrameX <= 0) _currentFrameX = _imageName->getMaxFrameX();
 
@@ -188,7 +188,14 @@ void enemy::enemyFrame()
 				if (_imageName->getMaxFrameX() == 0)
 				{
 					_currentFrameX = 0;
-					_currentFrameY = 1;
+					if (_enemyName == "dragon")
+					{
+						_currentFrameY = 0;
+					}
+					else
+					{
+						_currentFrameY = 1;
+					}
 				}
 			}
 		}
