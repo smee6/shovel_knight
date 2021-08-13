@@ -35,12 +35,13 @@ HRESULT character::init() // 인잇
     _isPixelCollision = true;
     _isPlatformCollision = false;
     _isSandBlockCollision = false;
+    _isDeath = false;
     _speed = _gravity = _jumpPower = 0;
     _currentHP = _maxHP = 8;
     _currentFrame = _count = 0;
     _damage = 1;
-    _hangFrameCount = _platformNum = _sandBlockNum = 0;
-
+    _hangFrameCount = _platformNum = _sandBlockNum = _deathFrameCount = 0;
+    
     _imgRect = RectMakeCenter(_x, _y, _characterImg->getFrameWidth(), _characterImg->getFrameHeight());
     _collisionRect = RectMakeCenter(_x, _y, 56, 96);
 
@@ -213,8 +214,8 @@ void character::attackRectMake() // 캐릭터 공격 렉트 처리
     // 공격, 점프 공격 시 렉트 생성
     if (_state == ATTACK || _state == JUMPATTACK)
     {
-        if (_direction == 0) _attackCollisionRect = RectMakeCenter(_collisionRect.right + 13, _y + 16, 140, 80); // 변경
-        if (_direction == 1) _attackCollisionRect = RectMakeCenter(_collisionRect.left - 13, _y + 16, 140, 80); // 변경
+        if (_direction == 0) _attackCollisionRect = RectMakeCenter(_collisionRect.right + 13, _y + 16, 140, 60); // 변경
+        if (_direction == 1) _attackCollisionRect = RectMakeCenter(_collisionRect.left - 13, _y + 16, 140, 60); // 변경
     }
 
     // 점프 하단 공격 렉트 생성
@@ -380,6 +381,16 @@ void character::pixelCollision() // 캐릭터 픽셀 충돌 처리
                     break;
                 }
             }
+        }
+    }
+
+    // 캐릭터가 가시나 낭떠러지 충돌 시 죽음 처리
+    int proveYBottom = _collisionRect.bottom - _mapCamera->getCamY();
+    for (int i = proveYBottom; i < proveYBottom + 10; i++)
+    {
+        if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), _x - _mapCamera->getCamX(), i) == RGB(0, 0, 255))
+        {
+            hitDamage(8);
         }
     }
 }
@@ -683,12 +694,23 @@ void character::jewelCollision() // 캐릭터 쥬얼 충돌 처리
 
 void character::imgFrameSetting() // 캐릭터 이미지 프레임 처리
 {
+    // 캐릭터 데스 처리 체크
+    if (_currentHP <= 0)
+    {
+        if (_isPixelCollision == true || _isSandBlockCollision == true || _isPlatformCollision == true) death();
+    }
+
+    // 죽었을 때만 예외로 천천히 프레임 진행시키려고!
+    int frameSet;
+    if (_isDeath == false) frameSet = 5;
+    else frameSet = 50;
+
     // 프레임Y 이미지 갱신
     _characterImg->setFrameY(_direction);
 
     // 카운트가 일정 수치마다 프레임X 갱신
     _count++;
-    if (_count % 5 == 0)
+    if (_count % frameSet == 0)
     {
         // 프레임 초기화
         if (_state != HANG) // 사다리 상태가 아닐 때(사다리를 예외처리함)
@@ -772,7 +794,7 @@ void character::imgFrameSetting() // 캐릭터 이미지 프레임 처리
     }
 
     // 카운트 초기화
-    if (_count >= 5) _count = 0;
+    if (_count >= frameSet) _count = 0;
 }
 
 void character::imgSetting() // 상태에 따라 이미지 처리
@@ -917,20 +939,35 @@ void character::hitDamage(float damage) // 캐릭터 피격 시 처리
     _state = HURT;
     imgSetting();
 
+    _isPlatformCollision = false;
+    _isSandBlockCollision = false;
+    _isPixelCollision = false;
+
     // 피격 당하면 뒤로 밀리는 처리를 위해
     _jumpPower = JUMPPOWER / 1.3;
     _gravity = GRAVITY;
-
-    //death();
 }
 
 void character::death() // 캐릭터 죽음 처리
 {
-    if(_currentHP <= 0)
+    if (_state != DEATH)
     {
         _state = DEATH;
         imgSetting();
+        _isDeath = true;
     }
+    
+    if (_direction == 0 && _currentFrame >= _characterImg->getMaxFrameX())
+    {
+        _deathFrameCount++;
+        if(_deathFrameCount >= 50) SCENEMANAGER->changeScene("gameover");
+    }
+    if (_direction == 1 && _currentFrame <= 0)
+    {
+        _deathFrameCount++;
+        if (_deathFrameCount >= 50) SCENEMANAGER->changeScene("gameover");
+    }
+    
 }
 
 void character::shop(int arrNum) // 캐릭터 상점 이용 처리
@@ -992,6 +1029,15 @@ void character::render() // 캐릭터 렌더
 
     sprintf_s(str, "_gravity : %f", _gravity);
     TextOut(getMemDC(), 0, 280, str, strlen(str));
+
+    sprintf_s(str, "_platform : %d", _isPlatformCollision);
+    TextOut(getMemDC(), 0, 300, str, strlen(str));
+
+    sprintf_s(str, "_sandBlock : %d", _isSandBlockCollision);
+    TextOut(getMemDC(), 0, 320, str, strlen(str));
+
+    sprintf_s(str, "_pixel : %d", _isPixelCollision);
+    TextOut(getMemDC(), 0, 340, str, strlen(str));
 }
 
 

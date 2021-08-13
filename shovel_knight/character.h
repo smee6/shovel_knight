@@ -48,6 +48,7 @@ private:
 	bool _isPixelCollision;							// 캐릭터가 픽셀 충돌 중인가?
 	bool _isPlatformCollision;						// 캐릭터가 발판 충돌 중안거?
 	bool _isSandBlockCollision;						// 캐릭터가 샌드블록 충돌 중안거?
+	bool _isDeath;									// 캐릭터가 죽었는가?
 
 	int _damage;									// 캐릭터 데미지
 	int _currentHP, _maxHP;							// 캐릭터 현재, 맥스 체력
@@ -55,6 +56,7 @@ private:
 	int _count;										// 프레임 이미지 인터벌
 	int _hangFrameCount;							// 사다리 카운트로 이 카운트에 따라 hang 이미지 갱신
 	int _skillFrameCount;							// 스킬 행동의 카운트로 이 카운트에 따라 이미지 멈추는 시점 계산
+	int _deathFrameCount;							// 죽었을 때 마지막 프레임 후 게임오버씬으로 넘어가는 시점 계산
 
 	int _platformNum;								// 현재 어떤 발판에 충돌했는지 기록
 	int _sandBlockNum;								// 현재 어떤 샌드블록에 충돌했는지 기록
