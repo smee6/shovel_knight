@@ -9,7 +9,8 @@ beeto::~beeto()
 {
 }
 
-void beeto::move()		
+
+void beeto::move()
 {
 	_moveCount++;
 
@@ -37,10 +38,13 @@ void beeto::enemyAI()
 	
 	if (_enemyState == E_IDLE) _enemyState = E_MOVE;	//기본상태가 움직임 상태
 	
-	if (_hitCount == 1)
+	if (_hitCount == 1 && _isSmoke == false)
 	{
-		if (_isSmoke == true) _enemyState = E_SMOKE;
-		if (_isSmoke == false) _enemyState = E_DIE;
+		_enemyState = E_DIE;
 	}
-	
+
+	if (_hitCount == 1 && _isSmoke == true)
+	{
+		_enemyState = E_SMOKE;
+	}
 }

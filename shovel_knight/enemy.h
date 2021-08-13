@@ -61,6 +61,7 @@ protected:
 
 	bool _isDefense;	//플레이어에게 맞은 상태일 때 피격되지 않게 하는 변수
 	int _defenseCount;	//카운트가 지나면 다시 _is_isDefense를 false로 바꿀 변수
+	int _smokeCount;
 
 	//적 죽었을 때 모션에 필요한 변수
 	float _jumpPower;
@@ -68,6 +69,7 @@ protected:
 
 	bool _isDelete;		//true면 삭제
 	bool _isSmoke;		//ture면 적 상태가 E_SMOKE로 변함
+
 
 public:
 	enemy();
@@ -92,9 +94,12 @@ public:
 
 	//접근자와 설정자
 
+	inline float getX() { return _x; }
+	inline float getY() { return _y; }
+	
 	inline RECT getRect() { return _rc; }					//적 렉트에 대한 접근자
 	inline RECT getproveRect() { return _proveRC; }			//적 감지렉트에 대한 접근자
-	inline image* getImageName() { return _imageName; }		//적 이름에 대한 접근자 (혹시 몰라서 만들어둠)
+	inline string getEnemyName() { return _enemyName; }		//적 이름에 대한 접근자 (혹시 몰라서 만들어둠)
 	
 	inline bool getDefense() { return _isDefense; }			// true일 때 플레이어와 충돌 되지 않게 하는 접근자
 	inline void setDefense(bool x) { _isDefense = x; }		// _isDefense에 대한 설정자
@@ -108,5 +113,7 @@ public:
 
 	inline bool getHead() { return _isSmoke; }
 	inline void setHead(bool x) { _isSmoke = x; }
+
+	inline void setFrameX(int x) { _currentFrameX = x; }
 };
 

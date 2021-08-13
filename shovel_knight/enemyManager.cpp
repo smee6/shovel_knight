@@ -62,9 +62,57 @@ void enemyManager::enemySetting()
     enemyBeeto = new beeto;
     enemyBeeto->init("beeto", PointMake(2000, 580), E_LEFT);
     _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(2400, 580), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(2800, 580), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
     
     enemyBeeto = new beeto;
     enemyBeeto->init("beeto", PointMake(3200, 480), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(3560, 480), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(4000, 375), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new steed;
+    enemyBeeto->init("steed", PointMake(4000, 580), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(4800, 325), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new steed;
+    enemyBeeto->init("steed", PointMake(4800, 580), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(5600, 530), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(6000, 480), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(6500, 480), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new beeto;
+    enemyBeeto->init("beeto", PointMake(7200, 580), E_LEFT);
+    _vEnemy.push_back(enemyBeeto);
+
+    enemyBeeto = new wizard;
+    enemyBeeto->init("wizard", PointMake(7800, 480), E_LEFT);
     _vEnemy.push_back(enemyBeeto);
 }
 
@@ -93,9 +141,9 @@ void enemyManager::collision()
             {
                 getVEnemy()[i]->setHead(true);
                 //getVEnemy()[i]->setEnemyState(E_SMOKE);
-
-                getVEnemy()[i]->setDefense(true);
                 getVEnemy()[i]->setHit(1);
+                getVEnemy()[i]->setDefense(true);
+              
             }
         }
         if (_character->getState() == ATTACK || _character->getState() == JUMPATTACK)
@@ -104,9 +152,9 @@ void enemyManager::collision()
             {
                 getVEnemy()[i]->setHead(false);
                 //getVEnemy()[i]->setEnemyState(E_SMOKE);
-
-                getVEnemy()[i]->setDefense(true);
                 getVEnemy()[i]->setHit(1);
+                getVEnemy()[i]->setDefense(true);
+                
             }
         }
     }
@@ -115,35 +163,43 @@ void enemyManager::collision()
     {
         if (getVEnemy()[i]->getEnemyState() == E_DIE)
         {
-            int proveYBottom = getVEnemy()[i]->getRect().bottom - _mapCamera->getCamY();
-            int proveXRight = getVEnemy()[i]->getRect().right;
-            int proveXLeft = getVEnemy()[i]->getRect().left;
+            int proveYBottom = getVEnemy()[i]->getY() - _mapCamera->getCamY() - 15;
+            int proveXRight = getVEnemy()[i]->getX() + (getVEnemy()[i]->getRect().right  -getVEnemy()[i]->getRect().left);
+            int proveXLeft = getVEnemy()[i]->getX();
 
-            for (int j = proveYBottom; j < proveYBottom + 5; j++)
+            for (int j = proveYBottom; j < proveYBottom + 3; j++)
             {
-                if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), (getVEnemy()[i]->getRect().right - getVEnemy()[i]->getRect().left) / 2, j) == RGB(255, 0, 255))
+                if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(),  getVEnemy()[i]->getX(), j) == RGB(255, 0, 255))
                 {
                     getVEnemy()[i]->setHead(true);
                 }
                 
             }
-            //for (int j = proveXRight; j < proveXRight + 3; j++)
-            //{
-            //    if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), j, getVEnemy()[i]->getRect().top - _mapCamera->getCamY()) == RGB(255, 0, 255))
-            //    {
-            //        getVEnemy()[i]->setHead(true);
-            //    }
-            //
-            //}
-            //for (int j = proveXLeft; j > proveXLeft - 3; j--)
-            //{
-            //    if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), j, getVEnemy()[i]->getRect().top - _mapCamera->getCamY()) == RGB(255, 0, 255))
-            //    {
-            //        getVEnemy()[i]->setHead(true);
-            //    }
-            //
-            //}
+           for (int j = proveXRight; j < proveXRight + 3; j++)
+           {
+               if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), j, getVEnemy()[i]->getY() - _mapCamera->getCamY()) == RGB(255, 0, 255))
+               {
+                   getVEnemy()[i]->setHead(true);
+               }
+           }
+           
+        }
 
+        if (getVEnemy()[i]->getEnemyState() == E_MOVE)
+        {
+            int proveXRight = getVEnemy()[i]->getX() + (getVEnemy()[i]->getRect().right - getVEnemy()[i]->getRect().left);
+            int proveXLeft = getVEnemy()[i]->getX();
+        
+            
+            for (int j = proveXLeft; j < proveXLeft + 3; j++)
+            {
+                if (GetPixel(_mapCamera->getBackGroundMagenta()->getMemDC(), j , getVEnemy()[i]->getY() - _mapCamera->getCamY() - 15) == RGB(255, 0, 255))
+                {
+                    getVEnemy()[i]->setHit(1);
+                    getVEnemy()[i]->setHead(true);
+                    break;
+                }
+            }
         }
     }
     
@@ -158,11 +214,12 @@ void enemyManager::enemyImageStorage()
     //steed
     IMAGEMANAGER->addFrameImage("steed and idle", "image/shovel knight_steed and idle.bmp", 150, 200, 1, 2, true, RGB(255, 0, 255));
     IMAGEMANAGER->addFrameImage("steed and move", "image/shovel knight_steed and move.bmp", 600, 200, 4, 2, true, RGB(255, 0, 255));
-    IMAGEMANAGER->addFrameImage("steed and die", "image/shovel knight_steed and die.bmp", 100, 200, 1, 2, true, RGB(255, 0, 255));
+    IMAGEMANAGER->addFrameImage("steed and die", "image/shovel knight_steed and die.bmp", 60, 200, 1, 2, true, RGB(255, 0, 255));
     IMAGEMANAGER->addFrameImage("steed and legacy", "image/shovel knight_steed and legacy.bmp", 100, 60, 1, 2, true, RGB(255, 0, 255));
     //wizard
     IMAGEMANAGER->addFrameImage("wizard and idle", "image/shovel knight_wizard and idle.bmp", 90, 160, 2, 2, true, RGB(255, 0, 255));
     IMAGEMANAGER->addFrameImage("wizard and attack", "image/shovel knight_wizard and attack.bmp", 120, 160, 2, 2, true, RGB(255, 0, 255));
+    IMAGEMANAGER->addFrameImage("wizard and die", "image/shovel knight_wizard and attack.bmp", 120, 160, 2, 2, true, RGB(255, 0, 255));
     //dragon
     IMAGEMANAGER->addFrameImage("dragon and idle", "image/shovel knight_dragon and idle.bmp", 6000, 300, 12, 1, true, RGB(255, 0, 255));
     IMAGEMANAGER->addFrameImage("dragon and move", "image/shovel knight_dragon and move.bmp", 3000, 300, 6, 1, true, RGB(255, 0, 255));

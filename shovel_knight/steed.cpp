@@ -23,6 +23,7 @@ void steed::move()
 
 void steed::die()
 {
+	enemy::die();
 }
 
 void steed::enemyAI()

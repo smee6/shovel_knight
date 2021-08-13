@@ -34,6 +34,7 @@ HRESULT enemy::init(const char* imageName, POINT position, ENEMYDIRECTION enemyD
 	_moveCount = 0;
 	_attackCount = 0;
 	_hitCount = 0;
+	_smokeCount = 0;
 
 	_jumpPower = 5.0f;
 	_gravity = 0.25f;
@@ -65,8 +66,8 @@ void enemy::update(int x, int y, float characterX, float characterY)
 	
 	if (_enemyName == "steed")
 	{
-		_proveRC = RectMake(_rc.left - 300, _rc.top - 180,
-			_imageName->getFrameWidth() + 600, _imageName->getFrameHeight() + 130);
+		_proveRC = RectMake(_rc.left - 100, _rc.top,
+			_imageName->getFrameWidth() + 200, _imageName->getFrameHeight());
 	}
 	if (_enemyName == "dragon")
 	{
@@ -80,8 +81,10 @@ void enemy::render()
 	draw();
 
 	char str[128];
-	sprintf_s(str, "_currentFrame : %d", _rc.bottom);
+	sprintf_s(str, "_currentFrame : %d", (int)_x);
 	TextOut(getMemDC(), 0, 550, str, strlen(str));
+	sprintf_s(str, "_currentFrame : %d", (int)_y);
+	TextOut(getMemDC(), 0, 570, str, strlen(str));
 
 	//TAB키 눌렀을 때 감지렉트와 적렉트 확인
 	if (KEYMANAGER->isToggleKey(VK_TAB))
@@ -104,17 +107,19 @@ void enemy::enemyFrame()
 	//연기 상태일 때
 	if (_enemyState == E_SMOKE)
 	{
-		if (_imageCount % 5 == 0)
+		
+		if (_imageCount % 4 == 0)
 		{
 			if (_currentFrameX >= _imageName->getMaxFrameX()) _isDelete = true;
-			
+
+			//_imageName->setFrameX(_currentFrameX);
 			_currentFrameX++;
 			_currentFrameY = 0;
 		}
 	}
 	else
 	{
-		if (_imageCount % 10 == 0)
+		if (_imageCount % 11 == 0)
 		{
 			if (_enemyDirection == E_RIGHT)
 			{
@@ -202,7 +207,6 @@ void enemy::enemyFrame()
 		break;
 	case E_SMOKE:
 		_imageName = IMAGEMANAGER->findImage("smoke");
-
 		break;
 	}
 }
@@ -220,7 +224,7 @@ void enemy::die()
 
 	if (_characterX > _rc.left)
 	{
-		_enemyDirection = E_LEFT;
+		_enemyDirection = E_RIGHT;
 		_x -= 5;
 		_y -= _jumpPower;
 		_jumpPower -= _gravity;
@@ -228,7 +232,7 @@ void enemy::die()
 
 	if (_characterX < _rc.left)
 	{
-		_enemyDirection = E_RIGHT;
+		_enemyDirection = E_LEFT;
 		_x += 5;
 		_y -= _jumpPower;
 		_jumpPower -= _gravity;
