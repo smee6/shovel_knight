@@ -243,7 +243,7 @@ void character::collision() // 충돌 처리 묶음
     hangCollision();
     bubbleCollision();
     enemyCollision();
-    //jewelCollision();
+    jewelCollision();
 }
 
 void character::pixelCollision() // 캐릭터 픽셀 충돌 처리
@@ -685,7 +685,7 @@ void character::enemyCollision() // 캐릭터 몬스터 충돌 처리
 
 void character::jewelCollision() // 캐릭터 쥬얼 충돌 처리
 {
-    for (int i = 0; i < _object->getJewelMax(); i++)
+    for (int i = 0; i < _object->getJewelMAX(); i++)
     {
         RECT temp;
         RECT jewel = _object->getJewel(i).rc;
