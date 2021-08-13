@@ -58,7 +58,7 @@ void enemyManager::enemySetting()
 
 
     enemyBeeto = new bugDragon;
-    enemyBeeto->init("dragon", PointMake(1600, 580), E_LEFT);
+    enemyBeeto->init("bugDragon", PointMake(1600, 580), E_LEFT);
     _vEnemy.push_back(enemyBeeto);
     
     enemyBeeto = new beeto;
@@ -255,7 +255,6 @@ void enemyManager::collision()
             if (IntersectRect(&temp, &characterAttackRC, &enemyRC) && getVEnemy()[i]->getDefense() == false)
             {
                 getVEnemy()[i]->setHead(true);
-                //getVEnemy()[i]->setEnemyState(E_SMOKE);
                 getVEnemy()[i]->setHit(1);
                 getVEnemy()[i]->setDefense(true);
                 break;
@@ -267,7 +266,6 @@ void enemyManager::collision()
             if (IntersectRect(&temp, &characterAttackRC, &enemyRC) && getVEnemy()[i]->getDefense() == false)
             {
                 getVEnemy()[i]->setHead(false);
-                //getVEnemy()[i]->setEnemyState(E_SMOKE);
                 getVEnemy()[i]->setHit(1);
                 getVEnemy()[i]->setDefense(true);
                 break;
@@ -343,7 +341,11 @@ void enemyManager::enemyImageStorage()
     IMAGEMANAGER->addFrameImage("dragon and attack", "image/shovel knight_dragon and attack.bmp", 3000, 300, 6, 1, true, RGB(255, 0, 255));
     IMAGEMANAGER->addFrameImage("dragon and die", "image/shovel knight_dragon and die.bmp", 500, 300, 1, 1, true, RGB(255, 0, 255));
     IMAGEMANAGER->addFrameImage("lazer", "image/shovel knight_lazer.bmp", 4800, 150, 6, 1, true, RGB(255, 0, 255));
-    //boss
+    //bugDragon
+    IMAGEMANAGER->addFrameImage("bugDragon and idle", "image/shovel knight_bugDragon and idle.bmp", 6000, 300, 12, 1, true, RGB(255, 0, 255));
+    IMAGEMANAGER->addFrameImage("bugDragon and move", "image/shovel knight_bugDragon and move.bmp", 3000, 300, 6, 1, true, RGB(255, 0, 255));
+    IMAGEMANAGER->addFrameImage("bugDragon and attack", "image/shovel knight_bugDragon and attack.bmp", 3000, 300, 6, 1, true, RGB(255, 0, 255));
+    IMAGEMANAGER->addFrameImage("bugDragon and die", "image/shovel knight_bugDragon and die.bmp", 500, 300, 1, 1, true, RGB(255, 0, 255));
     //죽었을 때 연기
     IMAGEMANAGER->addFrameImage("smoke", "image/shovel knight_smoke.bmp", 300, 40, 5, 1, true, RGB(255, 0, 255));
 

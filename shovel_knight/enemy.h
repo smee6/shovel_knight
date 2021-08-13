@@ -54,6 +54,7 @@ protected:
 	//캐릭터 감지렉트
 	RECT _characterRC;
 
+	int _initCount;		//연기 현재프레임X 0으로 초기화할 변수
 
 	int				_imageCount;				//적 이미지 프레임 카운트 용
 	
