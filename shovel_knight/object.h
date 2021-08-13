@@ -7,6 +7,7 @@
 #define LADDERMAX 15
 #define NPCMAX 3
 #define BUBBLEMAX 20
+#define JEWELMAX 50
 
 class character;
 class mapCamera;
@@ -75,6 +76,18 @@ struct tagBubble // 물방울
 	bool isDirection;								//	오브젝트의 방향전환을 위한 불값
 };
 
+struct tagJewel //보석
+{
+	image* objectImage;								//	오브젝트의 이미지
+	RECT rc;										//	오브젝트의 렉트
+	float x, y;										//	오브젝트의 중점 X, Y 값
+
+	int type;
+	int index;
+	
+	bool isAlive;									// 보석이 있는지에 대한 여부
+};
+
 
 class object : public gameNode
 {
@@ -92,6 +105,8 @@ private:
 	tagNPC _npc[NPCMAX];
 
 	tagBubble _bubble[BUBBLEMAX];
+
+	tagJewel _jewel[JEWELMAX];
 
 	character* _character;
 
@@ -135,16 +150,18 @@ public:
 	int getNPCMAX() { return NPCMAX; }
 	int getSandBlockMAX() { return SANDBLOCKMAX; }
 	int getBubbleMAX() { return BUBBLEMAX; }
-
+	int getJewelMAX() { return JEWELMAX; }
 
 	tagPlatform getPlatform(int arrNum) { return _platform[arrNum]; }
 	tagLadder getLadder(int arrNum) {	return _ladder[arrNum];}
 	tagNPC getNPC(int arrNum) { return _npc[arrNum]; }
 	tagSandBlock getSandBlock(int arrNum) { return _sandBlock[arrNum]; }
 	tagBubble getBubble(int arrNum) { return _bubble[arrNum]; }
+	tagJewel getJewel(int arrNum) { return _jewel[arrNum]; }
 
 	void setSandBlock(int arrNum, bool isAlive);
 	void setBubble(int arrNum, bool isAlive);
+	void setJewel(int arrNum, bool isAlive);
 
 	virtual HRESULT init();
 	virtual void release();
