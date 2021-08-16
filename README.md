@@ -18,3 +18,7 @@
 
 
 서명인 - UI,오프닝,엔딩,상점,사운드,다이얼로그
+
+https://youtu.be/ro7pRSlYaEM
+
+영상링크
